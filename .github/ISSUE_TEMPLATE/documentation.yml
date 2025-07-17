@@ -1,0 +1,62 @@
+name: 📚 ドキュメント改善・提案
+description: READMEやガイドラインなど文書関連の改善・提案を行います
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        文書の改善・提案ありがとうございます。以下の情報を記入してください。
+  
+  # 1. 対象となる文書の種類(doc_type)
+  - type: dropdown
+    id: doc_type
+    attributes:
+      label: 対象となる文書の種類
+      description: 改善や提案の対象となるドキュメントの種類を選んでください
+      options:
+        - README
+        - セットアップ手順
+        - コントリビューションガイド（CONTRIBUTING.md）
+        - コーディング規約 / 方針
+        - その他
+    validations:
+      required: true
+
+  # 2. 現在の問題点・不足点(current_issue)
+  - type: textarea
+    id: current_issue
+    attributes:
+      label: 現在の問題点・不足点
+      description: 現在の文書において問題や不明瞭な点があれば記載してください
+      placeholder: 例）環境構築手順が古い、READMEに依存ライブラリの記載がない など
+    validations:
+      required: true
+
+  # 3. 提案する改善内容・追記案(suggestion)
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: 提案する改善内容・追記案
+      description: 修正・追記したい内容をできるだけ具体的に記載してください
+      placeholder: 例）npm install の手順を追加する、PRルールに自動テスト実行の記述を加える
+    validations:
+      required: true
+
+   # 4. 目的・背景(purpose)
+  - type: textarea
+    id: purpose
+    attributes:
+      label: 目的・背景（任意）
+      description: なぜその文書改善が必要と考えたのか、背景があれば教えてください
+      placeholder: 例）新しく入ったメンバーが手順でつまずいていたため
+    validations:
+      required: false
+
+  # 5. その他の情報(additional)
+  - type: textarea
+    id: additional
+    attributes:
+      label: その他の情報（任意）
+      description: 参考リンクやスクリーンショット、議論ログなどがあれば記載してください
+    validations:
+      required: false

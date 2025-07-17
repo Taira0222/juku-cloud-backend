@@ -1,0 +1,79 @@
+name: "📦 インフラ・CI/CD改善"
+description: Docker、GitHub Actions、AWSなどのCI/CD・インフラに関する提案を記入してください
+title: "[CI/CD] "
+labels: ["ci/cd"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📦 インフラ・CI/CD提案テンプレート
+        Docker、GitHub Actions、AWS、devcontainer、Terraformなどに関する構築・改善要望はこちらに記載してください。
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 分類（作成／改善）
+      description: このIssueは新規作成か、既存構成の改善・修正かを選択してください
+      options:
+        - 新規作成
+        - 改善・修正
+    validations:
+      required: true
+
+  - type: textarea
+    id: overview
+    attributes:
+      label: 概要・目的
+      description: 何を構築／改善したいのか、その背景や目的を記載してください。
+      placeholder: |
+        例）GitHub ActionsによるRSpecのCIを導入したい。毎回手動確認しているため、CIにより自動化したい。
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: 対象範囲・技術
+      description: 対象となる技術やファイル（GitHub Actions / Docker / AWS など）を記載してください。
+      placeholder: |
+        例）.github/workflows/test.yml、Dockerfile、EC2、devcontainerなど
+    validations:
+      required: false
+
+  - type: textarea
+    id: current_issue
+    attributes:
+      label: 現在の課題（改善の場合のみ）
+      description: 既存の構成における問題点・改善したい点があれば記載してください。
+      placeholder: |
+        例）CIのビルド時間が長い、手動デプロイに時間がかかる、Secrets管理が分かりづらい、など
+    validations:
+      required: false
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 提案内容・理想像
+      description: どういう構成・運用を目指すのか、または参考事例などがあれば記載してください。
+      placeholder: |
+        例）Push時に自動テスト、mainマージ時にS3デプロイ、他リポジトリでの導入例など
+    validations:
+      required: false
+
+  - type: textarea
+    id: related
+    attributes:
+      label: 関連Issue / PR
+      description: 関連するIssueやPull Requestがあれば番号で記載してください。
+      placeholder: "#123, #456"
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 補足情報
+      description: その他、検証結果や注意点、議論したい内容があれば記載してください。
+    validations:
+      required: false

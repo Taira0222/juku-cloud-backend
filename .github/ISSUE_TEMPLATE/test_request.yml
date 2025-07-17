@@ -1,0 +1,95 @@
+name: 🧪 テスト追加・改善リクエスト
+description: テストコードの新規追加や改善提案を行います
+labels: ["test"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        テスト追加・改善の提案ありがとうございます。以下の情報を記入してください。
+
+  # 1. テストの目的（新規か改善か）
+  - type: dropdown
+    id: request_type
+    attributes:
+      label: リクエスト種別
+      description: 新しくテストを追加するのか、既存のテストを改善したいのかを選んでください
+      options:
+        - 新規作成
+        - 改善・修正
+    validations:
+      required: true
+
+  # 2. テストの種類（どのレイヤーのテストか）
+  - type: dropdown
+    id: test_type
+    attributes:
+      label: テストの種類
+      description: 該当するテストの種類を選択してください（複数可）
+      multiple: true
+      options:
+        - 単体テスト（モデル、バリデーションなど）
+        - 統合テスト（コントローラ、画面遷移など）
+        - システムテスト（UI操作のシナリオ）
+        - リクエストテスト（API）
+        - その他
+    validations:
+      required: true
+
+  # 3. 対象機能・対象ファイル（何に対するテストか）
+  - type: input
+    id: target
+    attributes:
+      label: 対象機能・ファイル
+      description: テスト対象となる機能やファイルを具体的に記述してください（モデル名・画面・APIなど）
+      placeholder: 例）Todoモデルのバリデーション、User登録フォーム、ログインAPI
+    validations:
+      required: true
+
+  # 4. 現状の問題点（改善の場合のみ）
+  - type: textarea
+    id: current_problem
+    attributes:
+      label: 現在の問題点（改善・修正の場合）
+      description: 既存テストの改善を提案する場合は、現在の課題や気になる点を記述してください
+      placeholder: 例）バリデーションの失敗ケースがカバーされていない、テストが冗長で読みにくい
+    validations:
+      required: false
+
+  # 5. 提案内容（どのように追加・改善したいか）
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 提案内容
+      description: 追加・修正したいテストの内容や方針をできるだけ具体的に記述してください
+      placeholder: 例）空文字のときに保存できないことを確認するテストを追加したい
+    validations:
+      required: true
+
+  # 6. 背景・目的（なぜ必要か）
+  - type: textarea
+    id: purpose
+    attributes:
+      label: 目的・理由（任意）
+      description: なぜそのテストが必要と考えたのか、背景や目的があれば記載してください
+      placeholder: 例）リグレッション防止のため、リファクタ時の安心材料にしたいため
+    validations:
+      required: false
+
+  # 7. 関連IssueやPR（あれば）
+  - type: input
+    id: related
+    attributes:
+      label: 関連するIssueやPR（任意）
+      description: 関連するIssueやPull RequestがあればURLや番号を記載してください
+      placeholder: 例）#123、https://github.com/xxx/pull/456
+    validations:
+      required: false
+
+  # 8. 補足情報（ログ・スクショ・コードなど）
+  - type: textarea
+    id: additional
+    attributes:
+      label: 補足情報（任意）
+      description: エラーログやスクリーンショット、テスト対象のコード断片などがあれば記載してください
+    validations:
+      required: false
