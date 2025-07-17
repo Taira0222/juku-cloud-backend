@@ -1,0 +1,68 @@
+name: 💡 機能リクエスト
+description: 新機能のアイデアを提案する
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        機能の提案ありがとうございます。以下の情報を記入してください。
+
+  # 1.関連する問題(problem)
+  - type: textarea
+    id: problem
+    attributes:
+      label: 関連する問題
+      description: この機能リクエストに関連する問題を説明してください
+      placeholder: 例）〜の操作が面倒です
+    validations:
+      required: true
+
+  # 2. 提案する解決策(solution)
+  - type: textarea
+    id: solution
+    attributes:
+      label: 提案する解決策
+      description: 考えられる解決策を説明してください
+    validations:
+      required: true
+  
+  # 3. 想定ユーザー・目的(target)
+  - type: textarea
+    id: target
+    attributes:
+      label: 想定ユーザー・目的（任意）
+      description: 誰のための機能か、どう役立つかを記述してください
+      placeholder: 例）初めて使うユーザーが迷わないようにしたい
+    validations:
+      required: false
+
+  # 4. 代替案(alternatives)
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 代替案
+      description: 検討した他の解決策があれば記述してください
+    validations:
+      required: false
+
+  # 5. 優先順位(priority)
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 優先度（任意）
+      description: この機能の重要度・緊急性を教えてください（あくまで目安です）
+      options:
+        - 高（すぐに対応してほしい）
+        - 中（近いうちにあると嬉しい）
+        - 低（将来的にあっても良い）
+    validations:
+      required: false
+  
+  # その他の情報(additional)
+  - type: textarea
+    id: additional
+    attributes:
+      label: その他の情報
+      description: スクリーンショットや参考資料などがあれば追加してください
+    validations:
+      required: false
