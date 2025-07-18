@@ -33,7 +33,7 @@ gem "thruster", require: false
 # gem "image_processing", "~> 1.2"
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
-# gem "rack-cors"
+gem "rack-cors"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -44,4 +44,26 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Use RSpec for testing [https://rspec.info/]
+  gem "rspec-rails", "~> 8.0.0"
+
+  # Use Factory Bot for setting up Ruby objects as test data 今まで使用してきたFixtureの代わり
+  gem "factory_bot_rails", "~> 6.0"
+
+  # Use Faker for generating fake data
+  gem "faker", "~> 3.0"
+
+  # Use byebug for debugging これがあると、デバック最中にコードが途中で止まる
+  gem "byebug", platforms: %i[ mri windows ]
+
+  # User kill N+1 queries
+  gem "bullet", "~> 8.0"
+end
+
+
+group :development do
+  # Use the Annotaterb gem to annotate your models with schema information
+  # This is useful for development and debugging, but not recommended for production.
+  gem "annotaterb", "~> 4.1", require: false
 end
