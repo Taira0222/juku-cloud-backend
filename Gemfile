@@ -65,5 +65,5 @@ end
 group :development do
   # Use the Annotaterb gem to annotate your models with schema information
   # This is useful for development and debugging, but not recommended for production.
-  gem 'annotaterb', '~> 4.1', require: false
+  gem "annotaterb", "~> 4.1", require: false
 end
