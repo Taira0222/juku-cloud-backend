@@ -56,4 +56,14 @@ group :development, :test do
 
   # Use byebug for debugging これがあると、デバック最中にコードが途中で止まる
   gem "byebug", platforms: %i[ mri windows ]
+
+  # User kill N+1 queries
+  gem "bullet", "~> 8.0"
+end
+
+
+group :development do
+  # Use the Annotaterb gem to annotate your models with schema information
+  # This is useful for development and debugging, but not recommended for production.
+  gem 'annotaterb', '~> 4.1', require: false
 end
