@@ -44,6 +44,8 @@ gem "devise_token_auth", "~> 1.2"
 # use devise il18n for internationalization
 gem "devise-i18n", "~> 1.0"
 
+
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

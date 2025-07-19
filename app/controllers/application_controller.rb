@@ -3,4 +3,5 @@ class ApplicationController < ActionController::API
     I18n.locale = :ja
   end
   include DeviseTokenAuth::Concerns::SetUserByToken
+  include DeviseHackFakeSession
 end
