@@ -24,7 +24,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_18_044235) do
     t.datetime "remember_created_at"
     t.string "name", default: "", null: false
     t.integer "role", default: 0, null: false
-    t.string "school_stage"
+    t.integer "school_stage"
     t.integer "grade"
     t.string "graduated_university"
     t.string "email", default: "", null: false

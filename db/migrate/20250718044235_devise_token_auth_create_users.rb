@@ -19,7 +19,7 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[8.0]
       ## User Info
       t.string :name, null: false, default: ""
       t.integer :role, null: false, default: 0
-      t.string :school_stage
+      t.integer :school_stage
       t.integer :grade
       t.string :graduated_university
       t.string :email, null: false, default: ""
