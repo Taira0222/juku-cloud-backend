@@ -37,9 +37,10 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :trackable
   include DeviseTokenAuth::Concerns::User
-  validates :name, presence: true, length: { maximum: 50 }
-  enum role: { teacher: 0, admin: 1 }, _suffix: true # _suffix: true にすることでほかのメソッドと衝突しないようにする(例: user.teacher? ではなく user.teacher_role? を使用)
 
+
+  validates :name, presence: true, length: { maximum: 50 }
+  enum :role, { teacher: 0, admin: 1 }, suffix: true # _suffix: true にすることでほかのメソッドと衝突しないようにする(例: user.teacher? ではなく user.teacher_role? を使用)
   validates :role, presence: true
-  enum school_stage: { bachelor: 0, master: 1 }, _suffix: true # _suffix: true にすることでほかのメソッドと衝突しないようにする(例: user.bachelor? ではなく user.bachelor_school_stage? を使用)
+  enum :school_stage, { bachelor: 0, master: 1 }, suffix: true # _suffix: true にすることでほかのメソッドと衝突しないようにする(例: user.bachelor? ではなく user.bachelor_school_stage? を使用)
 end
