@@ -70,6 +70,10 @@ group :development, :test do
 
   # User kill N+1 queries
   gem "bullet", "~> 8.0"
+  # 環境変数を管理するgem
+  gem "dotenv-rails", "~> 2.1"
+  # gemの脆弱性チェック
+  gem "bundler-audit", require: false
 end
 
 
@@ -77,4 +81,8 @@ group :development do
   # Use the Annotaterb gem to annotate your models with schema information
   # This is useful for development and debugging, but not recommended for production.
   gem "annotaterb", "~> 4.1", require: false
+end
+
+group :test do
+  gem "simplecov", "~> 0.21.0", require: false
 end
