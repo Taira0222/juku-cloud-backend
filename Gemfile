@@ -35,12 +35,23 @@ gem "thruster", require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 gem "rack-cors"
 
+# use devise for authentication
+gem "devise", "~> 4.9"
+
+# use devise token_authenticatable for token-based authentication
+gem "devise_token_auth", "~> 1.2"
+
+# use devise il18n for internationalization
+gem "devise-i18n", "~> 1.0"
+
+
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
-  gem "brakeman", require: false
+  gem "brakeman", "~> 7.1", require: false
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
@@ -59,6 +70,10 @@ group :development, :test do
 
   # User kill N+1 queries
   gem "bullet", "~> 8.0"
+  # 環境変数を管理するgem
+  gem "dotenv-rails", "~> 2.1"
+  # gemの脆弱性チェック
+  gem "bundler-audit", require: false
 end
 
 
@@ -66,4 +81,8 @@ group :development do
   # Use the Annotaterb gem to annotate your models with schema information
   # This is useful for development and debugging, but not recommended for production.
   gem "annotaterb", "~> 4.1", require: false
+end
+
+group :test do
+  gem "simplecov", "~> 0.21.0", require: false
 end
