@@ -1,0 +1,39 @@
+require 'rails_helper'
+
+
+RSpec.describe 'User Sessions', type: :request do
+  let(:user) { create(:user) } # インスタンス変数 user を定義して、テストで使用するユーザーを作成
+
+
+  describe 'POST /api/v1/auth/sign_in' do
+    it 'successfully logs in with valid credentials' do
+      auth_token = sign_in(user)
+      expect(response).to have_http_status(:success)
+      expect(response.headers).to include('access-token', 'client', 'uid', 'expiry', 'token-type')
+    end
+
+    it 'fails to log in with invalid credentials' do
+      user = build(:user, password: 'wrongpassword')
+      auth_token = sign_in(user)
+      expect(response).to have_http_status(:unauthorized)
+      expect(response.body).to include('ログイン用の認証情報が正しくありません。再度お試しください。')
+    end
+  end
+
+
+  describe 'DELETE /api/v1/auth/sign_out' do
+    it 'successfully logs out' do
+      auth_token = sign_in(user)
+      sign_out(auth_token)
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include('"success":true')
+    end
+
+    it 'fails to log out when not logged in' do
+      sign_out({})
+      expect(response).to have_http_status(:not_found)
+      p response.body
+      expect(response.body).to include('ユーザーが見つからないか、ログインしていません。')
+    end
+  end
+end
