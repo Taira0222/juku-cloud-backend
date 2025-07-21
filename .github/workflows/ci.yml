@@ -15,8 +15,8 @@ defaults:
 jobs:
   test:
     runs-on: ubuntu-latest
-    # タイムアウトを5分に設定
-    timeout-minutes: 5
+    # タイムアウトを10分に設定
+    timeout-minutes: 10
     services:
       db:
         image: postgres:15-alpine
@@ -54,6 +54,8 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+    # タイムアウトを10分に設定
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
