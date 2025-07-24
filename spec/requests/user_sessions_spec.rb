@@ -32,7 +32,6 @@ RSpec.describe 'User Sessions', type: :request do
     it 'fails to log out when not logged in' do
       sign_out({})
       expect(response).to have_http_status(:not_found)
-      p response.body
       expect(response.body).to include('ユーザーが見つからないか、ログインしていません。')
     end
   end
