@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins "http://localhost:5173" # TODO::CD でURLがわかったらここに記入する
+    origins "http://localhost:5173", "https://www.juku-cloud.com"
 
     resource "*",
       headers: :any,
