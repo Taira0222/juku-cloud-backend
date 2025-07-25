@@ -5,7 +5,7 @@ RSpec.describe 'User Registrations', type: :request do
   let!(:user) { create(:user) }
 
   describe 'POST /api/v1/auth' do
-    it 'successfully registers a new user' do
+    it 'successfully registers a new user and sends a confirmation email' do
       post '/api/v1/auth',
             params: { name: 'First User',
                       email: 'first@example.com',
@@ -14,6 +14,7 @@ RSpec.describe 'User Registrations', type: :request do
                       password_confirmation: 'password',
                       confirm_success_url: 'http://localhost:5173/confirmed' }
       expect(response).to have_http_status(:success)
+      expect(ActionMailer::Base.deliveries.last.to).to include('first@example.com')
     end
 
     it 'returns an error when passwords do not match' do
