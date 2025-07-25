@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe UserMailer, type: :mailer do
-  # テストユーザーの作成
-  let!(:user) { create(:user) }
+  # --TODO:: email変更 or パスワードリセットの画面を作成したらコメントアウトを解除する--
+  # let!(:user) { create(:user) }
   describe "confirmation_instructions" do
     context "when a new user is created" do
       it "renders the confirmation instructions email" do
