@@ -2,7 +2,8 @@ require 'rails_helper'
 
 
 RSpec.describe 'User Sessions', type: :request do
-  let(:user) { create(:user) } # インスタンス変数 user を定義して、テストで使用するユーザーを作成
+  # インスタンス変数 user を定義して、テストで使用するユーザーを作成
+  let(:user) { create(:user) }
 
 
   describe 'POST /api/v1/auth/sign_in' do
