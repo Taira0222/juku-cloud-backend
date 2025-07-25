@@ -8,7 +8,9 @@ RSpec.describe UserMailer, type: :mailer do
       it "renders the confirmation instructions email" do
         token = Devise.token_generator.generate(User, :confirmation_token).first
         confirming_user = User.build(name: "Confirming User", email: "confirming@example.com")
-        mail = UserMailer.confirmation_instructions(confirming_user, token)
+        # optsパラメータにredirect_urlを指定
+        opts = { redirect_url: "http://localhost:5173" }
+        mail = UserMailer.confirmation_instructions(confirming_user, token, opts)
 
         expect(mail.subject).to eq("メールアドレスの確認をお願いします")
         expect(mail.to).to eq([ confirming_user.email ])
@@ -28,12 +30,14 @@ RSpec.describe UserMailer, type: :mailer do
       end
     end
 
-    #--TODO:: email変更の画面を作成したらコメントアウトを解除する--
+    # --TODO:: email変更の画面を作成したらコメントアウトを解除する--
     # context "when a user requests a email reset" do
     #   it "renders the email reset instructions email" do
     #     token = Devise.token_generator.generate(User, :confirmation_token).first
     #     user.update(unconfirmed_email: 'new_email@example.com')
-    #     mail = UserMailer.confirmation_instructions(user, token)
+    #     # optsパラメータにredirect_urlを指定
+    #     opts = { redirect_url: "http://localhost:5173" }
+    #     mail = UserMailer.confirmation_instructions(user, token, opts)
 
     #     expect(mail.subject).to eq("新しいメールアドレスの確認をお願いします")
     #     expect(mail.to).to eq([user.unconfirmed_email])
@@ -58,7 +62,9 @@ RSpec.describe UserMailer, type: :mailer do
   #   it "renders the reset password instructions email" do
   #     token = Devise.token_generator.generate(User, :reset_password_token).first
   #     user.update(reset_password_sent_at: Time.current)
-  #     mail = UserMailer.reset_password_instructions(user, token)
+  #     # optsパラメータにredirect_urlを指定
+  #     opts = { redirect_url: "http://localhost:5173" }
+  #     mail = UserMailer.reset_password_instructions(user, token, opts)
 
   #     expect(mail.subject).to eq("パスワードの再設定をお願いします")
   #     expect(mail.to).to eq([user.email])
@@ -80,6 +86,7 @@ RSpec.describe UserMailer, type: :mailer do
 
 
   # --TODO:: email変更の画面を作成したらコメントアウトを解除する--
+
   # describe "email_changed" do
   #   it "renders the email changed notification email" do
   #     mail = UserMailer.email_changed(user)
