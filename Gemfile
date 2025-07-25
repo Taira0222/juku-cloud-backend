@@ -15,11 +15,6 @@ gem "puma", ">= 5.0"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
-# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem "solid_cache"
-gem "solid_queue"
-gem "solid_cable"
-
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
@@ -73,6 +68,8 @@ group :development, :test do
   # 環境変数を管理するgem
   gem "dotenv-rails", "~> 2.1"
   # gemの脆弱性チェック
+  # bundle exec bundler-audit check で脆弱性確認
+  # bundle exec bundler-audit update で脆弱性情報を更新
   gem "bundler-audit", require: false
 end
 
@@ -81,6 +78,7 @@ group :development do
   # Use the Annotaterb gem to annotate your models with schema information
   # This is useful for development and debugging, but not recommended for production.
   gem "annotaterb", "~> 4.1", require: false
+  gem "letter_opener_web", "~> 3.0", require: false
 end
 
 group :test do

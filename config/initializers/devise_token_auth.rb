@@ -62,5 +62,11 @@ DeviseTokenAuth.setup do |config|
   # By default DeviseTokenAuth will not send confirmation email, even when including
   # devise confirmable module. If you want to use devise confirmable module and
   # send email, set it to true. (This is a setting for compatibility)
-  # config.send_confirmation_email = true
+  config.send_confirmation_email = true
+
+  if Rails.env.production?
+    config.default_confirm_success_url = "https://www.juku-cloud.com/confirmed"
+  else
+    config.default_confirm_success_url = "http://localhost:5173/confirmed"
+  end
 end
