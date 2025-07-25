@@ -35,6 +35,7 @@ ja:
             master: 大学院
           grade: 学年
           graduated_university: 卒業大学
+        one: ユーザー
         other: ユーザー
   devise:
     confirmations:
@@ -143,10 +144,18 @@ ja:
       unlocked: アカウントをロック解除しました。
   errors:
     messages:
+      blank: を入力してください。
+      invalid: 無効な値です。
+      taken: すでに使用されている値です。
+      too_short: '%{count}文字以上必要です。'
+      too_long: '%{count}文字以下にしてください。'
+      wrong_length: '%{count}文字でなければなりません。'
+      wrong_format: 正しい形式ではありません。
       already_confirmed: は既に登録済みです。ログインしてください。
       confirmation_period_expired: 'の期限が切れました。%{period} までに確認する必要があります。 新しくリクエストしてください。'
       expired: の有効期限が切れました。新しくリクエストしてください。
       not_found: は見つかりませんでした。
       not_locked: はロックされていません。
       not_saved:
+        one: '1 件のエラーが発生したため %{resource} は保存されませんでした。'
         other: '%{count} 件のエラーが発生したため %{resource} は保存されませんでした。'

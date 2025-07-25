@@ -38,14 +38,22 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  # メール送信時にエラーが起きた場合に例外を発生させる設定
+  config.action_mailer.raise_delivery_errors = true
 
-  # Make template changes take effect immediately.
+  # メールのビューキャッシュを無効化する設定
+  # 開発中は頻繁にメールテンプレートを修正するため、キャッシュをオフにして変更を即反映させる
   config.action_mailer.perform_caching = false
 
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+
+  # メール送信手段を letter_opener_web に切り替える設定
+  config.action_mailer.delivery_method = :letter_opener_web
+  # 実際に「送信処理」を行うかどうかのフラグ
+  config.action_mailer.perform_deliveries = true
+
+
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
