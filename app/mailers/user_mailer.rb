@@ -43,6 +43,9 @@ class UserMailer < ApplicationMailer
   def frontend_url(opts = {})
     # :redirect_url はフロントから渡されるconfirm_success_url
     return opts[:redirect_url] if opts[:redirect_url].present?
-    ENV["FRONTEND_URL"] if ENV["FRONTEND_URL"].present?
+    return ENV["FRONTEND_URL"] if ENV["FRONTEND_URL"].present?
+
+    # fallback to localhost for development
+    "http://localhost:5173"
   end
 end
