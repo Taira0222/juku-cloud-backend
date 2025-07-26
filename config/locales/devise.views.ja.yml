@@ -25,6 +25,18 @@ ja:
         unconfirmed_email: 未確認Eメール
         unlock_token: ロック解除用トークン
         updated_at: 更新日
+    errors:
+      models:
+        user:
+          attributes:
+            password_confirmation:
+              confirmation: とパスワードの入力が一致しません
+            email:
+              taken: は既に使用されています
+              invalid: の形式が正しくありません
+            password:
+              too_short: は%{count}文字以上で入力してください
+              blank: を入力してください
     models:
       user:
         attributes:

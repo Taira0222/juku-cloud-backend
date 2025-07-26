@@ -8,8 +8,8 @@ RSpec.describe UserMailer, type: :mailer do
       it "renders the confirmation instructions email" do
         token = Devise.token_generator.generate(User, :confirmation_token).first
         confirming_user = User.build(name: "Confirming User", email: "confirming@example.com")
-        # optsパラメータにredirect_urlを指定
-        opts = { redirect_url: "http://localhost:5173" }
+        # optsパラメータにconfirm_success_urlを指定
+        opts = { confirm_success_url: "http://localhost:5173/confirmed" }
         mail = UserMailer.confirmation_instructions(confirming_user, token, opts)
 
         expect(mail.subject).to eq("メールアドレスの確認をお願いします")
@@ -22,7 +22,7 @@ RSpec.describe UserMailer, type: :mailer do
           "以下のリンクをクリックしてください。URLは24時間有効です。",
           "メールアドレスを確認する",
           "ボタンが動作しない場合は、以下のURLをブラウザにコピーしてアクセスしてください。",
-          "localhost:5173/confirm?confirmation_token=#{token}"
+          "#{opts[:confirm_success_url]}/confirm?confirmation_token=#{token}"
         ]
         MAIL_BODY.each do |line|
           expect(mail.body.encoded).to include(line)
@@ -35,8 +35,8 @@ RSpec.describe UserMailer, type: :mailer do
     #   it "renders the email reset instructions email" do
     #     token = Devise.token_generator.generate(User, :confirmation_token).first
     #     user.update(unconfirmed_email: 'new_email@example.com')
-    #     # optsパラメータにredirect_urlを指定
-    #     opts = { redirect_url: "http://localhost:5173" }
+    #     # optsパラメータにconfirmed_success_urlを指定
+    #     opts = { confirm_success_url: "http://localhost:5173/confirmed" }
     #     mail = UserMailer.confirmation_instructions(user, token, opts)
 
     #     expect(mail.subject).to eq("新しいメールアドレスの確認をお願いします")
@@ -47,7 +47,7 @@ RSpec.describe UserMailer, type: :mailer do
     #       "新しいメールアドレスの確認",
     #       "メールアドレスの変更を確認するため、",
     #       "以下のリンクをクリックしてください。URLは24時間有効です。",
-    #       "localhost:5173/confirm?confirmation_token=#{token}"
+    #       "#{opts[:confirm_success_url]}/confirm?confirmation_token=#{token}"
     #     ]
     #     MAIL_BODY.each do |line|
     #       expect(mail.body.encoded).to include(line)
@@ -62,8 +62,8 @@ RSpec.describe UserMailer, type: :mailer do
   #   it "renders the reset password instructions email" do
   #     token = Devise.token_generator.generate(User, :reset_password_token).first
   #     user.update(reset_password_sent_at: Time.current)
-  #     # optsパラメータにredirect_urlを指定
-  #     opts = { redirect_url: "http://localhost:5173" }
+  #     # optsパラメータにconfirmed_success_urlを指定
+  #     opts = { confirm_success_url: "http://localhost:5173/confirmed" }
   #     mail = UserMailer.reset_password_instructions(user, token, opts)
 
   #     expect(mail.subject).to eq("パスワードの再設定をお願いします")
