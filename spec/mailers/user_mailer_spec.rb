@@ -35,7 +35,7 @@ RSpec.describe UserMailer, type: :mailer do
     #   it "renders the email reset instructions email" do
     #     token = Devise.token_generator.generate(User, :confirmation_token).first
     #     user.update(unconfirmed_email: 'new_email@example.com')
-    #     # optsパラメータにconfirmed_success_urlを指定
+    #     # optsパラメータにconfirme_success_urlを指定
     #     opts = { confirm_success_url: "http://localhost:5173/confirmed" }
     #     mail = UserMailer.confirmation_instructions(user, token, opts)
 
@@ -62,7 +62,7 @@ RSpec.describe UserMailer, type: :mailer do
   #   it "renders the reset password instructions email" do
   #     token = Devise.token_generator.generate(User, :reset_password_token).first
   #     user.update(reset_password_sent_at: Time.current)
-  #     # optsパラメータにconfirmed_success_urlを指定
+  #     # optsパラメータにconfirme_success_urlを指定
   #     opts = { confirm_success_url: "http://localhost:5173/confirmed" }
   #     mail = UserMailer.reset_password_instructions(user, token, opts)
 
