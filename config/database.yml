@@ -4,19 +4,18 @@ default: &default
   host: db
   username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
   password: <%= ENV.fetch("POSTGRES_PASSWORD", "password") %>
+  database: <%= ENV.fetch("POSTGRES_DB", "juku_cloud_backend_development") %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
 
 development:
   <<: *default
-  database: <%= ENV["POSTGRES_DB"] %>
 
 test:
   <<: *default
   database: juku_cloud_backend_test
 
 production:
-  primary: &primary_production
-    <<: *default
-    database: juku_cloud_backend_production
-    username: juku_cloud_backend
-    password: <%= ENV["JUKU_CLOUD_BACKEND_DATABASE_PASSWORD"] %>
+  <<: *default
+  database: juku_cloud_backend_production
+  username: juku_cloud_backend
+  password: <%= ENV["JUKU_CLOUD_BACKEND_DATABASE_PASSWORD"] %>
