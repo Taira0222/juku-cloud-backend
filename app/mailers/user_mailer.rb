@@ -5,7 +5,10 @@ class UserMailer < ApplicationMailer
   def confirmation_instructions(user, token, opts = {})
     @user = user
     @token = token
-    @confirmation_url = "#{frontend_url(opts)}/confirm?confirmation_token=#{token}"
+
+    # userインスタンスからconfirm_success_urlを取得
+    base_url = @user.confirm_success_url || frontend_url(opts)
+    @confirmation_url = "#{base_url}/confirm?confirmation_token=#{token}"
 
     # メールアドレス変更の場合は新しいアドレスに送信
     if @user.unconfirmed_email.present?
@@ -41,11 +44,8 @@ class UserMailer < ApplicationMailer
   private
 
   def frontend_url(opts = {})
-    # :redirect_url はフロントから渡されるconfirm_success_url
-    return opts[:redirect_url] if opts[:redirect_url].present?
+    return opts[:confirm_success_url] if opts[:confirm_success_url].present?
     return ENV["FRONTEND_URL"] if ENV["FRONTEND_URL"].present?
-
-    # fallback to localhost for development
-    "http://localhost:5173"
+    "http://localhost:5173/confirmed"
   end
 end

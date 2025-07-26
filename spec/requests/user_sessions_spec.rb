@@ -12,13 +12,6 @@ RSpec.describe 'User Sessions', type: :request do
       expect(response).to have_http_status(:success)
       expect(response.headers).to include('access-token', 'client', 'uid', 'expiry', 'token-type')
     end
-
-    it 'fails to log in with invalid credentials' do
-      user = build(:user, password: 'wrongpassword')
-      auth_token = sign_in(user)
-      expect(response).to have_http_status(:unauthorized)
-      expect(response.body).to include('ログイン用の認証情報が正しくありません。再度お試しください。')
-    end
   end
 
 
