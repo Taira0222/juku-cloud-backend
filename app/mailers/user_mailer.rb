@@ -7,7 +7,7 @@ class UserMailer < ApplicationMailer
     @token = token
 
     # userインスタンスからconfirm_success_urlを取得
-    base_url = @user.confirm_success_url || frontend_url(opts)
+    base_url = @user.confirm_success_url || opts[:confirm_success_url] || ENV["FRONTEND_URL"] || "http://localhost:5173/confirmed"
     @confirmation_url = "#{base_url}/confirm?confirmation_token=#{token}"
 
     # メールアドレス変更の場合は新しいアドレスに送信
