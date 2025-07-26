@@ -27,7 +27,7 @@
 #  sign_in_count          :integer          default(0), not null
 #  tokens                 :json
 #  uid                    :string           default(""), not null
-#  unconfirmed_email      :string           # メールアドレスの変更時に新しいメールアドレスを保存するためのカラム
+#  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -42,7 +42,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :trackable, :confirmable
   include DeviseTokenAuth::Concerns::User
-
+  attr_accessor :confirm_success_url
 
   validates :name, presence: true, length: { maximum: 50 }
   enum :role, { teacher: 0, admin: 1 }, suffix: true # _suffix: true にすることでほかのメソッドと衝突しないようにする(例: user.teacher? ではなく user.teacher_role? を使用)
