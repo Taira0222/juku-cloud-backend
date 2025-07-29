@@ -38,14 +38,31 @@
 #
 FactoryBot.define do
   factory :user do
-    name { "Test User" }
-    email { "test@example.com" }
+    sequence(:name) { |n| "Test User #{n}" }
+    sequence(:email) { |n| "test#{n}@example.com" }
     password { "password" }
-    password_confirmation { 'password' }
+    password_confirmation { "password" }
     confirmed_at { Time.current }
+    confirmation_sent_at { Time.current }
     role { :teacher }
     school_stage { :bachelor }
     grade { 1 }
     graduated_university { "University of Example" }
+
+    trait :unconfirmed do
+      confirmation_token { SecureRandom.hex(10) }
+      confirmed_at { nil }
+    end
+  end
+
+  factory :admin_user, parent: :user do
+    role { :admin }
+    school_stage { nil }
+    grade { nil }
+    graduated_university { nil }
+  end
+
+  # 利便性のためのファクトリエイリアス
+  factory :confirmed_user, parent: :user do
   end
 end
