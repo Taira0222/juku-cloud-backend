@@ -43,9 +43,32 @@ FactoryBot.define do
     password { "password" }
     password_confirmation { 'password' }
     confirmed_at { Time.current }
+    confirmation_sent_at { Time.current }
     role { :teacher }
     school_stage { :bachelor }
     grade { 1 }
     graduated_university { "University of Example" }
+
+    trait :admin do
+      confirmed_at { Time.current }
+      confirmation_sent_at { Time.current }
+      role { :admin }
+      school_stage { nil }
+      grade { nil }
+      graduated_university { nil }
+    end
+
+    trait :confirmed do
+      role { :admin }
+      confirmed_at { Time.current }
+      confirmation_sent_at { Time.current }
+    end
+
+    trait :unconfirmed do
+      role { :admin }
+      confirmation_token { 'test_confirm_token12345' }
+      confirmed_at { nil }
+      confirmation_sent_at { Time.current }
+    end
   end
 end
