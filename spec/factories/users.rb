@@ -50,8 +50,6 @@ FactoryBot.define do
     graduated_university { "University of Example" }
 
     trait :admin do
-      confirmed_at { Time.current }
-      confirmation_sent_at { Time.current }
       role { :admin }
       school_stage { nil }
       grade { nil }
