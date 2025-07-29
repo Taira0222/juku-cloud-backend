@@ -50,7 +50,7 @@ FactoryBot.define do
     graduated_university { "University of Example" }
 
     trait :unconfirmed do
-      confirmation_token { "test_confirm_token12345" }
+      confirmation_token { SecureRandom.hex(10) }
       confirmed_at { nil }
     end
   end
@@ -64,6 +64,5 @@ FactoryBot.define do
 
   # 利便性のためのファクトリエイリアス
   factory :confirmed_user, parent: :user do
-    email { "confirmed@example.com" }
   end
 end

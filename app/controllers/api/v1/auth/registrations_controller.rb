@@ -1,8 +1,7 @@
 class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsController
   def create
     super do |user|
-      # role はmass assignment されないようにbackend で定義
-      user.role = "admin"
+      user.role = :teacher
     end
   end
 
