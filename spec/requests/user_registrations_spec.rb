@@ -9,10 +9,10 @@ RSpec.describe 'User Registrations', type: :request do
       post '/api/v1/auth',
             params: { name: 'First User',
                       email: 'first@example.com',
-                      role: :admin,
                       password: 'password',
-                      password_confirmation: 'password',
-                      confirm_success_url: 'http://localhost:5173/confirmed' }
+                      password_confirmation: 'password'
+                    }
+      expect(confirmed_user.role).to eq('admin') # role が admin に設定されていることを確認
       mail = ActionMailer::Base.deliveries.last
       expect(response).to have_http_status(:success)
       expect(mail.to).to include('first@example.com')
@@ -33,10 +33,9 @@ RSpec.describe 'User Registrations', type: :request do
       post '/api/v1/auth',
             params: { name: 'Second User',
                       email: 'second@example.com',
-                      role: :admin,
                       password: 'password',
-                      password_confirmation: 'wrong_password',
-                      confirm_success_url: 'http://localhost:5173/confirmed' }
+                      password_confirmation: 'wrong_password'
+                    }
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
@@ -44,10 +43,9 @@ RSpec.describe 'User Registrations', type: :request do
       post '/api/v1/auth',
             params: { name: 'Third User',
                       email: 'test@example.com', # confirmed_user によってすでに使用されているメールアドレス
-                      role: :admin,
                       password: 'password',
-                      password_confirmation: 'password',
-                      confirm_success_url: 'http://localhost:5173/confirmed' }
+                      password_confirmation: 'password'
+                    }
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
@@ -55,10 +53,9 @@ RSpec.describe 'User Registrations', type: :request do
       post '/api/v1/auth',
             params: { name: 'Fourth User',
                       email: 'invalid_email',
-                      role: :admin,
                       password: 'password',
-                      password_confirmation: 'password',
-                      confirm_success_url: 'http://localhost:5173/confirmed' }
+                      password_confirmation: 'password'
+                    }
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
