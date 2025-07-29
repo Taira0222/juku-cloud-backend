@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>
-    <% if @user.unconfirmed_email.present? %>
+    <% if @resource.unconfirmed_email.present? %>
       新しいメールアドレスの確認
     <% else %>
       アカウント登録の確認
@@ -14,17 +14,17 @@
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; font-size: 16px;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
     <h2 style="color: #2c3e50;">
-      <% if @user.unconfirmed_email.present? %>
+      <% if @resource.unconfirmed_email.present? %>
         新しいメールアドレスの確認
       <% else %>
         アカウント登録の確認
       <% end %>
     </h2>
     
-    <p><%= @user.name %>さん、こんにちは！</p>
+    <p><%= @resource.name %>さん、こんにちは！</p>
     
     <p>
-      <% if @user.unconfirmed_email.present? %>
+      <% if @resource.unconfirmed_email.present? %>
         メールアドレスの変更を確認するため、
       <% else %>
         アカウント登録を完了するため、
@@ -33,18 +33,9 @@
     </p>
     
     <div style="margin: 30px 0; text-align: center;">
-      <a href="<%= @confirmation_url %>" 
-         style="background-color: #007bff; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-size: 16px;">
-        メールアドレスを確認する
-      </a>
+      <p><%= link_to 'メールアドレスを確認する', confirmation_url(@resource, confirmation_token: @token) %></p>
     </div>
     
-    <p style="color: #666; font-size: 14px;">
-      ボタンが動作しない場合は、以下のURLをブラウザにコピーしてアクセスしてください。
-    </p>
-    <p style="word-break: break-all; background-color: #f8f9fa; padding: 10px; border-radius: 3px;">
-      <%= @confirmation_url %>
-    </p>
   </div>
 </body>
 </html>
