@@ -41,7 +41,7 @@ RSpec.describe 'User Registrations', type: :request do
     it 'returns an error when email is already taken' do
       post '/api/v1/auth',
             params: { name: 'Third User',
-                      email: confirmed_user.email, 
+                      email: confirmed_user.email,
                       password: 'password',
                       password_confirmation: 'password'
                     }
