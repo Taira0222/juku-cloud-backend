@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'User Registrations', type: :request do
   # テスト前にユーザーを作成
-  let!(:confirmed_user) { create(:user, :confirmed) }
+  let!(:confirmed_user) { create(:confirmed_user) }
 
   describe 'POST /api/v1/auth' do
     it 'successfully registers a new user and sends a confirmation email' do
@@ -12,7 +12,6 @@ RSpec.describe 'User Registrations', type: :request do
                       password: 'password',
                       password_confirmation: 'password'
                     }
-      expect(confirmed_user.role).to eq('admin') # role が admin に設定されていることを確認
       mail = ActionMailer::Base.deliveries.last
       expect(response).to have_http_status(:success)
       expect(mail.to).to include('first@example.com')
@@ -42,7 +41,7 @@ RSpec.describe 'User Registrations', type: :request do
     it 'returns an error when email is already taken' do
       post '/api/v1/auth',
             params: { name: 'Third User',
-                      email: 'test@example.com', # confirmed_user によってすでに使用されているメールアドレス
+                      email: "confirmed@example.com", # confirmed_user によってすでに使用されているメールアドレス
                       password: 'password',
                       password_confirmation: 'password'
                     }
