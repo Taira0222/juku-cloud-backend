@@ -9,11 +9,11 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
   protected
     # 会員登録の際にparams を追加する場合
     def sign_up_params
-      permitted = params.permit(:name, :email, :password, :password_confirmation)
+      params.permit(:name, :email, :password, :password_confirmation)
     end
 
     # アカウント更新の際にparams を追加する場合
     def account_update_params
-      permitted = params.permit(:name, :grade, :school_stage, :graduated_university)
+      params.permit(:name, :grade, :school_stage, :graduated_university)
     end
 end
