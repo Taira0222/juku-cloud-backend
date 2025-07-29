@@ -60,11 +60,10 @@ FactoryBot.define do
     school_stage { nil }
     grade { nil }
     graduated_university { nil }
-  end  
+  end
 
   # 利便性のためのファクトリエイリアス
   factory :confirmed_user, parent: :user do
     email { "confirmed@example.com" }
   end
-
 end
