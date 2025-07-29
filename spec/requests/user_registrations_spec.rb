@@ -24,9 +24,9 @@ RSpec.describe 'User Registrations', type: :request do
         "以下のリンクをクリックしてください。URLは24時間有効です。",
         "メールアドレスを確認する"
       ]
-        MAIL_BODY.each do |line|
-          expect(mail.body.encoded).to include(line)
-        end
+      MAIL_BODY.each do |line|
+        expect(mail.body.encoded).to include(line)
+      end
     end
 
     it 'returns an error when passwords do not match' do
