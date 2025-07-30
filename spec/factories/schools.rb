@@ -20,8 +20,8 @@
 #
 FactoryBot.define do
   factory :school do
-    owner { nil }
-    name { "MyString" }
-    school_code { "MyString" }
+    association :owner, factory: :admin_user
+    name { "Test School" }
+    sequence(:school_code) { |n| "SCHOOL#{n.to_s.rjust(3, '0')}" }
   end
 end
