@@ -20,7 +20,11 @@
 #
 class School < ApplicationRecord
   belongs_to :owner, class_name: "User"
-  has_many :teachers, -> { where(role: :teacher) }, class_name: "User"
+  has_many :teachers, -> { where(role: :teacher) }, class_name: "User", foreign_key: :school_id
+  has_many :courses, dependent: :destroy
+
+  # Validations
+  validates :owner, presence: true
 
   validates :name, presence: true, length: { maximum: 255 }
   validates :school_code, presence: true, uniqueness: true
