@@ -43,6 +43,9 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :validatable, :trackable, :confirmable
   include DeviseTokenAuth::Concerns::User
   attr_accessor :confirm_success_url
+  has_one :owned_school, class_name: "School", foreign_key: :owner_id # Admin が所有する塾
+  belongs_to :school, optional: true # admin がschool_id 不要のため optional: true にする
+
 
   validates :name, presence: true, length: { maximum: 50 }
   enum :role, { teacher: 0, admin: 1 }, suffix: true # _suffix: true にすることでほかのメソッドと衝突しないようにする(例: user.teacher? ではなく user.teacher_role? を使用)
