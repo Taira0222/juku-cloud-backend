@@ -30,19 +30,28 @@
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  school_id              :bigint
 #
 # Indexes
 #
 #  index_users_on_confirmation_token    (confirmation_token) UNIQUE
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_school_id             (school_id)
 #  index_users_on_uid_and_provider      (uid,provider) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (school_id => schools.id)
 #
 class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :trackable, :confirmable
   include DeviseTokenAuth::Concerns::User
   attr_accessor :confirm_success_url
+  has_one :owned_school, class_name: "School", foreign_key: :owner_id # Admin が所有する塾
+  belongs_to :school, optional: true # admin がschool_id 不要のため optional: true にする
+
 
   validates :name, presence: true, length: { maximum: 50 }
   enum :role, { teacher: 0, admin: 1 }, suffix: true # _suffix: true にすることでほかのメソッドと衝突しないようにする(例: user.teacher? ではなく user.teacher_role? を使用)

@@ -28,13 +28,19 @@
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  school_id              :bigint
 #
 # Indexes
 #
 #  index_users_on_confirmation_token    (confirmation_token) UNIQUE
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_school_id             (school_id)
 #  index_users_on_uid_and_provider      (uid,provider) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (school_id => schools.id)
 #
 FactoryBot.define do
   factory :user do
@@ -44,6 +50,7 @@ FactoryBot.define do
     password_confirmation { "password" }
     confirmed_at { Time.current }
     confirmation_sent_at { Time.current }
+    association :school # school との関連を設定
     role { :teacher }
     school_stage { :bachelor }
     grade { 1 }
@@ -57,6 +64,7 @@ FactoryBot.define do
 
   factory :admin_user, parent: :user do
     role { :admin }
+    school { nil } # 管理者は学校に属さない
     school_stage { nil }
     grade { nil }
     graduated_university { nil }
