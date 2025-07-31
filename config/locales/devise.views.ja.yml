@@ -16,7 +16,7 @@ ja:
         last_sign_in_ip: 最終ログインIPアドレス
         locked_at: ロック時刻
         password: パスワード
-        password_confirmation: パスワード（確認用）
+        password_confirmation: パスワード確認
         remember_created_at: ログイン記憶時刻
         remember_me: ログインを記憶する
         reset_password_sent_at: パスワードリセット送信時刻
@@ -25,6 +25,7 @@ ja:
         unconfirmed_email: 未確認Eメール
         unlock_token: ロック解除用トークン
         updated_at: 更新日
+        school_code: 学校コード
     errors:
       models:
         user:
@@ -37,6 +38,9 @@ ja:
             password:
               too_short: は%{count}文字以上で入力してください
               blank: を入力してください
+            school_code:
+              invalid: が無効です。
+
     models:
       user:
         attributes:
@@ -49,6 +53,12 @@ ja:
           graduated_university: 卒業大学
         one: ユーザー
         other: ユーザー
+      school:
+        attributes:
+          name: 学校名
+          school_code: 学校コード
+        one: 学校
+        other: 学校
   devise:
     confirmations:
       confirmed: メールアドレスが確認できました。
