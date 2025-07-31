@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe 'User Registrations', type: :request do
   # テスト前にユーザーを作成
   let!(:confirmed_user) { create(:confirmed_user) }
+  let!(:school) { create(:school, school_code: 'SCHOOL001') }
 
   describe 'POST /api/v1/auth' do
     it 'successfully registers a new user and sends a confirmation email' do
@@ -10,7 +11,8 @@ RSpec.describe 'User Registrations', type: :request do
             params: { name: 'First User',
                       email: 'first@example.com',
                       password: 'password',
-                      password_confirmation: 'password'
+                      password_confirmation: 'password',
+                      school_code: 'SCHOOL001'
                     }
       mail = ActionMailer::Base.deliveries.last
       expect(response).to have_http_status(:success)
@@ -33,7 +35,8 @@ RSpec.describe 'User Registrations', type: :request do
             params: { name: 'Second User',
                       email: 'second@example.com',
                       password: 'password',
-                      password_confirmation: 'wrong_password'
+                      password_confirmation: 'wrong_password',
+                      school_code: 'SCHOOL001'
                     }
       expect(response).to have_http_status(:unprocessable_entity)
     end
@@ -43,7 +46,8 @@ RSpec.describe 'User Registrations', type: :request do
             params: { name: 'Third User',
                       email: confirmed_user.email,
                       password: 'password',
-                      password_confirmation: 'password'
+                      password_confirmation: 'password',
+                      school_code: 'SCHOOL001'
                     }
       expect(response).to have_http_status(:unprocessable_entity)
     end
@@ -53,7 +57,19 @@ RSpec.describe 'User Registrations', type: :request do
             params: { name: 'Fourth User',
                       email: 'invalid_email',
                       password: 'password',
-                      password_confirmation: 'password'
+                      password_confirmation: 'password',
+                      school_code: 'SCHOOL001'
+                    }
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'returns an error when school_code is invalid' do
+      post '/api/v1/auth',
+            params: { name: 'Fifth User',
+                      email: 'fifth@example.com',
+                      password: 'password',
+                      password_confirmation: 'password',
+                      school_code: 'INVALID_CODE'
                     }
       expect(response).to have_http_status(:unprocessable_entity)
     end
