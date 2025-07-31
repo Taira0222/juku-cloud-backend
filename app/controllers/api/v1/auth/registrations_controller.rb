@@ -18,11 +18,6 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
       params.permit(:name, :email, :password, :password_confirmation)
     end
 
-  # アカウント更新の際にparams を追加する場合
-  # def account_update_params
-  #   params.permit(:name, :grade, :school_stage, :graduated_university)
-  # end
-
   private
     # school_code をparamsから抽出
     def extract_school_code
@@ -35,7 +30,8 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
       return if @school
 
       @resource = resource_class.new(sign_up_params)
-      @resource.valid?  # ここでバリデーションを実行
+      # school_codeエラー追加前にDeviseの標準バリデーションを実行
+      @resource.valid?  
 
       @resource.errors.add(:school_code, I18n.t("activerecord.errors.models.user.attributes.school_code.invalid"))
       render_create_error
