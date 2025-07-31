@@ -126,4 +126,14 @@ RSpec.describe User, type: :model do
       expect { build(:user, school_stage: :invalid_stage) }.to raise_error(ArgumentError)
     end
   end
+
+  describe "associations" do
+    let(:association_owned_school) { User.reflect_on_association(:owned_school) }
+    let(:association_school) { User.reflect_on_association(:school) }
+
+    it { expect(association_owned_school.macro).to eq :has_one }
+    it { expect(association_owned_school.class_name).to eq 'School' }
+    it { expect(association_school.macro).to eq :belongs_to }
+    it { expect(association_school.class_name).to eq 'School' }
+  end
 end

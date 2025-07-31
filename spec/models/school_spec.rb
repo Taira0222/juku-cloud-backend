@@ -21,5 +21,51 @@
 require 'rails_helper'
 
 RSpec.describe School, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'validations' do
+    let(:school) { build(:school) }
+
+    it 'is valid with valid attributes' do
+      expect(school).to be_valid
+    end
+
+    it 'is not valid without a name' do
+      school.name = nil
+      expect(school).not_to be_valid
+    end
+
+    it 'is valid with a name less than 255 characters' do
+      school.name = 'a' * 254
+      expect(school).to be_valid
+    end
+
+    it 'is not valid with a name longer than 255 characters' do
+      school.name = 'a' * 256
+      expect(school).not_to be_valid
+    end
+
+    it 'is not valid without a school_code' do
+      school.school_code = nil
+      expect(school).not_to be_valid
+    end
+
+    it 'is not valid with a duplicate school_code' do
+      create(:school, school_code: 'SCHOOL001')
+      school.school_code = 'SCHOOL001'
+      expect(school).not_to be_valid
+    end
+
+    it 'is not valid without an owner' do
+      school.owner = nil
+      expect(school).not_to be_valid
+    end
+  end
+
+  describe 'associations' do
+    let(:association_owner) { School.reflect_on_association(:owner) }
+    let(:association_teachers) { School.reflect_on_association(:teachers) }
+    it { expect(association_owner.macro).to eq :belongs_to }
+    it { expect(association_owner.class_name).to eq 'User' }
+    it { expect(association_teachers.macro).to eq :has_many }
+    it { expect(association_teachers.class_name).to eq 'User' }
+  end
 end
