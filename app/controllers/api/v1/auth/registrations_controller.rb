@@ -31,7 +31,7 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
 
       @resource = resource_class.new(sign_up_params)
       # school_codeエラー追加前にDeviseの標準バリデーションを実行
-      @resource.valid?  
+      @resource.valid?
 
       @resource.errors.add(:school_code, I18n.t("activerecord.errors.models.user.attributes.school_code.invalid"))
       render_create_error
