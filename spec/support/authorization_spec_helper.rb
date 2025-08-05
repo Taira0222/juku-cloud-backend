@@ -1,6 +1,6 @@
 module AuthorizationSpecHelper
   def sign_in(user)
-    post "/api/v1/auth/sign_in", params: { email: user.email, password: "password" }, as: :json
+    post "/api/v1/auth/sign_in", params: { email: user.email, password: user.password }, as: :json
     response.headers.slice("access-token", "client", "uid", "expiry", "token-type")
   end
 

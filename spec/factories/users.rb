@@ -63,14 +63,12 @@ FactoryBot.define do
   end
 
   factory :admin_user, parent: :user do
+    sequence(:name) { |n| "Admin User #{n}" }
+    sequence(:email) { |n| "admin#{n}@example.com" }
     role { :admin }
     school { nil } # 管理者は学校に属さない
     school_stage { nil }
     grade { nil }
     graduated_university { nil }
-  end
-
-  # 利便性のためのファクトリエイリアス
-  factory :confirmed_user, parent: :user do
   end
 end
