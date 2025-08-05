@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'User Registrations', type: :request do
   # テスト前にユーザーを作成
-  let!(:confirmed_user) { create(:confirmed_user) }
+  let!(:confirmed_user) { create(:user) }
   let!(:school) { create(:school, school_code: 'SCHOOL001') }
 
   describe 'POST /api/v1/auth' do
