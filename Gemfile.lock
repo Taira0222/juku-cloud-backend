@@ -390,7 +390,7 @@ DEPENDENCIES
   devise_token_auth (~> 1.2)
   dotenv-rails (~> 2.1)
   factory_bot_rails (~> 6.0)
-  faker (~> 3.0)
+  faker (~> 3.5)
   kamal
   letter_opener_web (~> 3.0)
   pg (~> 1.1)

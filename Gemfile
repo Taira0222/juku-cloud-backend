@@ -39,7 +39,8 @@ gem "devise_token_auth", "~> 1.2"
 # use devise il18n for internationalization
 gem "devise-i18n", "~> 1.0"
 
-
+# ダミーデータを生成するためのgem
+gem "faker", "~> 3.5"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -57,8 +58,6 @@ group :development, :test do
   # Use Factory Bot for setting up Ruby objects as test data 今まで使用してきたFixtureの代わり
   gem "factory_bot_rails", "~> 6.0"
 
-  # Use Faker for generating fake data
-  gem "faker", "~> 3.0"
 
   # Use byebug for debugging これがあると、デバック最中にコードが途中で止まる
   gem "byebug", platforms: %i[ mri windows ]
