@@ -19,10 +19,4 @@ module RequestSpecHelper
       send(method, path, params: params, headers: headers, **options)
     end
   end
-
-  # 認証が必要なエンドポイントのテスト用ヘルパー
-  # def expect_authentication_required(path, method: :get, params: {})
-  #   send(method, path, params: params)
-  #   expect(response).to have_http_status(:unauthorized)
-  # end
 end
