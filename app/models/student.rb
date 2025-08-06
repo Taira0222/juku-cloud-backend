@@ -9,7 +9,7 @@
 #  left_on        :date
 #  name           :string           not null
 #  school_stage   :integer          not null
-#  status         :integer          default(0), not null
+#  status         :integer          default("active"), not null
 #  student_code   :string           not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null

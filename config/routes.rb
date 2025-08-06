@@ -6,6 +6,7 @@ Rails.application.routes.draw do
         registrations: "api/v1/auth/registrations"
       }
       resources :teachers
+      resources :students
       mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
     end
   end
