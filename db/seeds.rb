@@ -30,7 +30,7 @@ School.find_or_create_by!(school_code: "DEF123") do |school|
 end
 
 
-# First School と Second School に属するteacherをそれぞれ10人ずつ作成
+# First School と Second School に属するteacher をそれぞれ10人ずつ作成
 10.times do |i|
   User.find_or_create_by!(email: "teacher#{i + 1}@example.com") do |teacher|
     teacher.name = "Teacher #{i + 1}"
@@ -52,3 +52,44 @@ end
     teacher.role = :teacher
   end
 end
+
+STUDENT_STATUSES = [ :active, :graduated, :quit, :paused ] # 0: active, 1: graduated, 2: quit, 3: paused
+SCHOOL_STAGES = [ :elementary_school, :junior_high_school, :high_school ] # 0: elementary_school, 1: junior_high_school, 2: high_school
+GRADES = [ 1, 2, 3 ] # 1 ~ 3 年生
+
+# 生徒を作成するメソッド
+def create_students_for_teacher(teachers, school_code, num_students = 2)
+  teachers.each do |teacher|
+    num_students.times do |i|
+      status = STUDENT_STATUSES[i % STUDENT_STATUSES.size]
+      school_stage = SCHOOL_STAGES[i % SCHOOL_STAGES.size]
+      grade = GRADES[i % GRADES.size]
+
+      student = Student.create!(
+        name: Faker::Name.name,
+        school: School.find_by!(school_code: school_code),
+        status: status,
+        joined_on: Time.current,
+        school_stage: school_stage,
+        grade: grade,
+        desired_school: Faker::University.name,
+      )
+
+      # 中間テーブル
+      TeachingAssignment.find_or_create_by!(
+        user: teacher,
+        student: student,
+      ) do |assignment|
+        assignment.started_on = Time.current
+        assignment.teaching_status = true
+      end
+    end
+  end
+end
+
+# 教師(10人)に属する生徒を2人ずつ作成
+first_teachers = User.where(role: :teacher, school: School.find_by!(school_code: "ABC123"))
+second_teachers = User.where(role: :teacher, school: School.find_by!(school_code: "DEF123"))
+
+create_students_for_teacher(first_teachers, "ABC123")
+create_students_for_teacher(second_teachers, "DEF123")
