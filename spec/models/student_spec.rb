@@ -50,7 +50,7 @@ RSpec.describe Student, type: :model do
       expect(student).not_to be_valid
     end
 
-     it 'is not valid without a name' do
+    it 'is not valid without a name' do
       student.name = nil
       expect(student).not_to be_valid
     end
@@ -93,7 +93,7 @@ RSpec.describe Student, type: :model do
     end
   end
 
- describe 'student_code auto-generation' do
+  describe 'student_code auto-generation' do
     it 'automatically generates sequential student_code when creating students' do
       # 既存データをクリア
       Student.destroy_all

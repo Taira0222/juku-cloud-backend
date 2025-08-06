@@ -57,8 +57,10 @@ class User < ActiveRecord::Base
   has_many :teaching_assignments, dependent: :destroy
   has_many :students, through: :teaching_assignments
 
-  enum :role, { teacher: 0, admin: 1 }
-  enum :school_stage, { bachelor: 0, master: 1 }
+  # user.teacher_role? で判定できるようにする
+  enum :role, { teacher: 0, admin: 1 }, suffix: true
+  # user.bachelor_school_stage? で判定できるようにする
+  enum :school_stage, { bachelor: 0, master: 1 }, suffix: true
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :role, presence: true

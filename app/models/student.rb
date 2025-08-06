@@ -44,18 +44,35 @@ class Student < ApplicationRecord
   # 退塾日は入塾日以降であることを確認する 自作validate なので単数形
   validate :left_on_after_joined_on
 
-  before_create :set_student_code
+  before_create :set_student_code_with_retry
 
   private
 
-  def set_student_code
-    last_code = Student.order(:created_at).last&.student_code
-    last_number = last_code ? last_code.delete_prefix("S").to_i : 0
-    self.student_code = format("S%04d", last_number + 1)
-  end
+    def set_student_code_with_retry
+      max_retries = 5
+      retries = 0
+      begin
+        set_student_code
+      # Unique の制約に違反した場合、リトライする
+      rescue ActiveRecord::RecordNotUnique
+        retries += 1
+        if retries < max_retries
+          reload # 最新のDB状態を取得するために再読み込み
+          retry
+        else
+          raise # 再びRecordNotUnique 例外を外部に投げる
+        end
+      end
+    end
 
-  def left_on_after_joined_on
-    return if left_on.blank? || joined_on.blank?
-    errors.add(:left_on, "は入塾日以降の日付である必要があります") if left_on < joined_on
-  end
+    def set_student_code
+      last_code = Student.maximum(:student_code)
+      last_number = last_code ? last_code.delete_prefix("S").to_i : 0
+      self.student_code = format("S%04d", last_number + 1)
+    end
+
+    def left_on_after_joined_on
+      return if left_on.blank? || joined_on.blank?
+      errors.add(:left_on, "は入塾日以降の日付である必要があります") if left_on < joined_on
+    end
 end
