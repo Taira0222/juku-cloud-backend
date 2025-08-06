@@ -53,62 +53,43 @@ end
   end
 end
 
-# First School の教師(10人)に属する生徒を2人ずつ作成
-first_teachers = User.where(role: :teacher, school: School.find_by!(school_code: "ABC123"))
+STUDENT_STATUSES = [ :active, :graduated, :quit, :paused ] # 0: active, 1: graduated, 2: quit, 3: paused
+SCHOOL_STAGES = [ :elementary_school, :junior_high_school, :high_school ] # 0: elementary_school, 1: junior_high_school, 2: high_school
+GRADES = [ 1, 2, 3 ] # 1 ~ 3 年生
 
-first_teachers.each do |teacher|
-  2.times do |i|
-    status = i % 4 # 0: active, 1: graduated, 2: quit, 3: paused
-    school_stage = i % 3 # 0: elementary, 1: junior_high_school, 2: high_school
-    grade = (i % 3) + 1 # 1 ~ 3 年生
+# 生徒を作成するメソッド
+def create_students_for_teacher(teachers, school_code, num_students = 2)
+  teachers.each do |teacher|
+    num_students.times do |i|
+      status = STUDENT_STATUSES[i % STUDENT_STATUSES.size]
+      school_stage = SCHOOL_STAGES[i % SCHOOL_STAGES.size]
+      grade = GRADES[i % GRADES.size]
 
-    student = Student.create!(
-      name: Faker::Name.name,
-      school: School.find_by!(school_code: "ABC123"),
-      status: status,
-      joined_on: Time.current,
-      school_stage: school_stage,
-      grade: grade,
-      desired_school: Faker::University.name,
-    )
+      student = Student.create!(
+        name: Faker::Name.name,
+        school: School.find_by!(school_code: school_code),
+        status: status,
+        joined_on: Time.current,
+        school_stage: school_stage,
+        grade: grade,
+        desired_school: Faker::University.name,
+      )
 
-    # 中間テーブル
-    TeachingAssignment.find_or_create_by!(
-      user: teacher,
-      student: student,
-    ) do |assignment|
-      assignment.started_on = Time.current
-      assignment.teaching_status = true
+      # 中間テーブル
+      TeachingAssignment.find_or_create_by!(
+        user: teacher,
+        student: student,
+      ) do |assignment|
+        assignment.started_on = Time.current
+        assignment.teaching_status = true
+      end
     end
   end
 end
 
-# Second School の教師(10人)に属する生徒を2人ずつ作成
+# 教師(10人)に属する生徒を2人ずつ作成
+first_teachers = User.where(role: :teacher, school: School.find_by!(school_code: "ABC123"))
 second_teachers = User.where(role: :teacher, school: School.find_by!(school_code: "DEF123"))
 
-second_teachers.each do |teacher|
-  2.times do |i|
-    status = i % 4 # 0: active, 1: graduated, 2: quit, 3: paused
-    school_stage = i % 3 # 0: elementary, 1: junior_high_school, 2: high_school
-    grade = (i % 3) + 1 # 1 ~ 3 年生
-
-    student = Student.create!(
-      name: Faker::Name.name,
-      school: School.find_by!(school_code: "DEF123"),
-      status: status,
-      joined_on: Time.current,
-      school_stage: school_stage,
-      grade: grade,
-      desired_school: Faker::University.name,
-    )
-
-    # 中間テーブル
-    TeachingAssignment.find_or_create_by!(
-      user: teacher,
-      student: student,
-    ) do |assignment|
-      assignment.started_on = Time.current
-      assignment.teaching_status = true
-    end
-  end
-end
+create_students_for_teacher(first_teachers, "ABC123")
+create_students_for_teacher(second_teachers, "DEF123")
