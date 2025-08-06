@@ -31,7 +31,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Test Student #{n}" }
     # status はactive
     status { 0 }
-    joined_on { Time.current }
+    joined_on { Date.current }
     left_on { nil }
     # school_stage は中学生
     school_stage { 1 }
