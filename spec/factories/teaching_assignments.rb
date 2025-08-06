@@ -24,7 +24,7 @@ FactoryBot.define do
   factory :teaching_assignment do
     association :user
     association :student
-    started_on { Time.current }
+    started_on { Date.current }
     teaching_status { true }
   end
 end

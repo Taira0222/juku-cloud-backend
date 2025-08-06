@@ -36,17 +36,21 @@ RSpec.describe Student, type: :model do
 
     it 'is not valid without a student_code' do
       student.student_code = nil
+      allow(student).to receive(:set_student_code) # コールバックを無効化
       expect(student).not_to be_valid
     end
 
     it 'is not valid with a student_code with wrong format' do
       student.student_code = '12345' # Assuming the format requires alphanumeric characters
+      allow(student).to receive(:set_student_code) # コールバックを無効化
       expect(student).not_to be_valid
     end
 
     it 'is not valid with a duplicate student_code' do
       create(:student, student_code: 'S0001') # DB に保存
+      allow(student).to receive(:set_student_code) # コールバックを無効化
       student.student_code = 'S0001' # メモリのstudent にS0001を設定
+
       expect(student).not_to be_valid
     end
 
