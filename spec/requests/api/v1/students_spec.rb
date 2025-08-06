@@ -5,10 +5,11 @@ RSpec.describe "Api::V1::Students", type: :request do
     let!(:admin_user) { create(:admin_user) }
     let!(:school) { create(:school, owner: admin_user) }
     let!(:teacher) { create(:user, school: school) }
-    let!(:teaching_assignment1) { create(:teaching_assignment, user: teacher, student: student1) }
-    let!(:teaching_assignment2) { create(:teaching_assignment, user: teacher, student: student2) }
     let!(:student1) { create(:student, school: school) }
     let!(:student2) { create(:student, school: school) }
+    let!(:teaching_assignment1) { create(:teaching_assignment, user: teacher, student: student1) }
+    let!(:teaching_assignment2) { create(:teaching_assignment, user: teacher, student: student2) }
+
 
     it "returns a successful response" do
       get_with_auth(api_v1_students_path, admin_user)
@@ -21,7 +22,7 @@ RSpec.describe "Api::V1::Students", type: :request do
       expect(response).to have_http_status(:not_found)
     end
 
-    it "returns all studnents for the school" do
+    it "returns all students for the school" do
       get_with_auth(api_v1_students_path, admin_user)
       # JSON を ハッシュに変換
       json_response = JSON.parse(response.body)

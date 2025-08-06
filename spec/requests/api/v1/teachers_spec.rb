@@ -7,12 +7,11 @@ RSpec.describe "Api::V1::Teachers", type: :request do
     let!(:school) { create(:school, owner: admin_user) }
     let!(:teacher1) { create(:user, school: school) }
     let!(:teacher2) { create(:user, school: school) }
+    let!(:student1) { create(:student, school: school) }
+    let!(:student2) { create(:student, school: school) }
     let!(:teaching_assignment1) { create(:teaching_assignment, user: teacher1, student: student1) }
     let!(:teaching_assignment2) { create(:teaching_assignment, user: teacher2, student: student2) }
     let!(:teaching_assignment_admin) { create(:teaching_assignment, user: admin_user, student: student1) }
-    let!(:student1) { create(:student, school: school) }
-    let!(:student2) { create(:student, school: school) }
-
 
     context "signed in user" do
       it "returns a successful response" do
@@ -34,9 +33,8 @@ RSpec.describe "Api::V1::Teachers", type: :request do
 
         expect(json_response['teachers'].size).to eq(2)
         expect(json_response['teachers'].map { |t| t['id'] }).to include(teacher1.id, teacher2.id)
-        # map を2回使うと、[[student1.id], [student2.id]] のような配列ができてinckudeがうまくいかないので、flat_mapを使う
+        # map を2回使うと、[[student1.id], [student2.id]] のような配列ができてincludeがうまくいかないので、flat_mapを使う
         expect(json_response['teachers'].flat_map { |t| t['students'].map { |s| s['id'] } }).to include(student1.id, student2.id)
-        expect(json_response['teachers'].map { |t| t['id'] }).to include(teacher1.id, teacher2.id)
       end
 
       it "does not return teachers from other schools" do
