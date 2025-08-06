@@ -128,12 +128,47 @@ RSpec.describe User, type: :model do
   end
 
   describe "associations" do
-    let(:association_owned_school) { User.reflect_on_association(:owned_school) }
-    let(:association_school) { User.reflect_on_association(:school) }
+    let(:association) do
+      described_class.reflect_on_association(target)
+    end
 
-    it { expect(association_owned_school.macro).to eq :has_one }
-    it { expect(association_owned_school.class_name).to eq 'School' }
-    it { expect(association_school.macro).to eq :belongs_to }
-    it { expect(association_school.class_name).to eq 'School' }
+    context "school association" do
+      let(:target) { :school }
+
+      it "belongs to school" do
+        expect(association.macro).to eq :belongs_to
+        expect(association.class_name).to eq 'School'
+        expect(association.options[:optional]).to eq true
+      end
+    end
+
+    context "owned_school association" do
+      let(:target) { :owned_school }
+
+      it "has one owned school" do
+        expect(association.macro).to eq :has_one
+        expect(association.class_name).to eq 'School'
+        expect(association.foreign_key).to eq 'owner_id'
+      end
+    end
+
+    context "teaching_assignments association" do
+      let(:target) { :teaching_assignments }
+
+      it "has many teaching assignments" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq 'TeachingAssignment'
+        expect(association.options[:dependent]).to eq :destroy
+      end
+    end
+
+    context "students association" do
+      let(:target) { :students }
+
+      it "has many students" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq 'Student'
+      end
+    end
   end
 end
