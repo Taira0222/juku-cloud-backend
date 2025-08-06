@@ -9,7 +9,7 @@
 #  left_on        :date
 #  name           :string           not null
 #  school_stage   :integer          not null
-#  status         :integer          default(0), not null
+#  status         :integer          default("active"), not null
 #  student_code   :string           not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
@@ -27,7 +27,6 @@
 FactoryBot.define do
   factory :student do
     association :school
-    sequence(:student_code) { |n| "S#{format('%04d', n)}" }
     sequence(:name) { |n| "Test Student #{n}" }
     # status はactive
     status { 0 }

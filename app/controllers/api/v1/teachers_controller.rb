@@ -8,11 +8,11 @@ class Api::V1::TeachersController < ApplicationController
       render json: { error: "学校が見つかりません" }, status: :not_found
       return
     end
-    @teachers = User.where(school: @school)
+    @teachers = User.eager_load(:students).where(school: @school)
     # current_user も講師を務める可能性があるので含める
     render json: {
-      current_user: @current_user,
-      teachers: @teachers
+      current_user: @current_user.as_json(include: :students),
+      teachers: @teachers.as_json(include: :students)
     }, status: :ok
   end
 end
