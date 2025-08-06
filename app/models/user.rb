@@ -49,12 +49,19 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :validatable, :trackable, :confirmable
   include DeviseTokenAuth::Concerns::User
   attr_accessor :confirm_success_url
-  has_one :owned_school, class_name: "School", foreign_key: :owner_id # Admin が所有する塾
-  belongs_to :school, optional: true # admin がschool_id 不要のため optional: true にする
+  # user(role:admin):school 1:1
+  has_one :owned_school, class_name: "School", foreign_key: :owner_id
+  # admin がschool_id = nil なので、optional: true にする
+  belongs_to :school, optional: true
+  # User:Student N:N
+  has_many :teaching_assignments, dependent: :destroy
+  has_many :students, through: :teaching_assignments
 
+  # user.teacher_role? で判定できるようにする
+  enum :role, { teacher: 0, admin: 1 }, suffix: true
+  # user.bachelor_school_stage? で判定できるようにする
+  enum :school_stage, { bachelor: 0, master: 1 }, suffix: true
 
   validates :name, presence: true, length: { maximum: 50 }
-  enum :role, { teacher: 0, admin: 1 }, suffix: true # _suffix: true にすることでほかのメソッドと衝突しないようにする(例: user.teacher? ではなく user.teacher_role? を使用)
   validates :role, presence: true
-  enum :school_stage, { bachelor: 0, master: 1 }, suffix: true # _suffix: true にすることでほかのメソッドと衝突しないようにする(例: user.bachelor? ではなく user.bachelor_school_stage? を使用)
 end
