@@ -42,6 +42,5 @@ RSpec.describe UserClassSubject, type: :model do
         expect(association.class_name).to eq 'ClassSubject'
       end
     end
-
   end
 end

@@ -6,6 +6,6 @@ class CreateStudentAvailableDays < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    add_index :student_available_days, [:student_id, :available_day_id], unique: true
+    add_index :student_available_days, [ :student_id, :available_day_id ], unique: true
   end
 end

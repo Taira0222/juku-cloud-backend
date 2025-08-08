@@ -23,7 +23,7 @@ FactoryBot.define do
   factory :user_class_subject do
     association :user
     association :class_subject
-    
+
     trait :math_subject do
       association :japanese, factory: :class_subject
     end
