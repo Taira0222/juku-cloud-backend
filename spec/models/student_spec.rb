@@ -147,5 +147,22 @@ RSpec.describe Student, type: :model do
         expect(association.class_name).to eq 'User'
       end
     end
+
+    context 'student_class_subjects association' do
+      let(:target) { :student_class_subjects }
+      it "has many student_class_subjects" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq 'StudentClassSubject'
+        expect(association.options[:dependent]).to eq :destroy
+      end
+    end
+
+    context 'class_subjects association' do
+      let(:target) { :class_subjects }
+      it "has many class_subjects" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq 'ClassSubject'
+      end
+    end
   end
 end

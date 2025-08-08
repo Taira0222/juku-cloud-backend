@@ -12,7 +12,7 @@
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string
 #  email                  :string           default(""), not null
-#  employment_status      :integer          default(0), not null
+#  employment_status      :integer          default("active"), not null
 #  encrypted_password     :string           default(""), not null
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string
@@ -54,6 +54,9 @@ class User < ActiveRecord::Base
   # User:Student N:N
   has_many :teaching_assignments, dependent: :destroy
   has_many :students, through: :teaching_assignments
+  # User:ClassSubject N:N
+  has_many :user_class_subjects, dependent: :destroy
+  has_many :class_subjects, through: :user_class_subjects
 
   # user.teacher_role? で判定できるようにする
   enum :role, { teacher: 0, admin: 1 }, suffix: true

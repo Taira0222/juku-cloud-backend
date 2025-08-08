@@ -10,7 +10,7 @@
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string
 #  email                  :string           default(""), not null
-#  employment_status      :integer          default(0), not null
+#  employment_status      :integer          default("active"), not null
 #  encrypted_password     :string           default(""), not null
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string
@@ -161,5 +161,25 @@ RSpec.describe User, type: :model do
         expect(association.class_name).to eq 'Student'
       end
     end
+
+    context "user_class_subjects association" do
+      let(:target) { :user_class_subjects }
+
+      it "has many user_class_subjects" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq 'UserClassSubject'
+        expect(association.options[:dependent]).to eq :destroy
+      end
+    end
+
+    context "class_subjects association" do
+      let(:target) { :class_subjects }
+
+      it "has many class_subjects" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq 'ClassSubject'
+      end
+    end
+    
   end
 end

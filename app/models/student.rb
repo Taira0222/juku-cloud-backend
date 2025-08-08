@@ -26,8 +26,12 @@
 #
 class Student < ApplicationRecord
   belongs_to :school
+  # User:Student N:N
   has_many :teaching_assignments, dependent: :destroy
   has_many :users, through: :teaching_assignments
+  # Student:ClassSubject N:N
+  has_many :student_class_subjects, dependent: :destroy
+  has_many :class_subjects, through: :student_class_subjects
 
   enum :status, { active: 0, graduated: 1, quit: 2, paused: 3 }
   enum :school_stage, { elementary_school: 0, junior_high_school: 1, high_school: 2 }

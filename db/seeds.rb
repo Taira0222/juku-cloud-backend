@@ -1,3 +1,10 @@
+# 教科が9科目
+CLASS_SUBJECTS_COUNT = 9
+# 教科を作成
+CLASS_SUBJECTS_COUNT.times do |i|
+  ClassSubject.find_or_create_by!(name: i)
+end
+
 # 重複作成を防ぐためにfind_or_create_by!を使用
 admin = User.find_or_create_by!(email: "admin@example.com") do |user|
   user.name = "Admin User"
