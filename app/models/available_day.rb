@@ -9,7 +9,7 @@
 #
 class AvailableDay < ApplicationRecord
   # User:AvailableDay N:N
-  has_many :user_available_days, dependent: :destroy
+  has_many :user_available_days, class_name: "Availability::UserLink", dependent: :destroy
   has_many :users, through: :user_available_days
   # Student:AvailableDay N:N
   has_many :student_available_days, dependent: :destroy

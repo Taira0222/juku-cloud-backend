@@ -19,9 +19,28 @@
 #  fk_rails_...  (available_day_id => available_days.id)
 #  fk_rails_...  (user_id => users.id)
 #
-FactoryBot.define do
-  factory :user_available_day do
-    association :user
-    association :available_day
+require 'rails_helper'
+
+RSpec.describe Availability::UserLink, type: :model do
+  describe 'associations' do
+    let(:association) do
+      described_class.reflect_on_association(target)
+    end
+
+    context 'user associations' do
+      let(:target) { :user }
+      it 'belongs to user' do
+        expect(association.macro).to eq(:belongs_to)
+        expect(association.name).to eq(:user)
+      end
+    end
+
+    context 'available_day associations' do
+      let(:target) { :available_day }
+      it 'belongs to available_day' do
+        expect(association.macro).to eq(:belongs_to)
+        expect(association.name).to eq(:available_day)
+      end
+    end
   end
 end

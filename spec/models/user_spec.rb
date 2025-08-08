@@ -180,5 +180,24 @@ RSpec.describe User, type: :model do
         expect(association.class_name).to eq 'ClassSubject'
       end
     end
+
+    context "user_available_days association" do
+      let(:target) { :user_available_days }
+
+      it "has many user_available_days" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq 'Availability::UserLink'
+        expect(association.options[:dependent]).to eq :destroy
+      end
+    end
+
+    context "available_days association" do
+      let(:target) { :available_days }
+
+      it "has many available_days" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq 'AvailableDay'
+      end
+    end
   end
 end
