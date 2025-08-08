@@ -10,7 +10,7 @@
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string
 #  email                  :string           default(""), not null
-#  employment_status      :integer          default(0), not null
+#  employment_status      :integer          default("active"), not null
 #  encrypted_password     :string           default(""), not null
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string
