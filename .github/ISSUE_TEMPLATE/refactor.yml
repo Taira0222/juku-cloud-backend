@@ -1,0 +1,58 @@
+name: 🔧 リファクタリング
+description: コード改善や構造整理の提案・実装
+labels: ['refactor']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        リファクタリング提案ありがとうございます。以下の情報を記入してください。
+
+  # 1. 改善の概要
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: どの部分をリファクタリングするか、その理由や目的を簡潔に記述してください
+      placeholder: コードの可読性改善、責務分離のため...
+    validations:
+      required: true
+
+  # 2. 対象範囲
+  - type: textarea
+    id: scope
+    attributes:
+      label: 対象範囲
+      description: 改善対象のモジュール・コンポーネント・ファイルなどを具体的に記述してください
+      placeholder: features/students/hooks/useStudentDetail.ts など
+    validations:
+      required: true
+
+  # 3. 改善内容
+  - type: textarea
+    id: details
+    attributes:
+      label: 改善内容
+      description: どのような改善を行うか具体的に記載してください
+      placeholder: 複数コンポーネントで重複しているロジックをカスタムフック化する 等
+    validations:
+      required: true
+
+  # 4. 期待する効果
+  - type: textarea
+    id: effect
+    attributes:
+      label: 期待する効果
+      description: このリファクタリングによって得られるメリットを記載してください
+      placeholder: 可読性向上、テスト容易性向上、パフォーマンス改善 等
+    validations:
+      required: false
+
+  # 5. 補足
+  - type: textarea
+    id: note
+    attributes:
+      label: 補足
+      description: 関連するPRや参考資料があれば記載してください
+      placeholder: 参考リンクやIssue番号など
+    validations:
+      required: false
