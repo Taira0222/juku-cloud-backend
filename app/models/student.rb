@@ -33,7 +33,7 @@ class Student < ApplicationRecord
   has_many :student_class_subjects, dependent: :destroy
   has_many :class_subjects, through: :student_class_subjects
   # Student:AvailableDay N:N
-  has_many :student_available_days, dependent: :destroy
+  has_many :student_available_days, class_name: "Availability::StudentLink", dependent: :destroy
   has_many :available_days, through: :student_available_days
 
   enum :status, { active: 0, graduated: 1, quit: 2, paused: 3 }
