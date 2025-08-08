@@ -10,5 +10,21 @@
 require 'rails_helper'
 
 RSpec.describe AvailableDay, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:available_day) { build(:available_day) }
+
+  describe 'validations' do
+    it 'is valid with valid attributes' do
+      expect(available_day).to be_valid
+    end
+
+    it 'is not valid without a name' do
+      available_day.name = nil
+      expect(available_day).not_to be_valid
+    end
+
+    it 'is not valid with a duplicate name' do
+      create(:available_day, name: 0)
+      expect(available_day).not_to be_valid
+    end
+  end
 end
