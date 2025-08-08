@@ -19,28 +19,9 @@
 #  fk_rails_...  (available_day_id => available_days.id)
 #  fk_rails_...  (user_id => users.id)
 #
-require 'rails_helper'
+class Availability::UserLink < ApplicationRecord
+  self.table_name = "user_available_days"
 
-RSpec.describe UserAvailableDay, type: :model do
-  describe 'associations' do
-    let(:association) do
-      described_class.reflect_on_association(target)
-    end
-
-    context 'user associations' do
-      let(:target) { :user }
-      it 'belongs to user' do
-        expect(association.macro).to eq(:belongs_to)
-        expect(association.name).to eq(:user)
-      end
-    end
-
-    context 'available_day associations' do
-      let(:target) { :available_day }
-      it 'belongs to available_day' do
-        expect(association.macro).to eq(:belongs_to)
-        expect(association.name).to eq(:available_day)
-      end
-    end
-  end
+  belongs_to :user
+  belongs_to :available_day
 end
