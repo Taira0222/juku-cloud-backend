@@ -22,7 +22,7 @@
 #
 require 'rails_helper'
 
-RSpec.describe TeachingAssignment, type: :model do
+RSpec.describe Teaching::Assignment, type: :model do
   describe 'associations' do
     let(:association) do
       described_class.reflect_on_association(target)

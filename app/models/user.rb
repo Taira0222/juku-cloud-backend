@@ -52,7 +52,7 @@ class User < ActiveRecord::Base
   # admin がschool_id = nil なので、optional: true にする
   belongs_to :school, optional: true
   # User:Student N:N
-  has_many :teaching_assignments, dependent: :destroy
+  has_many :teaching_assignments, class_name: "Teaching::Assignment", dependent: :destroy
   has_many :students, through: :teaching_assignments
   # User:ClassSubject N:N
   has_many :user_class_subjects, dependent: :destroy
