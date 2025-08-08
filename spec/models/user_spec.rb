@@ -10,6 +10,7 @@
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string
 #  email                  :string           default(""), not null
+#  employment_status      :integer          default(0), not null
 #  encrypted_password     :string           default(""), not null
 #  grade                  :integer
 #  graduated_university   :string
@@ -93,6 +94,13 @@ RSpec.describe User, type: :model do
         expect(user).not_to be_valid
       end
     end
+
+    context "validates employment_status presence" do
+      it "is not valid without an employment_status" do
+        user = build(:user, employment_status: nil)
+        expect(user).not_to be_valid
+      end
+    end
   end
 
   describe "role" do
@@ -108,22 +116,6 @@ RSpec.describe User, type: :model do
     # 異常値テスト
     it "does not allow invalid roles" do
       expect { build(:user, role: :invalid_role) }.to raise_error(ArgumentError)
-    end
-  end
-
-  describe "school_stage" do
-    it "defaults to bachelor" do
-      user = build(:user)
-      expect(user.school_stage).to eq("bachelor")
-    end
-
-    it "allows setting school_stage to master" do
-      user = build(:user, school_stage: :master)
-      expect(user.school_stage).to eq("master")
-    end
-    # 異常値テスト
-    it "does not allow invalid school stages" do
-      expect { build(:user, school_stage: :invalid_stage) }.to raise_error(ArgumentError)
     end
   end
 

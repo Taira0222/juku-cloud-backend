@@ -10,6 +10,7 @@
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string
 #  email                  :string           default(""), not null
+#  employment_status      :integer          default(0), not null
 #  encrypted_password     :string           default(""), not null
 #  grade                  :integer
 #  graduated_university   :string
@@ -52,9 +53,7 @@ FactoryBot.define do
     confirmation_sent_at { Time.current }
     association :school # school との関連を設定
     role { :teacher }
-    school_stage { :bachelor }
-    grade { 1 }
-    graduated_university { "University of Example" }
+    employment_status { :active }
 
     trait :unconfirmed do
       confirmation_token { SecureRandom.hex(10) }
@@ -67,8 +66,5 @@ FactoryBot.define do
     sequence(:email) { |n| "admin#{n}@example.com" }
     role { :admin }
     school { nil } # 管理者は学校に属さない
-    school_stage { nil }
-    grade { nil }
-    graduated_university { nil }
   end
 end

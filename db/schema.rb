@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_05_211947) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_08_155226) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -61,9 +61,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_211947) do
     t.datetime "remember_created_at"
     t.string "name", default: "", null: false
     t.integer "role", default: 0, null: false
-    t.integer "school_stage"
-    t.integer "grade"
-    t.string "graduated_university"
     t.string "email", default: "", null: false
     t.integer "sign_in_count", default: 0, null: false
     t.datetime "current_sign_in_at"
@@ -78,6 +75,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_211947) do
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
     t.bigint "school_id"
+    t.integer "employment_status", default: 0, null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
