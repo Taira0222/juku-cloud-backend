@@ -148,7 +148,7 @@ RSpec.describe User, type: :model do
 
       it "has many teaching assignments" do
         expect(association.macro).to eq :has_many
-        expect(association.class_name).to eq 'TeachingAssignment'
+        expect(association.class_name).to eq 'Teaching::Assignment'
         expect(association.options[:dependent]).to eq :destroy
       end
     end

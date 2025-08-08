@@ -58,7 +58,7 @@ def create_students_for_teacher(teachers, school_code, num_students = 2)
       )
 
       # 中間テーブル
-      TeachingAssignment.find_or_create_by!(
+      Teaching::Assignment.find_or_create_by!(
         user: teacher,
         student: student,
       ) do |assignment|
