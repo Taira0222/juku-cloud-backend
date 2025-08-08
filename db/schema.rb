@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_08_155226) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_08_194535) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "available_days", force: :cascade do |t|
+    t.integer "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "class_subjects", force: :cascade do |t|
+    t.integer "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "schools", force: :cascade do |t|
     t.bigint "owner_id", null: false
@@ -22,6 +34,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_155226) do
     t.datetime "updated_at", null: false
     t.index ["owner_id"], name: "index_schools_on_owner_id"
     t.index ["school_code"], name: "index_schools_on_school_code", unique: true
+  end
+
+  create_table "student_class_subjects", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.bigint "class_subject_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["class_subject_id"], name: "index_student_class_subjects_on_class_subject_id"
+    t.index ["student_id", "class_subject_id"], name: "idx_on_student_id_class_subject_id_c0e296835a", unique: true
+    t.index ["student_id"], name: "index_student_class_subjects_on_student_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -49,6 +71,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_155226) do
     t.datetime "updated_at", null: false
     t.index ["student_id"], name: "index_teaching_assignments_on_student_id"
     t.index ["user_id"], name: "index_teaching_assignments_on_user_id"
+  end
+
+  create_table "user_class_subjects", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "class_subject_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["class_subject_id"], name: "index_user_class_subjects_on_class_subject_id"
+    t.index ["user_id", "class_subject_id"], name: "index_user_class_subjects_on_user_id_and_class_subject_id", unique: true
+    t.index ["user_id"], name: "index_user_class_subjects_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -84,8 +116,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_155226) do
   end
 
   add_foreign_key "schools", "users", column: "owner_id"
+  add_foreign_key "student_class_subjects", "class_subjects"
+  add_foreign_key "student_class_subjects", "students"
   add_foreign_key "students", "schools"
   add_foreign_key "teaching_assignments", "students"
   add_foreign_key "teaching_assignments", "users"
+  add_foreign_key "user_class_subjects", "class_subjects"
+  add_foreign_key "user_class_subjects", "users"
   add_foreign_key "users", "schools"
 end
