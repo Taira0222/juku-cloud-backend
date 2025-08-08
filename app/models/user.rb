@@ -12,6 +12,7 @@
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string
 #  email                  :string           default(""), not null
+#  employment_status      :integer          default(0), not null
 #  encrypted_password     :string           default(""), not null
 #  grade                  :integer
 #  graduated_university   :string
@@ -59,9 +60,9 @@ class User < ActiveRecord::Base
 
   # user.teacher_role? で判定できるようにする
   enum :role, { teacher: 0, admin: 1 }, suffix: true
-  # user.bachelor_school_stage? で判定できるようにする
-  enum :school_stage, { bachelor: 0, master: 1 }, suffix: true
+  enum :employment_status, { active: 0, inactive: 1 }, suffix: true
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :role, presence: true
+  validates :employment_status, presence: true
 end
