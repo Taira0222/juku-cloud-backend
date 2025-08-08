@@ -21,7 +21,7 @@
 #
 FactoryBot.define do
   factory :student_class_subject do
-    student { nil }
-    class_subject { nil }
+    association :student
+    association :class_subject
   end
 end
