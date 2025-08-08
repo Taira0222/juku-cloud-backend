@@ -6,6 +6,6 @@ class CreateUserClassSubjects < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    add_index :user_class_subjects, [:user_id, :class_subject_id], unique: true
+    add_index :user_class_subjects, [ :user_id, :class_subject_id ], unique: true
   end
 end

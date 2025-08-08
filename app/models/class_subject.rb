@@ -14,7 +14,7 @@ class ClassSubject < ApplicationRecord
   # Student:ClassSubject N:N
   has_many :student_class_subjects, dependent: :destroy
   has_many :students, through: :student_class_subjects
-  
+
   enum :name, {
     english: 0,
     japanese: 1,

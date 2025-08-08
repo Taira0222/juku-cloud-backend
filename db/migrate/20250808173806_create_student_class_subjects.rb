@@ -6,6 +6,6 @@ class CreateStudentClassSubjects < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    add_index :student_class_subjects, [:student_id, :class_subject_id], unique: true
+    add_index :student_class_subjects, [ :student_id, :class_subject_id ], unique: true
   end
 end
