@@ -8,6 +8,13 @@
 #  updated_at :datetime         not null
 #
 class AvailableDay < ApplicationRecord
+  # User:AvailableDay N:N
+  has_many :user_available_days, dependent: :destroy
+  has_many :users, through: :user_available_days
+  # Student:AvailableDay N:N
+  has_many :student_available_days, dependent: :destroy
+  has_many :students, through: :student_available_days
+
   enum :name, { sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 }
   validates :name, presence: true, uniqueness: true
 end
