@@ -14,8 +14,6 @@
 #  email                  :string           default(""), not null
 #  employment_status      :integer          default(0), not null
 #  encrypted_password     :string           default(""), not null
-#  grade                  :integer
-#  graduated_university   :string
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string
 #  name                   :string           default(""), not null
@@ -24,7 +22,6 @@
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
 #  role                   :integer          default("teacher"), not null
-#  school_stage           :integer
 #  sign_in_count          :integer          default(0), not null
 #  tokens                 :json
 #  uid                    :string           default(""), not null
