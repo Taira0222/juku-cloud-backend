@@ -5,6 +5,13 @@ CLASS_SUBJECTS_COUNT.times do |i|
   ClassSubject.find_or_create_by!(name: i)
 end
 
+# 曜日が7つ
+AVAILABLE_DAYS_COUNT = 7
+# 曜日を作成
+AVAILABLE_DAYS_COUNT.times do |i|
+  AvailableDay.find_or_create_by!(name: i)
+end
+
 # 重複作成を防ぐためにfind_or_create_by!を使用
 admin = User.find_or_create_by!(email: "admin@example.com") do |user|
   user.name = "Admin User"

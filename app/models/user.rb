@@ -57,6 +57,9 @@ class User < ActiveRecord::Base
   # User:ClassSubject N:N
   has_many :user_class_subjects, dependent: :destroy
   has_many :class_subjects, through: :user_class_subjects
+  # User:AvailableDay N:N
+  has_many :user_available_days, dependent: :destroy
+  has_many :available_days, through: :user_available_days
 
   # user.teacher_role? で判定できるようにする
   enum :role, { teacher: 0, admin: 1 }, suffix: true
