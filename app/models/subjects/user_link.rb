@@ -19,7 +19,9 @@
 #  fk_rails_...  (class_subject_id => class_subjects.id)
 #  fk_rails_...  (user_id => users.id)
 #
-class UserClassSubject < ApplicationRecord
+class Subjects::UserLink < ApplicationRecord
+  self.table_name = "user_class_subjects"
+
   belongs_to :user
   belongs_to :class_subject
 end

@@ -167,7 +167,7 @@ RSpec.describe User, type: :model do
 
       it "has many user_class_subjects" do
         expect(association.macro).to eq :has_many
-        expect(association.class_name).to eq 'UserClassSubject'
+        expect(association.class_name).to eq 'Subjects::UserLink'
         expect(association.options[:dependent]).to eq :destroy
       end
     end

@@ -30,7 +30,7 @@ class Student < ApplicationRecord
   has_many :teaching_assignments, class_name: "Teaching::Assignment", dependent: :destroy
   has_many :users, through: :teaching_assignments
   # Student:ClassSubject N:N
-  has_many :student_class_subjects, dependent: :destroy
+  has_many :student_class_subjects, class_name: "Subjects::StudentLink", dependent: :destroy
   has_many :class_subjects, through: :student_class_subjects
   # Student:AvailableDay N:N
   has_many :student_available_days, class_name: "Availability::StudentLink", dependent: :destroy

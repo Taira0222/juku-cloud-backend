@@ -19,13 +19,28 @@
 #  fk_rails_...  (class_subject_id => class_subjects.id)
 #  fk_rails_...  (user_id => users.id)
 #
-FactoryBot.define do
-  factory :user_class_subject do
-    association :user
-    association :class_subject
+require 'rails_helper'
 
-    trait :math_subject do
-      association :japanese, factory: :class_subject
+RSpec.describe Subjects::UserLink, type: :model do
+   describe 'associations' do
+    let(:association) do
+      described_class.reflect_on_association(target)
+    end
+
+    context 'user association' do
+      let(:target) { :user }
+      it "belongs to user" do
+        expect(association.macro).to eq :belongs_to
+        expect(association.class_name).to eq 'User'
+      end
+    end
+
+    context 'class_subject association' do
+      let(:target) { :class_subject }
+      it "belongs to class_subject" do
+        expect(association.macro).to eq :belongs_to
+        expect(association.class_name).to eq 'ClassSubject'
+      end
     end
   end
 end
