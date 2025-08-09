@@ -20,7 +20,7 @@
 #  fk_rails_...  (student_id => students.id)
 #
 FactoryBot.define do
-  factory :student_class_subject do
+  factory :student_class_subject, class: "Subjects::StudentLink" do
     association :student
     association :class_subject
   end

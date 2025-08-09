@@ -19,7 +19,28 @@
 #  fk_rails_...  (available_day_id => available_days.id)
 #  fk_rails_...  (student_id => students.id)
 #
-class StudentAvailableDay < ApplicationRecord
-  belongs_to :student
-  belongs_to :available_day
+require 'rails_helper'
+
+RSpec.describe Availability::StudentLink, type: :model do
+    describe 'associations' do
+    let(:association) do
+      described_class.reflect_on_association(target)
+    end
+
+    context 'student associations' do
+      let(:target) { :student }
+      it 'belongs to student' do
+        expect(association.macro).to eq(:belongs_to)
+        expect(association.name).to eq(:student)
+      end
+    end
+
+    context 'available_day associations' do
+      let(:target) { :available_day }
+      it 'belongs to available_day' do
+        expect(association.macro).to eq(:belongs_to)
+        expect(association.name).to eq(:available_day)
+      end
+    end
+  end
 end

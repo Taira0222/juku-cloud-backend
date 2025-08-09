@@ -19,9 +19,9 @@
 #  fk_rails_...  (available_day_id => available_days.id)
 #  fk_rails_...  (student_id => students.id)
 #
-FactoryBot.define do
-  factory :student_available_day do
-    association :student
-    association :available_day
-  end
+class Availability::StudentLink < ApplicationRecord
+  self.table_name = "student_available_days"
+
+  belongs_to :student
+  belongs_to :available_day
 end

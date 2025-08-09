@@ -20,9 +20,11 @@
 #  fk_rails_...  (student_id => students.id)
 #  fk_rails_...  (user_id => users.id)
 #
-class TeachingAssignment < ApplicationRecord
-  belongs_to :user
-  belongs_to :student
-
-  validates :started_on, presence: true
+FactoryBot.define do
+  factory :teaching_assignment, class: "Teaching::Assignment" do
+    association :user
+    association :student
+    started_on { Date.current }
+    teaching_status { true }
+  end
 end

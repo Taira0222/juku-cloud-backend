@@ -135,7 +135,7 @@ RSpec.describe Student, type: :model do
       let(:target) { :teaching_assignments }
       it "has many teaching_assignments" do
         expect(association.macro).to eq :has_many
-        expect(association.class_name).to eq 'TeachingAssignment'
+        expect(association.class_name).to eq 'Teaching::Assignment'
         expect(association.options[:dependent]).to eq :destroy
       end
     end
@@ -152,7 +152,7 @@ RSpec.describe Student, type: :model do
       let(:target) { :student_class_subjects }
       it "has many student_class_subjects" do
         expect(association.macro).to eq :has_many
-        expect(association.class_name).to eq 'StudentClassSubject'
+        expect(association.class_name).to eq 'Subjects::StudentLink'
         expect(association.options[:dependent]).to eq :destroy
       end
     end
@@ -162,6 +162,23 @@ RSpec.describe Student, type: :model do
       it "has many class_subjects" do
         expect(association.macro).to eq :has_many
         expect(association.class_name).to eq 'ClassSubject'
+      end
+    end
+
+    context 'student_available_days association' do
+      let(:target) { :student_available_days }
+      it "has many student_available_days" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq 'Availability::StudentLink'
+        expect(association.options[:dependent]).to eq :destroy
+      end
+    end
+
+    context 'available_days association' do
+      let(:target) { :available_days }
+      it "has many available_days" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq 'AvailableDay'
       end
     end
   end

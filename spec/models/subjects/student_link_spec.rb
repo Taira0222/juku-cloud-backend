@@ -21,7 +21,7 @@
 #
 require 'rails_helper'
 
-RSpec.describe StudentClassSubject, type: :model do
+RSpec.describe Subjects::StudentLink, type: :model do
    describe 'associations' do
     let(:association) do
       described_class.reflect_on_association(target)
