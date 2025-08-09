@@ -68,4 +68,19 @@ class User < ActiveRecord::Base
   validates :name, presence: true, length: { maximum: 50 }
   validates :role, presence: true
   validates :employment_status, presence: true
+
+  # devise_token_auth のメソッドをオーバーライド
+  def token_validation_response
+    base = super
+    if teacher_role?
+      base.merge(
+        school: school&.as_json(only: %i[id name])
+      )
+    else
+      admin_school = School.find_by(owner_id: id)
+      base.merge(
+        school: admin_school&.as_json(only: %i[id name])
+      )
+    end
+  end
 end

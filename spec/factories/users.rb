@@ -42,13 +42,16 @@
 #
 FactoryBot.define do
   factory :user do
+    allow_password_change { false }
     sequence(:name) { |n| "Test User #{n}" }
     sequence(:email) { |n| "test#{n}@example.com" }
     password { "password" }
     password_confirmation { "password" }
     confirmed_at { Time.current }
     confirmation_sent_at { Time.current }
-    association :school # school との関連を設定
+    current_sign_in_at { Time.current }
+    last_sign_in_at { Time.current }
+    association :school
     role { :teacher }
     employment_status { :active }
 
