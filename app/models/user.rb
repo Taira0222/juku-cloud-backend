@@ -52,13 +52,13 @@ class User < ActiveRecord::Base
   # admin がschool_id = nil なので、optional: true にする
   belongs_to :school, optional: true
   # User:Student N:N
-  has_many :teaching_assignments, dependent: :destroy
+  has_many :teaching_assignments, class_name: "Teaching::Assignment", dependent: :destroy
   has_many :students, through: :teaching_assignments
   # User:ClassSubject N:N
-  has_many :user_class_subjects, dependent: :destroy
+  has_many :user_class_subjects, class_name: "Subjects::UserLink", dependent: :destroy
   has_many :class_subjects, through: :user_class_subjects
   # User:AvailableDay N:N
-  has_many :user_available_days, dependent: :destroy
+  has_many :user_available_days, class_name: "Availability::UserLink", dependent: :destroy
   has_many :available_days, through: :user_available_days
 
   # user.teacher_role? で判定できるようにする

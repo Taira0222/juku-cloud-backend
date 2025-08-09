@@ -19,7 +19,9 @@
 #  fk_rails_...  (available_day_id => available_days.id)
 #  fk_rails_...  (user_id => users.id)
 #
-class UserAvailableDay < ApplicationRecord
-  belongs_to :user
-  belongs_to :available_day
+FactoryBot.define do
+  factory :user_available_day, class: "Availability::UserLink" do
+    association :user
+    association :available_day
+  end
 end
