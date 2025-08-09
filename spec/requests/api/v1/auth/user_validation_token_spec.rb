@@ -13,8 +13,6 @@ RSpec.describe 'User Token Validation', type: :request do
       end
 
       it 'returns the admin user information' do
-        admin_school = School.find_by(owner_id: admin_user.id)
-
         json_response = JSON.parse(response.body)
         expect(json_response['data']).to include(
           'id' => admin_user.id,
