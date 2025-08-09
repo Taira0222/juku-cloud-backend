@@ -9,10 +9,10 @@
 #
 class ClassSubject < ApplicationRecord
   # User:ClassSubject N:N
-  has_many :user_class_subjects, dependent: :destroy
+  has_many :user_class_subjects, class_name: "Subjects::UserLink", dependent: :destroy
   has_many :users, through: :user_class_subjects
   # Student:ClassSubject N:N
-  has_many :student_class_subjects, dependent: :destroy
+  has_many :student_class_subjects, class_name: "Subjects::StudentLink", dependent: :destroy
   has_many :students, through: :student_class_subjects
 
   enum :name, {

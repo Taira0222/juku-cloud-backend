@@ -152,7 +152,7 @@ RSpec.describe Student, type: :model do
       let(:target) { :student_class_subjects }
       it "has many student_class_subjects" do
         expect(association.macro).to eq :has_many
-        expect(association.class_name).to eq 'StudentClassSubject'
+        expect(association.class_name).to eq 'Subjects::StudentLink'
         expect(association.options[:dependent]).to eq :destroy
       end
     end
