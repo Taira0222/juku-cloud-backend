@@ -78,6 +78,11 @@ group :development do
   # This is useful for development and debugging, but not recommended for production.
   gem "annotaterb", "~> 4.1", require: false
   gem "letter_opener_web", "~> 3.0"
+
+  gem "prettier_print", "~> 1.0"
+  gem "syntax_tree", "~> 6.0"
+  gem "syntax_tree-haml", "~> 4.0"
+  gem "syntax_tree-rbs", "~> 1.0"
 end
 
 group :test do
