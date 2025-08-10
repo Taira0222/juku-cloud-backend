@@ -43,8 +43,13 @@
 #  fk_rails_...  (school_id => schools.id)
 #
 class User < ActiveRecord::Base
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :trackable, :confirmable
+  devise :database_authenticatable,
+         :registerable,
+         :recoverable,
+         :rememberable,
+         :validatable,
+         :trackable,
+         :confirmable
   include DeviseTokenAuth::Concerns::User
   attr_accessor :confirm_success_url
   # user(role:admin):school 1:1
@@ -52,13 +57,19 @@ class User < ActiveRecord::Base
   # admin がschool_id = nil なので、optional: true にする
   belongs_to :school, optional: true
   # User:Student N:N
-  has_many :teaching_assignments, class_name: "Teaching::Assignment", dependent: :destroy
+  has_many :teaching_assignments,
+           class_name: "Teaching::Assignment",
+           dependent: :destroy
   has_many :students, through: :teaching_assignments
   # User:ClassSubject N:N
-  has_many :user_class_subjects, class_name: "Subjects::UserLink", dependent: :destroy
+  has_many :user_class_subjects,
+           class_name: "Subjects::UserLink",
+           dependent: :destroy
   has_many :class_subjects, through: :user_class_subjects
   # User:AvailableDay N:N
-  has_many :user_available_days, class_name: "Availability::UserLink", dependent: :destroy
+  has_many :user_available_days,
+           class_name: "Availability::UserLink",
+           dependent: :destroy
   has_many :available_days, through: :user_available_days
 
   # user.teacher_role? で判定できるようにする
@@ -73,14 +84,10 @@ class User < ActiveRecord::Base
   def token_validation_response
     base = super
     if teacher_role?
-      base.merge(
-        school: school&.as_json(only: %i[id name])
-      )
+      base.merge(school: school&.as_json(only: %i[id name]))
     else
       admin_school = School.find_by(owner_id: id)
-      base.merge(
-        school: admin_school&.as_json(only: %i[id name])
-      )
+      base.merge(school: admin_school&.as_json(only: %i[id name]))
     end
   end
 end
