@@ -16,6 +16,7 @@ class Api::V1::TeachersController < ApplicationController
     unless current_user.admin_role?
       # 403
       render json: { error: "講師はこの操作を行うことができません" }, status: :forbidden
+      return
     end
   end
 
@@ -25,5 +26,6 @@ class Api::V1::TeachersController < ApplicationController
 
     # 404
     render json: { error: "学校が見つかりません" }, status: :not_found
+    return
   end
 end
