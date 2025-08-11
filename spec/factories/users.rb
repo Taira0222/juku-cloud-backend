@@ -49,8 +49,6 @@ FactoryBot.define do
     password_confirmation { "password" }
     confirmed_at { Time.current }
     confirmation_sent_at { Time.current }
-    current_sign_in_at { Time.current }
-    last_sign_in_at { Time.current }
     association :school
     role { :teacher }
     employment_status { :active }
