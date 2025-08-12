@@ -28,18 +28,21 @@
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  invite_id              :bigint
 #  school_id              :bigint
 #
 # Indexes
 #
 #  index_users_on_confirmation_token    (confirmation_token) UNIQUE
 #  index_users_on_email                 (email) UNIQUE
+#  index_users_on_invite_id             (invite_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #  index_users_on_school_id             (school_id)
 #  index_users_on_uid_and_provider      (uid,provider) UNIQUE
 #
 # Foreign Keys
 #
+#  fk_rails_...  (invite_id => invites.id)
 #  fk_rails_...  (school_id => schools.id)
 #
 class User < ActiveRecord::Base
@@ -71,13 +74,16 @@ class User < ActiveRecord::Base
            class_name: "Availability::UserLink",
            dependent: :destroy
   has_many :available_days, through: :user_available_days
+  # User:Invite 1:1 adminはinvite なしで作成予定
+  belongs_to :invite, optional: true
 
   # user.teacher_role? で判定できるようにする
   enum :role, { teacher: 0, admin: 1 }, suffix: true
   enum :employment_status, { active: 0, inactive: 1 }, suffix: true
 
   validates :name, presence: true, length: { maximum: 50 }
-  validates :role, presence: true
+  # role はteacher or admin のみ受け付ける
+  validates :role, presence: true, inclusion: { in: roles.keys }
   validates :employment_status, presence: true
 
   # devise_token_auth のメソッドをオーバーライド

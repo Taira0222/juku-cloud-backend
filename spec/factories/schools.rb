@@ -22,6 +22,6 @@ FactoryBot.define do
   factory :school do
     association :owner, factory: :admin_user
     name { "Test School" }
-    sequence(:school_code) { |n| "SCHOOL#{n.to_s.rjust(3, '0')}" } # SCHOOL001, SCHOOL002, etc.
+    sequence(:school_code) { |n| "SCHOOL#{n.to_s.rjust(3, "0")}" } # SCHOOL001, SCHOOL002, etc.
   end
 end

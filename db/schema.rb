@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_08_201643) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_12_153912) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,6 +24,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_201643) do
     t.integer "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "invites", force: :cascade do |t|
+    t.bigint "school_id", null: false
+    t.string "token", null: false
+    t.integer "role", default: 0, null: false
+    t.integer "max_uses", default: 1, null: false
+    t.integer "uses_count", default: 0, null: false
+    t.datetime "expires_at", null: false
+    t.datetime "used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["school_id"], name: "index_invites_on_school_id"
+    t.index ["token"], name: "index_invites_on_token", unique: true
   end
 
   create_table "schools", force: :cascade do |t|
@@ -128,13 +142,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_201643) do
     t.string "unconfirmed_email"
     t.bigint "school_id"
     t.integer "employment_status", default: 0, null: false
+    t.bigint "invite_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["invite_id"], name: "index_users_on_invite_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["school_id"], name: "index_users_on_school_id"
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "invites", "schools"
   add_foreign_key "schools", "users", column: "owner_id"
   add_foreign_key "student_available_days", "available_days"
   add_foreign_key "student_available_days", "students"
@@ -147,5 +164,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_201643) do
   add_foreign_key "user_available_days", "users"
   add_foreign_key "user_class_subjects", "class_subjects"
   add_foreign_key "user_class_subjects", "users"
+  add_foreign_key "users", "invites"
   add_foreign_key "users", "schools"
 end
