@@ -26,18 +26,21 @@
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  invite_id              :bigint
 #  school_id              :bigint
 #
 # Indexes
 #
 #  index_users_on_confirmation_token    (confirmation_token) UNIQUE
 #  index_users_on_email                 (email) UNIQUE
+#  index_users_on_invite_id             (invite_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #  index_users_on_school_id             (school_id)
 #  index_users_on_uid_and_provider      (uid,provider) UNIQUE
 #
 # Foreign Keys
 #
+#  fk_rails_...  (invite_id => invites.id)
 #  fk_rails_...  (school_id => schools.id)
 #
 require "rails_helper"
@@ -197,6 +200,15 @@ RSpec.describe User, type: :model do
       it "has many available_days" do
         expect(association.macro).to eq :has_many
         expect(association.class_name).to eq 'AvailableDay'
+      end
+    end
+
+    context 'invite association' do
+      let(:target) { :invite }
+
+      it 'belongs to an invite' do
+        expect(association.macro).to eq(:belongs_to)
+        expect(association.class_name).to eq('Invite')
       end
     end
   end
