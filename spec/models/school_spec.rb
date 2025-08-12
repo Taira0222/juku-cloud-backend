@@ -60,12 +60,27 @@ RSpec.describe School, type: :model do
     end
   end
 
-  describe 'associations' do
-    let(:association_owner) { School.reflect_on_association(:owner) }
-    let(:association_teachers) { School.reflect_on_association(:teachers) }
-    it { expect(association_owner.macro).to eq :belongs_to }
-    it { expect(association_owner.class_name).to eq 'User' }
-    it { expect(association_teachers.macro).to eq :has_many }
-    it { expect(association_teachers.class_name).to eq 'User' }
+   describe 'associations' do
+    let(:association) do
+      described_class.reflect_on_association(target)
+    end
+
+    context 'owner association' do
+      let(:target) { :owner }
+      it { expect(association.macro).to eq :belongs_to }
+      it { expect(association.class_name).to eq 'User' }
+    end
+
+    context 'teachers association' do
+      let(:target) { :teachers }
+      it { expect(association.macro).to eq :has_many }
+      it { expect(association.class_name).to eq 'User' }
+    end
+
+    context 'invites association' do
+      let(:target) { :invites }
+      it { expect(association.macro).to eq :has_many }
+      it { expect(association.class_name).to eq 'Invite' }
+    end
   end
 end
