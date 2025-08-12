@@ -74,8 +74,8 @@ class User < ActiveRecord::Base
            class_name: "Availability::UserLink",
            dependent: :destroy
   has_many :available_days, through: :user_available_days
-  # User:Invite 1:1
-  belongs_to :invite, dependent: :destroy, optional: true
+  # User:Invite 1:1 adminはinvite なしで作成予定
+  belongs_to :invite, optional: true
 
   # user.teacher_role? で判定できるようにする
   enum :role, { teacher: 0, admin: 1 }, suffix: true

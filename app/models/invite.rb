@@ -34,5 +34,10 @@ class Invite < ApplicationRecord
   # role はteacher or admin のみ受け付ける
   validates :role, presence: true, inclusion: { in: roles.keys }
   validates :max_uses, presence: true
-  validates :expires_at, presence: true, comparison: { greater_than: -> { Time.current } }
+  validates :expires_at,
+            presence: true,
+            comparison: {
+              greater_than: -> { Time.current }
+            },
+            on: :create
 end
