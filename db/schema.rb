@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_12_153912) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_12_200615) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -28,7 +28,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_153912) do
 
   create_table "invites", force: :cascade do |t|
     t.bigint "school_id", null: false
-    t.string "token", null: false
+    t.string "token_digest", null: false
     t.integer "role", default: 0, null: false
     t.integer "max_uses", default: 1, null: false
     t.integer "uses_count", default: 0, null: false
@@ -37,7 +37,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_153912) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["school_id"], name: "index_invites_on_school_id"
-    t.index ["token"], name: "index_invites_on_token", unique: true
+    t.index ["token_digest"], name: "index_invites_on_token_digest", unique: true
   end
 
   create_table "schools", force: :cascade do |t|
