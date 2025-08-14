@@ -88,5 +88,18 @@ RSpec.describe "User Registrations", type: :request do
       invite.reload
       expect(invite.used_at).not_to be_present
     end
+
+    it "returns an error when token is missing" do
+      post "/api/v1/auth",
+           params: {
+             name: "Fifth User",
+             email: "fifth@example.com",
+             password: "password",
+             password_confirmation: "password"
+           }
+      expect(response).to have_http_status(:unprocessable_entity)
+      invite.reload
+      expect(invite.used_at).not_to be_present
+    end
   end
 end
