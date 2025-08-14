@@ -1,7 +1,4 @@
 module Invites
-  class TokenGenerateError < StandardError
-  end
-
   class TokenGenerate
     def self.call(school, role: :teacher, expires_at: nil, max_uses: 1)
       raw_token = SecureRandom.urlsafe_base64(32)

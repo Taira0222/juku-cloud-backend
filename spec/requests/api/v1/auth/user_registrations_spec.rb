@@ -42,7 +42,7 @@ RSpec.describe "User Registrations", type: :request do
              password_confirmation: "wrong_password",
              token: "valid_token"
            }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       invite.reload
       expect(invite.used_at).not_to be_present
     end
@@ -56,7 +56,7 @@ RSpec.describe "User Registrations", type: :request do
              password_confirmation: "password",
              token: "valid_token"
            }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       invite.reload
       expect(invite.used_at).not_to be_present
     end
@@ -70,7 +70,7 @@ RSpec.describe "User Registrations", type: :request do
              password_confirmation: "password",
              token: "valid_token"
            }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       invite.reload
       expect(invite.used_at).not_to be_present
     end
@@ -84,7 +84,7 @@ RSpec.describe "User Registrations", type: :request do
              password_confirmation: "password",
              token: "invalid_token"
            }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       invite.reload
       expect(invite.used_at).not_to be_present
     end
@@ -97,7 +97,7 @@ RSpec.describe "User Registrations", type: :request do
              password: "password",
              password_confirmation: "password"
            }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       invite.reload
       expect(invite.used_at).not_to be_present
     end

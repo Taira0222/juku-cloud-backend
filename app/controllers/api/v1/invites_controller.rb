@@ -25,7 +25,7 @@ class Api::V1::InvitesController < ApplicationController
     render json: { token: result[:raw_token] }, status: :created
   rescue Invites::TokenGenerateError => e
     # 422 エラー
-    render json: { message: e.message }, status: :unprocessable_entity
+    render json: { message: e.message }, status: :unprocessable_content
   rescue StandardError => e
     # 予期せぬエラー 500
     render json: {
