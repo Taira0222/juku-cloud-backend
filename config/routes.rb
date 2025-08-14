@@ -8,7 +8,7 @@ Rails.application.routes.draw do
                                     registrations: "api/v1/auth/registrations"
                                   }
       resources :teachers
-      resources :invites, only: %i[show create]
+      resources :invites, only: %i[show create], param: :token
       resources :students
       if Rails.env.development?
         mount LetterOpenerWeb::Engine, at: "/letter_opener"

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Invites::Validator, type: :service do
-  xdescribe ".call" do
+  describe ".call" do
     subject(:call) { described_class.call(token) }
 
     context "when the invite exists and is valid" do
@@ -15,19 +15,18 @@ RSpec.describe Invites::Validator, type: :service do
 
     context "when invite does not exist" do
       let(:token) { "not_found_token" }
-      it do
-        expect { call }.to raise_error(Invites::Validator::InvalidInviteError)
-      end
+      it { expect { call }.to raise_error(Invites::InvalidInviteError) }
     end
 
     context "when invite is expired" do
       let(:token) { "expired_token" }
+      # 有効期限切れのinvite を作成
       let!(:invite) do
-        create(:invite, raw_token: token, expires_at: 1.hour.ago)
+        create(:invite, raw_token: token).tap do |inv|
+          inv.update_column(:expires_at, 1.hour.ago)
+        end
       end
-      it do
-        expect { call }.to raise_error(Invites::Validator::InvalidInviteError)
-      end
+      it { expect { call }.to raise_error(Invites::InvalidInviteError) }
     end
 
     context "when invite is exhausted" do
@@ -35,9 +34,7 @@ RSpec.describe Invites::Validator, type: :service do
       let!(:invite) do
         create(:invite, raw_token: token, uses_count: 5, max_uses: 5)
       end
-      it do
-        expect { call }.to raise_error(Invites::Validator::InvalidInviteError)
-      end
+      it { expect { call }.to raise_error(Invites::InvalidInviteError) }
     end
   end
 end
