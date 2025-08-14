@@ -10,9 +10,7 @@ module Invites
       # 該当する invite を返却する
       invite
     rescue ActiveRecord::RecordNotFound
-      raise InvalidInviteError, I18n.t("invites.errors.invalid")
+      raise Invites::InvalidInviteError, I18n.t("invites.errors.invalid")
     end
-  end
-  class InvalidInviteError < StandardError
   end
 end
