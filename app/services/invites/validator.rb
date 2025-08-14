@@ -1,7 +1,4 @@
 module Invites
-  class InvalidInviteError < StandardError
-  end
-
   class Validator
     def self.call(token)
       invite = Invite.find_by_raw_token!(token)
