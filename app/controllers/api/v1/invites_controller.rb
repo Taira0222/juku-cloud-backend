@@ -1,7 +1,7 @@
 class Api::V1::InvitesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, only: :create
   before_action :require_admin_role!, only: :create
-  before_action :set_school!
+  before_action :set_school!, only: :create
 
   # GET /api/v1/invites/:token
   def show
