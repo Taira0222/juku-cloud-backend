@@ -92,8 +92,8 @@ RSpec.describe "User Registrations", type: :request do
     it "returns an error when token is missing" do
       post "/api/v1/auth",
            params: {
-             name: "Fifth User",
-             email: "fifth@example.com",
+             name: "Sixth User",
+             email: "sixth@example.com",
              password: "password",
              password_confirmation: "password"
            }

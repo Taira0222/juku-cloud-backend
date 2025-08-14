@@ -16,10 +16,10 @@ class ApplicationController < ActionController::API
   def set_school!
     if current_user.admin_role?
       @school = School.find_by(owner_id: current_user.id)
-      raise ActiveRecord::RecordNotFound unless @school.present?
+      raise ActiveRecord::RecordNotFound unless @school
     else
       @school = current_user.school
-      raise ActiveRecord::RecordNotFound unless @school.present?
+      raise ActiveRecord::RecordNotFound unless @school
     end
   rescue ActiveRecord::RecordNotFound
     # 404

@@ -12,7 +12,7 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
 
     super
     # レスポンス完了、成功、DBに保存できた場合
-    if performed? && response.status.in?([ 200, 201 ]) && @resource&.persisted?
+    if performed? && response.status.in?([200, 201]) && @resource&.persisted?
       @invite.consume!
     end
   end
