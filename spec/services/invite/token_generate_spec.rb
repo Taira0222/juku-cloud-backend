@@ -19,9 +19,7 @@ RSpec.describe Invites::TokenGenerate, type: :service do
     context "when the school is invalid" do
       let(:school) { nil }
       it "does not generate a new invite token" do
-        expect { call }.to raise_error(
-          Invites::TokenGenerate::TokenGenerateError
-        )
+        expect { call }.to raise_error(Invites::TokenGenerateError)
       end
     end
   end
