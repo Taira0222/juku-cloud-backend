@@ -14,9 +14,14 @@ class ApplicationController < ActionController::API
 
   # 例外を投げるので、! をつけておく
   def set_school!
-    @school = School.find_by(owner_id: current_user.id)
-    return if @school
-
+    if current_user.admin_role?
+      @school = School.find_by(owner_id: current_user.id)
+      raise ActiveRecord::RecordNotFound unless @school.present?
+    else
+      @school = current_user.school
+      raise ActiveRecord::RecordNotFound unless @school.present?
+    end
+  rescue ActiveRecord::RecordNotFound
     # 404
     render json: {
              error: I18n.t("application.errors.not_found_school")
