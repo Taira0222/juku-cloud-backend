@@ -21,7 +21,8 @@ class ApplicationController < ActionController::API
 
   # 例外を投げるので、! をつけておく
   def set_school!
-    if current_user.admin_role?
+    # current_user が存在しない場合 &. でnil が返る(例外処理とはならない)
+    if current_user&.admin_role?
       @school = School.find_by(owner_id: current_user.id)
       raise ActiveRecord::RecordNotFound unless @school
     else

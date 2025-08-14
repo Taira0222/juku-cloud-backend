@@ -14,7 +14,8 @@ module Invites
       { raw_token: raw_token }
     rescue ActiveRecord::RecordInvalid
       # 発行失敗のみドメイン例外にラップ（controllerで422にする）
-      raise TokenGenerateError, I18n.t("invites.errors.generate_token_failed")
+      raise Invites::TokenGenerateError,
+            I18n.t("invites.errors.generate_token_failed")
     end
   end
 end
