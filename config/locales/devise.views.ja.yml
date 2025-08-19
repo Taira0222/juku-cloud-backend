@@ -63,6 +63,13 @@ ja:
       unexpected: 予期せぬエラーが発生しました
       invalid: この招待リンクは無効か期限切れです。
 
+  teachers:
+    errors:
+      delete:
+        admin: 管理者は削除できません。
+        failure: 講師の削除に失敗しました。
+      not_found: ユーザーが見つかりませんでした。
+
   devise:
     confirmations:
       confirmed: メールアドレスが確認できました。
