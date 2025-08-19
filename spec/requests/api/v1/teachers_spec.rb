@@ -177,4 +177,36 @@ RSpec.describe "Api::V1::Teachers", type: :request do
       end
     end
   end
+
+  describe "DELETE /destroy" do
+    let!(:school) { create(:school) }
+    let(:teacher) { create(:user, school: school) }
+    let(:user) { create(:user, school: school) }
+
+    context "admin signed in" do
+      before { user.role = :admin }
+      it "deletes a teacher and returns no content (204)" do
+        teacher.role = :teacher
+        delete_with_auth(api_v1_teacher_path(teacher), user)
+        expect(response).to have_http_status(:no_content)
+        expect(User.exists?(teacher.id)).to be_falsey
+      end
+    end
+    context "teacher signed in" do
+      before { user.role = :teacher }
+      it "returns Forbidden response (403)" do
+        delete_with_auth(api_v1_teacher_path(teacher), user)
+        expect(response).to have_http_status(:forbidden)
+        expect(response.body).to include(
+          I18n.t("application.errors.teacher_unable_operate")
+        )
+      end
+    end
+    context "unauthenticated user" do
+      it "returns an unauthorized response (401)" do
+        delete api_v1_teacher_path(teacher)
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
 end
