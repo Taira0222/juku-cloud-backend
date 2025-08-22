@@ -7,7 +7,7 @@ Rails.application.routes.draw do
                                     confirmations: "api/v1/auth/confirmations",
                                     registrations: "api/v1/auth/registrations"
                                   }
-      resources :teachers
+      resources :teachers, only: %i[index update destroy]
       resources :invites, only: %i[show create], param: :token
       resources :students
       if Rails.env.development?

@@ -2,13 +2,11 @@
 #
 # Table name: teaching_assignments
 #
-#  id              :bigint           not null, primary key
-#  started_on      :date
-#  teaching_status :boolean
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  student_id      :bigint           not null
-#  user_id         :bigint           not null
+#  id         :bigint           not null, primary key
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  student_id :bigint           not null
+#  user_id    :bigint           not null
 #
 # Indexes
 #
@@ -24,7 +22,5 @@ FactoryBot.define do
   factory :teaching_assignment, class: "Teaching::Assignment" do
     association :user
     association :student
-    started_on { Date.current }
-    teaching_status { true }
   end
 end
