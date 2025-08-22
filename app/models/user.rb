@@ -79,7 +79,7 @@ class User < ActiveRecord::Base
 
   # user.teacher_role? で判定できるようにする
   enum :role, { teacher: 0, admin: 1 }, suffix: true
-  enum :employment_status, { active: 0, inactive: 1 }, suffix: true
+  enum :employment_status, { active: 0, inactive: 1, on_leave: 2 }, suffix: true
 
   validates :name, presence: true, length: { maximum: 50 }
   # role はteacher or admin のみ受け付ける

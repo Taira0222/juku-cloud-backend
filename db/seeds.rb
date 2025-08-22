@@ -7,6 +7,13 @@ CLASS_SUBJECTS_COUNT.times { |i| ClassSubject.find_or_create_by!(name: i) }
 AVAILABLE_DAYS_COUNT = 7
 # 曜日を作成
 AVAILABLE_DAYS_COUNT.times { |i| AvailableDay.find_or_create_by!(name: i) }
+# 1人の管理者が担当する先生の数
+TEACHERS_COUNT = 10
+
+# 1人目の管理者が担当する先生の初めの番号
+FIRST_TEACHER_START_NUMBER = 1
+# 2人目の管理者が担当する先生の初めの番号
+SECOND_TEACHER_START_NUMBER = FIRST_TEACHER_START_NUMBER + TEACHERS_COUNT
 
 # ユーザーを作成するメソッド
 def create_user(email, name, role, employment_status, school)
@@ -27,6 +34,31 @@ def create_school(school_code, school_name, owner)
   School.find_or_create_by!(school_code: school_code) do |school|
     school.name = school_name
     school.owner = owner
+  end
+end
+
+# 先生を作成するメソッド
+def create_teacher(count, teachers, start_number, school)
+  count.times do |i|
+    employment_status =
+      case i % 3
+      when 0
+        :active
+      when 1
+        :inactive
+      when 2
+        :on_leave
+      end
+
+    teacher =
+      create_user(
+        "teacher#{i + start_number}@example.com",
+        "Teacher #{i + start_number}",
+        :teacher,
+        employment_status,
+        school
+      )
+    teachers << teacher
   end
 end
 
@@ -54,13 +86,7 @@ def create_students_for_teacher(teachers, school_code, num_students = 2)
         )
 
       # 中間テーブル
-      Teaching::Assignment.find_or_create_by!(
-        user: teacher,
-        student: student
-      ) do |assignment|
-        assignment.started_on = Time.current
-        assignment.teaching_status = true
-      end
+      Teaching::Assignment.find_or_create_by!(user: teacher, student: student)
     end
   end
 end
@@ -70,8 +96,23 @@ def pick_some(arr, min:, max:)
   arr.sample(count)
 end
 
-# 管理者を作成
+# 管理者1を作成
 admin = create_user("admin@example.com", "Admin User", :admin, :active, nil)
+# 1つ目の塾を作成
+first_school = create_school("ABC123", "First School", admin)
+# 先生たちを配列に貯める
+first_teachers = []
+# 先生を10人作成
+create_teacher(
+  TEACHERS_COUNT,
+  first_teachers,
+  FIRST_TEACHER_START_NUMBER,
+  first_school
+)
+# 生徒を2人ずつ作成
+create_students_for_teacher(first_teachers, "ABC123")
+
+# 管理者2を作成
 another_admin =
   create_user(
     "another_admin@example.com",
@@ -80,37 +121,17 @@ another_admin =
     :active,
     nil
   )
-
-# 塾を作成
-first_school = create_school("ABC123", "First School", admin)
+# 2つ目の塾を作成
 second_school = create_school("DEF123", "Second School", another_admin)
-
-# 先生たちを配列に貯める
-first_teachers = []
 second_teachers = []
-
-TEACHERS_COUNT = 10
-TEACHERS_COUNT.times do |i|
-  employment_status = i < 5 ? :active : :inactive # 最初の5人はactive, 残りはinactive
-
-  first_teachers << create_user(
-    "teacher#{i + 1}@example.com",
-    "Teacher #{i + 1}",
-    :teacher,
-    employment_status,
-    first_school
-  )
-  second_teachers << create_user(
-    "teacher#{i + 11}@example.com",
-    "Teacher #{i + 11}",
-    :teacher,
-    employment_status,
-    second_school
-  )
-end
-
+# 先生を10人作成
+create_teacher(
+  TEACHERS_COUNT,
+  second_teachers,
+  SECOND_TEACHER_START_NUMBER,
+  second_school
+)
 # 生徒を2人ずつ作成
-create_students_for_teacher(first_teachers, "ABC123")
 create_students_for_teacher(second_teachers, "DEF123")
 
 # 科目(5教科)と曜日を取得して配列化
