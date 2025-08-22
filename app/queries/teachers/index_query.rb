@@ -1,11 +1,6 @@
 class Teachers::IndexQuery
   # 定数なのでfreezeしておく
-  ASSOCS = %i[
-    students
-    teaching_assignments
-    class_subjects
-    available_days
-  ].freeze
+  ASSOCS = %i[students class_subjects available_days].freeze
 
   def self.call(current_user, school:)
     current = User.where(id: current_user.id).preload(ASSOCS).first!
