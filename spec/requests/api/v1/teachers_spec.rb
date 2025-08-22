@@ -61,10 +61,8 @@ RSpec.describe "Api::V1::Teachers", type: :request do
           "email",
           "created_at",
           "employment_status",
-          "last_sign_in_at",
           "current_sign_in_at",
           "students",
-          "teaching_assignments",
           "class_subjects",
           "available_days"
         )
@@ -80,16 +78,7 @@ RSpec.describe "Api::V1::Teachers", type: :request do
           "school_stage",
           "student_code"
         )
-        res_admin_assignment = res_current["teaching_assignments"].first
-        # res_current がteaching_assignment を所有していることの確認
-        expect(res_admin_assignment["id"]).to eq(teaching_assignment_admin.id)
-        # teaching_assignment の情報の確認
-        expect(res_admin_assignment.keys).to include(
-          "id",
-          "user_id",
-          "student_id",
-          "teaching_status"
-        )
+
         res_admin_class_subjects = res_current["class_subjects"]
         expect(res_admin_class_subjects.size).to eq(1)
         expect(res_admin_class_subjects.first).to include("id", "name")
@@ -117,15 +106,6 @@ RSpec.describe "Api::V1::Teachers", type: :request do
           "grade" => student.grade,
           "school_stage" => student.school_stage,
           "student_code" => student.student_code
-        )
-
-        # res_teacher の授業情報の確認
-        res_teacher_assignment = res_teacher["teaching_assignments"].first
-        expect(res_teacher_assignment).to include(
-          "id" => teaching_assignment.id,
-          "user_id" => teaching_assignment.user_id,
-          "student_id" => teaching_assignment.student_id,
-          "teaching_status" => teaching_assignment.teaching_status
         )
 
         # res_teacher の授業科目情報の確認

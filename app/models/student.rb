@@ -27,20 +27,32 @@
 class Student < ApplicationRecord
   belongs_to :school
   # User:Student N:N
-  has_many :teaching_assignments, class_name: "Teaching::Assignment", dependent: :destroy
+  has_many :teaching_assignments,
+           class_name: "Teaching::Assignment",
+           dependent: :destroy
   has_many :users, through: :teaching_assignments
   # Student:ClassSubject N:N
-  has_many :student_class_subjects, class_name: "Subjects::StudentLink", dependent: :destroy
+  has_many :student_class_subjects,
+           class_name: "Subjects::StudentLink",
+           dependent: :destroy
   has_many :class_subjects, through: :student_class_subjects
   # Student:AvailableDay N:N
-  has_many :student_available_days, class_name: "Availability::StudentLink", dependent: :destroy
+  has_many :student_available_days,
+           class_name: "Availability::StudentLink",
+           dependent: :destroy
   has_many :available_days, through: :student_available_days
 
   enum :status, { active: 0, graduated: 1, quit: 2, paused: 3 }
-  enum :school_stage, { elementary_school: 0, junior_high_school: 1, high_school: 2 }
+  enum :school_stage,
+       { elementary_school: 0, junior_high_school: 1, high_school: 2 }
 
   # Student code format: S followed by 4 digits (e.g., S0001)
-  validates :student_code, presence: true, uniqueness: true, format: { with: /\AS\d{4}\z/ }
+  validates :student_code,
+            presence: true,
+            uniqueness: true,
+            format: {
+              with: /\AS\d{4}\z/
+            }
   validates :name, presence: true, length: { maximum: 50 }
   validates :status, presence: true
   validates :joined_on, presence: true
@@ -55,14 +67,14 @@ class Student < ApplicationRecord
 
   private
 
-    def set_student_code
-      last_code = Student.maximum(:student_code)
-      last_number = last_code ? last_code.delete_prefix("S").to_i : 0
-      self.student_code = format("S%04d", last_number + 1)
-    end
+  def set_student_code
+    last_code = Student.maximum(:student_code)
+    last_number = last_code ? last_code.delete_prefix("S").to_i : 0
+    self.student_code = format("S%04d", last_number + 1)
+  end
 
-    def left_on_after_joined_on
-      return if left_on.blank? || joined_on.blank?
-      errors.add(:left_on, "は入塾日以降の日付である必要があります") if left_on < joined_on
-    end
+  def left_on_after_joined_on
+    return if left_on.blank? || joined_on.blank?
+    errors.add(:left_on, "は入塾日以降の日付である必要があります") if left_on < joined_on
+  end
 end

@@ -2,13 +2,11 @@
 #
 # Table name: teaching_assignments
 #
-#  id              :bigint           not null, primary key
-#  started_on      :date
-#  teaching_status :boolean
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  student_id      :bigint           not null
-#  user_id         :bigint           not null
+#  id         :bigint           not null, primary key
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  student_id :bigint           not null
+#  user_id    :bigint           not null
 #
 # Indexes
 #
@@ -25,6 +23,4 @@ class Teaching::Assignment < ApplicationRecord
 
   belongs_to :user
   belongs_to :student
-
-  validates :started_on, presence: true
 end
