@@ -3,7 +3,7 @@ class Teachers::IndexPresenter
     @current = result[:current]
     @teachers = result[:teachers]
   end
-
+  # *は引数を無視するため
   def as_json(*)
     {
       current_user: format_user(@current),
