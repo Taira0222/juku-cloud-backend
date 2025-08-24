@@ -11,12 +11,6 @@ class Api::V1::InvitesController < ApplicationController
   rescue Invites::InvalidInviteError => e
     # 404 エラー
     render json: { message: e.message }, status: :not_found
-  rescue StandardError => e
-    # 予期せぬエラー 500
-    render json: {
-             message: I18n.t("invites.errors.unexpected")
-           },
-           status: :internal_server_error
   end
 
   # POST /api/v1/invites
@@ -26,11 +20,5 @@ class Api::V1::InvitesController < ApplicationController
   rescue Invites::TokenGenerateError => e
     # 422 エラー
     render json: { message: e.message }, status: :unprocessable_content
-  rescue StandardError => e
-    # 予期せぬエラー 500
-    render json: {
-             message: I18n.t("invites.errors.unexpected")
-           },
-           status: :internal_server_error
   end
 end
