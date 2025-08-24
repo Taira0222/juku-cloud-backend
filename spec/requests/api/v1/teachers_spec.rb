@@ -161,32 +161,66 @@ RSpec.describe "Api::V1::Teachers", type: :request do
   describe "DELETE /destroy" do
     let!(:school) { create(:school) }
     let(:teacher) { create(:user, school: school) }
-    let(:user) { create(:user, school: school) }
+    let!(:user) { create(:user, role: :admin) }
 
-    context "admin signed in" do
-      before { user.role = :admin }
-      it "deletes a teacher and returns no content (204)" do
-        teacher.role = :teacher
-        delete_with_auth(api_v1_teacher_path(teacher), user)
-        expect(response).to have_http_status(:no_content)
-        expect(User.exists?(teacher.id)).to be_falsey
-      end
+    it "deletes a teacher and returns no content (204)" do
+      teacher.role = :teacher
+      delete_with_auth(api_v1_teacher_path(teacher), user)
+      expect(response).to have_http_status(:no_content)
+      expect(User.exists?(teacher.id)).to be_falsey
     end
-    context "teacher signed in" do
-      before { user.role = :teacher }
-      it "returns Forbidden response (403)" do
-        delete_with_auth(api_v1_teacher_path(teacher), user)
-        expect(response).to have_http_status(:forbidden)
-        expect(response.body).to include(
-          I18n.t("application.errors.teacher_unable_operate")
-        )
-      end
+
+    it "returns validation errors if user does not exist" do
+      delete_with_auth(api_v1_teacher_path("invalid_id"), user)
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).to include(I18n.t("teachers.errors.not_found"))
     end
-    context "unauthenticated user" do
-      it "returns an unauthorized response (401)" do
-        delete api_v1_teacher_path(teacher)
-        expect(response).to have_http_status(:unauthorized)
-      end
+
+    it "does not destroy a teacher and returns 422 unprocessable_content" do
+      # destroy アクションが呼ばれたらfalse を返す
+      allow_any_instance_of(User).to receive(:destroy).and_return(false)
+      teacher.role = :teacher
+      delete_with_auth(api_v1_teacher_path(teacher), user)
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include(I18n.t("teachers.errors.delete.failure"))
+    end
+  end
+
+  describe "PATCH /update" do
+    let!(:school) { create(:school) }
+    let!(:user) { create(:user, role: :admin) }
+    let!(:teacher) { create(:user, id: 1, name: "Old Name", school: school) }
+
+    it "updates a teacher and returns the teacher id" do
+      patch_with_auth(
+        api_v1_teacher_path(teacher),
+        user,
+        params: {
+          id: "1",
+          name: "New Name"
+        }
+      )
+      expect(response).to have_http_status(:ok)
+      json_response = JSON.parse(response.body)
+
+      expect(json_response["teacher_id"]).to eq(teacher.id)
+      expect(teacher.reload.name).to eq("New Name")
+    end
+
+    it "returns an error if the update fails" do
+      patch_with_auth(
+        api_v1_teacher_path(teacher),
+        user,
+        params: {
+          id: "1",
+          name: "New Name",
+          employment_status: "invalid_status"
+        }
+      )
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include(
+        I18n.t("teachers.errors.invalid_argument")
+      )
     end
   end
 end

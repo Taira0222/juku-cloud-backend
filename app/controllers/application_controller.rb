@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   before_action { I18n.locale = :ja }
+  rescue_from StandardError, with: :render_internal_error
   include DeviseTokenAuth::Concerns::SetUserByToken
   include DeviseHackFakeSession
 
@@ -47,5 +48,17 @@ class ApplicationController < ActionController::API
              status: :forbidden
       nil
     end
+  end
+
+  def render_internal_error(exception)
+    # ログにエラーを記録
+    Rails.logger.error(exception.message)
+    Rails.logger.error(exception.backtrace.join("\n"))
+
+    # 500 Internal Server Errorを返す
+    render json: {
+             error: I18n.t("application.errors.internal_server_error")
+           },
+           status: :internal_server_error
   end
 end

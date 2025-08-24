@@ -28,6 +28,7 @@ ja:
         school_code: 学校コード
         name: 名前
         role: 権限
+        employment_status: 雇用状況
 
       school:
         name: 学校名
@@ -52,10 +53,13 @@ ja:
               blank: を入力してください
             school_code:
               invalid: が無効です。
+            name:
+              blank: を入力してください
   application:
     errors:
       not_found_school: 学校が見つかりませんでした。
       teacher_unable_operate: 講師はこの操作を行うことができません。
+      internal_server_error: サーバー内部でエラーが発生しました。しばらくしてから再度お試しください。
 
   invites:
     errors:
@@ -69,6 +73,7 @@ ja:
         admin: 管理者は削除できません。
         failure: 講師の削除に失敗しました。
       not_found: ユーザーが見つかりませんでした。
+      invalid_argument: 無効な引数が指定されました。
 
   devise:
     confirmations:
