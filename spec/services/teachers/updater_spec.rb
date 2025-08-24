@@ -15,7 +15,17 @@ RSpec.describe Teachers::Updater do
     let!(:students) { (1..3).map { |i| create(:student, id: i) } }
 
     context "with valid attributes" do
-      let(:teacher) { create(:user, :teacher) }
+      let!(:teacher) do
+        create(
+          :user,
+          :teacher,
+          name: "Old Name",
+          employment_status: "inactive",
+          class_subject_ids: [],
+          available_day_ids: [],
+          student_ids: []
+        )
+      end
       let(:attrs) do
         {
           name: "New Name",
@@ -27,14 +37,6 @@ RSpec.describe Teachers::Updater do
       end
 
       it "updates the teacher's attributes and returns a successful result" do
-        # 前のteacher の情報を入れておく
-        teacher.name = "name"
-        teacher.employment_status = "inactive"
-        teacher.class_subject_ids = []
-        teacher.available_day_ids = []
-        teacher.student_ids = []
-        teacher.save!
-
         # updater を呼んで更新されることを確認
         result = call
         expect(result).to be_ok

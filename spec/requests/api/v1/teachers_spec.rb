@@ -160,11 +160,10 @@ RSpec.describe "Api::V1::Teachers", type: :request do
 
   describe "DELETE /destroy" do
     let!(:school) { create(:school) }
-    let(:teacher) { create(:user, school: school) }
+    let!(:teacher) { create(:user, school: school) }
     let!(:user) { create(:user, role: :admin) }
 
     it "deletes a teacher and returns no content (204)" do
-      teacher.role = :teacher
       delete_with_auth(api_v1_teacher_path(teacher), user)
       expect(response).to have_http_status(:no_content)
       expect(User.exists?(teacher.id)).to be_falsey
@@ -178,8 +177,12 @@ RSpec.describe "Api::V1::Teachers", type: :request do
 
     it "does not destroy a teacher and returns 422 unprocessable_content" do
       # destroy アクションが呼ばれたらfalse を返す
-      allow_any_instance_of(User).to receive(:destroy).and_return(false)
-      teacher.role = :teacher
+      allow(teacher).to receive(:destroy).and_return(false)
+      # Teachers::Validator のteacher を差し替える必要がある
+      allow(Teachers::Validator).to receive(:call).with(
+        id: teacher.id.to_s
+      ).and_return(double(ok?: true, teacher: teacher, error: nil, status: nil))
+
       delete_with_auth(api_v1_teacher_path(teacher), user)
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include(I18n.t("teachers.errors.delete.failure"))

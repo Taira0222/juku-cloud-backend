@@ -37,11 +37,15 @@ module Teachers
       # 空の値は更新しない
       base = p.slice(:name, :employment_status).compact_blank
       # 配列の値は重複とnilを除去し、空の配列はそのまま返す
-      subject_ids = Array(p[:subject_ids]).compact.uniq
-      day_ids = Array(p[:available_day_ids]).compact.uniq
-      student_ids = Array(p[:student_ids]).compact.uniq
+      subject_ids = extract_ids(p[:subject_ids])
+      day_ids = extract_ids(p[:available_day_ids])
+      student_ids = extract_ids(p[:student_ids])
       # subject_ids, day_ids, student_ids が空の場合は nil を返す
       [ base, subject_ids.presence, day_ids.presence, student_ids.presence ]
+    end
+
+    def extract_ids(val)
+      Array(val).compact.uniq
     end
   end
 end
