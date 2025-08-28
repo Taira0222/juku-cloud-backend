@@ -6,19 +6,16 @@
 #  desired_school :string
 #  grade          :integer          not null
 #  joined_on      :date
-#  left_on        :date
 #  name           :string           not null
 #  school_stage   :integer          not null
 #  status         :integer          default("active"), not null
-#  student_code   :string           not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  school_id      :bigint           not null
 #
 # Indexes
 #
-#  index_students_on_school_id     (school_id)
-#  index_students_on_student_code  (student_code) UNIQUE
+#  index_students_on_school_id  (school_id)
 #
 # Foreign Keys
 #
@@ -34,55 +31,18 @@ RSpec.describe Student, type: :model do
       expect(student).to be_valid
     end
 
-    it "is not valid without a student_code" do
-      student.student_code = nil
-      allow(student).to receive(:set_student_code) # コールバックを無効化
-      expect(student).not_to be_valid
+    it "is valid with blank desired_school" do
+      student.desired_school = ""
+      expect(student).to be_valid
     end
 
-    it "is not valid with a student_code with wrong format" do
-      student.student_code = "12345" # Assuming the format requires alphanumeric characters
-      allow(student).to receive(:set_student_code) # コールバックを無効化
-      expect(student).not_to be_valid
+    it "is valid with 100 characters in desired_school" do
+      student.desired_school = "a" * 100
+      expect(student).to be_valid
     end
 
-    it "is not valid with a duplicate student_code" do
-      create(:student, student_code: "S0001") # DB に保存
-      allow(student).to receive(:set_student_code) # コールバックを無効化
-      student.student_code = "S0001" # メモリのstudent にS0001を設定
-
-      expect(student).not_to be_valid
-    end
-
-    it "is not valid without a name" do
-      student.name = nil
-      expect(student).not_to be_valid
-    end
-
-    it "is not valid with 51 characters in name" do
-      student.name = "a" * 51
-      expect(student).not_to be_valid
-    end
-
-    it "is not valid without status" do
-      student.status = nil
-      expect(student).not_to be_valid
-    end
-
-    it "is not valid without joined_on date" do
-      student.joined_on = nil
-      expect(student).not_to be_valid
-    end
-
-    it "should not be later than or equal to left_on date" do
-      student.left_on = Date.yesterday
-      student.joined_on = Date.today
-      expect(student).not_to be_valid
-      expect(student.errors[:left_on]).to include("は入塾日以降の日付である必要があります")
-    end
-
-    it "is not valid without a school_stage" do
-      student.school_stage = nil
+    it "is not valid with 101 characters in desired_school" do
+      student.desired_school = "a" * 101
       expect(student).not_to be_valid
     end
 
@@ -91,34 +51,69 @@ RSpec.describe Student, type: :model do
       expect(student).not_to be_valid
     end
 
-    it "is not valid with 101 characters in desired_school" do
-      student.desired_school = "a" * 101
+    it "is not valid without a name" do
+      student.name = nil
       expect(student).not_to be_valid
     end
-  end
 
-  describe "student_code auto-generation" do
-    it "automatically generates sequential student_code when creating students" do
-      # 既存データをクリア
-      Student.destroy_all
+    it "is valid with 50 characters name" do
+      student.name = "a" * 50
+      expect(student).to be_valid
+    end
 
-      # 順番に学生を作成（student_codeは自動生成される）
-      student1 = create(:student)
-      student2 = create(:student)
-      student3 = create(:student)
+    it "is not valid with 51 characters in name" do
+      student.name = "a" * 51
+      expect(student).not_to be_valid
+    end
 
-      # 自動生成された student_code のフォーマットを確認
-      expect(student1.student_code).to match(/\AS\d{4}\z/)
-      expect(student2.student_code).to match(/\AS\d{4}\z/)
-      expect(student3.student_code).to match(/\AS\d{4}\z/)
+    it "is not valid without joined_on date" do
+      student.joined_on = nil
+      expect(student).not_to be_valid
+    end
 
-      # 一意性を確認
-      codes = [
-        student1.student_code,
-        student2.student_code,
-        student3.student_code
-      ]
-      expect(codes.uniq.length).to eq(3)
+    it "is valid enum status" do
+      VALID_STATUSES = %w[active inactive graduated on_leave]
+      VALID_STATUSES.each do |status|
+        student.status = status
+        expect(student).to be_valid
+      end
+    end
+
+    it "is not valid without status" do
+      student.status = nil
+      expect(student).not_to be_valid
+    end
+
+    it "is valid enum school_stage" do
+      VALID_SCHOOL_STAGES = %w[elementary_school junior_high_school high_school]
+      VALID_SCHOOL_STAGES.each do |stage|
+        student.school_stage = stage
+        expect(student).to be_valid
+      end
+    end
+
+    it "is not valid without a school_stage" do
+      student.school_stage = nil
+      expect(student).not_to be_valid
+    end
+
+    it "is valid with 6th grade and elementary school stage" do
+      student.grade = 6
+      student.school_stage = :elementary_school
+      expect(student).to be_valid
+    end
+
+    it "is not valid with invalid grade and school stage" do
+      student.grade = 7
+      student.school_stage = :elementary_school
+      expect(student).not_to be_valid
+
+      student.grade = 4
+      student.school_stage = :junior_high_school
+      expect(student).not_to be_valid
+      expect(student.errors[:grade]).to include(
+        I18n.t("errors.models.student.attributes.grade.invalid_range")
+      )
     end
   end
 
