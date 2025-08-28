@@ -59,9 +59,19 @@ class Student < ApplicationRecord
 
     case school_stage.to_sym
     when :elementary_school
-      errors.add(:grade, "は1から6の間で指定してください") unless (1..6).include?(grade)
+      unless (1..6).include?(grade)
+        errors.add(
+          :grade,
+          I18n.t("errors.models.student.attributes.grade.invalid_range")
+        )
+      end
     when :junior_high_school, :high_school
-      errors.add(:grade, "は1から3の間で指定してください") unless (1..3).include?(grade)
+      unless (1..3).include?(grade)
+        errors.add(
+          :grade,
+          I18n.t("errors.models.student.attributes.grade.invalid_range")
+        )
+      end
     end
   end
 end

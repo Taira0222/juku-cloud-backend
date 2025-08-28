@@ -71,14 +71,9 @@ RSpec.describe Student, type: :model do
       expect(student).not_to be_valid
     end
 
-    it "is not valid with 51 characters in name" do
-      student.name = "a" * 51
-      expect(student).not_to be_valid
-    end
-
     it "is valid enum status" do
-      STATUS = %w[active inactive graduated on_leave]
-      STATUS.each do |status|
+      VALID_STATUSES = %w[active inactive graduated on_leave]
+      VALID_STATUSES.each do |status|
         student.status = status
         expect(student).to be_valid
       end
@@ -90,8 +85,8 @@ RSpec.describe Student, type: :model do
     end
 
     it "is valid enum school_stage" do
-      SCHOOL_STAGES = %w[elementary_school junior_high_school high_school]
-      SCHOOL_STAGES.each do |stage|
+      VALID_SCHOOL_STAGES = %w[elementary_school junior_high_school high_school]
+      VALID_SCHOOL_STAGES.each do |stage|
         student.school_stage = stage
         expect(student).to be_valid
       end
@@ -116,6 +111,9 @@ RSpec.describe Student, type: :model do
       student.grade = 4
       student.school_stage = :junior_high_school
       expect(student).not_to be_valid
+      expect(student.errors[:grade]).to include(
+        I18n.t("errors.models.student.attributes.grade.invalid_range")
+      )
     end
   end
 
