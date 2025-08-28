@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_27_234532) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_28_225131) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -72,18 +72,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_27_234532) do
 
   create_table "students", force: :cascade do |t|
     t.bigint "school_id", null: false
-    t.string "student_code", null: false
     t.string "name", null: false
     t.integer "status", default: 0, null: false
     t.date "joined_on"
-    t.date "left_on"
     t.integer "school_stage", null: false
     t.integer "grade", null: false
     t.string "desired_school"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["school_id"], name: "index_students_on_school_id"
-    t.index ["student_code"], name: "index_students_on_student_code", unique: true
   end
 
   create_table "teaching_assignments", force: :cascade do |t|
