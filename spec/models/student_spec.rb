@@ -31,28 +31,18 @@ RSpec.describe Student, type: :model do
       expect(student).to be_valid
     end
 
-    it "is not valid without a name" do
-      student.name = nil
-      expect(student).not_to be_valid
+    it "is valid with blank desired_school" do
+      student.desired_school = ""
+      expect(student).to be_valid
     end
 
-    it "is not valid with 51 characters in name" do
-      student.name = "a" * 51
-      expect(student).not_to be_valid
+    it "is valid with 100 characters in desired_school" do
+      student.desired_school = "a" * 100
+      expect(student).to be_valid
     end
 
-    it "is not valid without status" do
-      student.status = nil
-      expect(student).not_to be_valid
-    end
-
-    it "is not valid without joined_on date" do
-      student.joined_on = nil
-      expect(student).not_to be_valid
-    end
-
-    it "is not valid without a school_stage" do
-      student.school_stage = nil
+    it "is not valid with 101 characters in desired_school" do
+      student.desired_school = "a" * 101
       expect(student).not_to be_valid
     end
 
@@ -61,8 +51,70 @@ RSpec.describe Student, type: :model do
       expect(student).not_to be_valid
     end
 
-    it "is not valid with 101 characters in desired_school" do
-      student.desired_school = "a" * 101
+    it "is not valid without a name" do
+      student.name = nil
+      expect(student).not_to be_valid
+    end
+
+    it "is valid with 50 characters name" do
+      student.name = "a" * 50
+      expect(student).to be_valid
+    end
+
+    it "is not valid with 51 characters in name" do
+      student.name = "a" * 51
+      expect(student).not_to be_valid
+    end
+
+    it "is not valid without joined_on date" do
+      student.joined_on = nil
+      expect(student).not_to be_valid
+    end
+
+    it "is not valid with 51 characters in name" do
+      student.name = "a" * 51
+      expect(student).not_to be_valid
+    end
+
+    it "is valid enum status" do
+      STATUS = %w[active inactive graduated on_leave]
+      STATUS.each do |status|
+        student.status = status
+        expect(student).to be_valid
+      end
+    end
+
+    it "is not valid without status" do
+      student.status = nil
+      expect(student).not_to be_valid
+    end
+
+    it "is valid enum school_stage" do
+      SCHOOL_STAGES = %w[elementary_school junior_high_school high_school]
+      SCHOOL_STAGES.each do |stage|
+        student.school_stage = stage
+        expect(student).to be_valid
+      end
+    end
+
+    it "is not valid without a school_stage" do
+      student.school_stage = nil
+      expect(student).not_to be_valid
+    end
+
+    it "is valid with 6th grade and elementary school stage" do
+      student.grade = 6
+      student.school_stage = :elementary_school
+      expect(student).to be_valid
+    end
+
+    it "is not valid with invalid grade and school stage" do
+      student.grade = 7
+      student.school_stage = :elementary_school
+      expect(student).not_to be_valid
+
+      student.grade = 4
+      student.school_stage = :junior_high_school
       expect(student).not_to be_valid
     end
   end

@@ -33,6 +33,13 @@ ja:
       school:
         name: 学校名
         school_code: 学校コード
+
+      student:
+        name: 名前
+        grade: 学年
+        joined_on: 入塾日
+        desired_school: 志望校
+        school_stage: 学年
     # これがないと、会員登録時にエラーになるので消さない
     models:
       user:

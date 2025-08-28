@@ -49,4 +49,19 @@ class Student < ApplicationRecord
   validates :school_stage, presence: true
   validates :grade, presence: true
   validates :desired_school, length: { maximum: 100 }, allow_blank: true
+
+  validate :grade_must_be_valid_for_stage, on: %i[create update]
+
+  private
+
+  def grade_must_be_valid_for_stage
+    return if grade.nil? || school_stage.nil?
+
+    case school_stage.to_sym
+    when :elementary_school
+      errors.add(:grade, "は1から6の間で指定してください") unless (1..6).include?(grade)
+    when :junior_high_school, :high_school
+      errors.add(:grade, "は1から3の間で指定してください") unless (1..3).include?(grade)
+    end
+  end
 end
