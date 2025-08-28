@@ -24,4 +24,11 @@ class Subjects::StudentLink < ApplicationRecord
 
   belongs_to :student
   belongs_to :class_subject
+
+  # Teaching::Assignmentとの関連を追加
+  has_many :teaching_assignments,
+           class_name: "Teaching::Assignment",
+           foreign_key: :student_class_subject_id,
+           dependent: :destroy
+  has_many :teachers, through: :teaching_assignments, source: :user
 end

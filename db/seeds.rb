@@ -1,12 +1,13 @@
 # 教科が9科目
-CLASS_SUBJECTS_COUNT = 9
+CLASS_SUBJECTS_COUNT = 5
 # 教科を作成
-CLASS_SUBJECTS_COUNT.times { |i| ClassSubject.find_or_create_by!(name: i) }
+CLASS_SUBJECTS_COUNT.times { |i| ClassSubject.create!(name: i) }
 
 # 曜日が7つ
 AVAILABLE_DAYS_COUNT = 7
 # 曜日を作成
-AVAILABLE_DAYS_COUNT.times { |i| AvailableDay.find_or_create_by!(name: i) }
+AVAILABLE_DAYS_COUNT.times { |i| AvailableDay.create!(name: i) }
+
 # 1人の管理者が担当する先生の数
 TEACHERS_COUNT = 10
 
@@ -15,9 +16,16 @@ FIRST_TEACHER_START_NUMBER = 1
 # 2人目の管理者が担当する先生の初めの番号
 SECOND_TEACHER_START_NUMBER = FIRST_TEACHER_START_NUMBER + TEACHERS_COUNT
 
+# 生徒1人あたりの受講科目数（例：1〜3科目）
+STUDENT_SUBJECTS_MIN = 1
+STUDENT_SUBJECTS_MAX = 3
+
+# 科目(5教科)と曜日を取得して配列化
+SUBJECTS = ClassSubject.order(:id).limit(5).to_a
+DAYS = AvailableDay.all.to_a
 # ユーザーを作成するメソッド
 def create_user(email, name, role, employment_status, school)
-  User.find_or_create_by!(email: email) do |user|
+  User.create!(email: email) do |user|
     user.name = name
     user.password = "password"
     user.password_confirmation = "password"
@@ -31,7 +39,7 @@ end
 
 # 学校を作成するメソッド
 def create_school(school_code, school_name, owner)
-  School.find_or_create_by!(school_code: school_code) do |school|
+  School.create!(school_code: school_code) do |school|
     school.name = school_name
     school.owner = owner
   end
@@ -75,18 +83,35 @@ def create_students_for_teacher(teachers, school_code, num_students = 2)
       grade = GRADES[i % GRADES.size]
 
       student =
-        Student.create!(
-          name: Faker::Name.name,
-          school: School.find_by!(school_code: school_code),
-          status: status,
-          joined_on: Time.current,
-          school_stage: school_stage,
-          grade: grade,
-          desired_school: Faker::University.name
+        Student.create! do |s|
+          s.name = Faker::Name.name
+          s.school = School.find_by!(school_code: school_code)
+          s.status = status
+          s.joined_on = Time.current
+          s.school_stage = school_stage
+          s.grade = grade
+          s.desired_school = Faker::University.name
+        end
+
+      student_subjects =
+        pick_some(
+          SUBJECTS,
+          min: STUDENT_SUBJECTS_MIN,
+          max: STUDENT_SUBJECTS_MAX
         )
 
-      # 中間テーブル
-      Teaching::Assignment.find_or_create_by!(user: teacher, student: student)
+      student.class_subjects = student_subjects
+      student.save!
+
+      teacher.class_subjects = student_subjects
+      teacher.save!
+
+      student.student_class_subjects.each do |scs|
+        Teaching::Assignment.find_or_create_by!(
+          user: teacher,
+          student_class_subject: scs
+        )
+      end
     end
   end
 end
@@ -134,15 +159,10 @@ create_teacher(
 # 生徒を2人ずつ作成
 create_students_for_teacher(second_teachers, "DEF123")
 
-# 科目(5教科)と曜日を取得して配列化
-subjects = ClassSubject.order(:id).limit(5).to_a
-days = AvailableDay.all.to_a
-
 # 管理者と講師を対象にランダム割り当て
 User
   .where(role: %i[admin teacher])
   .each do |user|
-    user.class_subjects = pick_some(subjects, min: 1, max: 3)
-    user.available_days = pick_some(days, min: 1, max: 4)
+    user.available_days = pick_some(DAYS, min: 1, max: 4)
     user.save!
   end
