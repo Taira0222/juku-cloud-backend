@@ -55,21 +55,26 @@ class User < ActiveRecord::Base
          :confirmable
   include DeviseTokenAuth::Concerns::User
   attr_accessor :confirm_success_url
-  # user(role:admin):school 1:1
   has_one :owned_school, class_name: "School", foreign_key: :owner_id
   # admin がschool_id = nil なので、optional: true にする
   belongs_to :school, optional: true
-  # User:Student N:N
+
   has_many :teaching_assignments,
            class_name: "Teaching::Assignment",
            dependent: :destroy
-  has_many :students, through: :teaching_assignments
-  # User:ClassSubject N:N
+  has_many :student_class_subjects,
+           class_name: "Subjects::StudentLink",
+           through: :teaching_assignments
+  #  "Subjects::StudentLink" は科目と一緒に生徒を持つので生徒が重複しないように distinct をつける
+  has_many :students, -> { distinct }, through: :student_class_subjects
+
   has_many :user_class_subjects,
            class_name: "Subjects::UserLink",
            dependent: :destroy
+  has_many :teachable_subjects, through: :user_class_subjects
+  # teachable_subjects のエイリアス
   has_many :class_subjects, through: :user_class_subjects
-  # User:AvailableDay N:N
+
   has_many :user_available_days,
            class_name: "Availability::UserLink",
            dependent: :destroy
