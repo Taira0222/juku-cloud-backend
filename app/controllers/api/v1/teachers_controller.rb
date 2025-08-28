@@ -46,11 +46,11 @@ class Api::V1::TeachersController < ApplicationController
 
   def update_params
     params.permit(
+      :id,
       :name,
       :employment_status,
       subject_ids: [],
-      available_day_ids: [],
-      student_ids: []
+      available_day_ids: []
     )
   end
 end

@@ -12,7 +12,6 @@ RSpec.describe Teachers::Updater do
         create(:available_day, trait, id: i + 1)
       end
     end
-    let!(:students) { (1..3).map { |i| create(:student, id: i) } }
 
     context "with valid attributes" do
       let!(:teacher) do
@@ -22,8 +21,7 @@ RSpec.describe Teachers::Updater do
           name: "Old Name",
           employment_status: "inactive",
           class_subject_ids: [],
-          available_day_ids: [],
-          student_ids: []
+          available_day_ids: []
         )
       end
       let(:attrs) do
@@ -31,8 +29,7 @@ RSpec.describe Teachers::Updater do
           name: "New Name",
           employment_status: "active",
           subject_ids: [ 1, 2, 3 ],
-          available_day_ids: [ 1, 2, 3 ],
-          student_ids: [ 1, 2, 3 ]
+          available_day_ids: [ 1, 2, 3 ]
         }
       end
 
@@ -44,7 +41,6 @@ RSpec.describe Teachers::Updater do
         expect(teacher.reload.employment_status).to eq("active")
         expect(teacher.reload.class_subject_ids).to eq([ 1, 2, 3 ])
         expect(teacher.reload.available_day_ids).to eq([ 1, 2, 3 ])
-        expect(teacher.reload.student_ids).to eq([ 1, 2, 3 ])
       end
     end
 
@@ -55,8 +51,7 @@ RSpec.describe Teachers::Updater do
           name: "ok",
           employment_status: "active",
           subject_ids: [ 1, 1, 2 ],
-          available_day_ids: [ 2, 2, 3 ],
-          student_ids: [ 1, 1, 3 ]
+          available_day_ids: [ 2, 2, 3 ]
         }
       end
 
@@ -65,27 +60,19 @@ RSpec.describe Teachers::Updater do
         expect(result.ok?).to be true
         expect(teacher.reload.class_subject_ids).to eq([ 1, 2 ])
         expect(teacher.reload.available_day_ids).to eq([ 2, 3 ])
-        expect(teacher.reload.student_ids).to eq([ 1, 3 ])
       end
     end
 
     context "when arrays are empty (skip-update spec)" do
       let(:teacher) do
-        create(
-          :user,
-          :teacher,
-          class_subject_ids: [ 1 ],
-          available_day_ids: [ 1 ],
-          student_ids: [ 1 ]
-        )
+        create(:user, :teacher, class_subject_ids: [ 1 ], available_day_ids: [ 1 ])
       end
       let(:attrs) do
         {
           name: "ok",
           employment_status: "active",
           subject_ids: [], # extract の .presence で nil になり、代入をスキップ
-          available_day_ids: [],
-          student_ids: []
+          available_day_ids: []
         }
       end
 
@@ -94,7 +81,6 @@ RSpec.describe Teachers::Updater do
         expect(result).to be_ok
         expect(teacher.reload.class_subject_ids).to eq([ 1 ])
         expect(teacher.reload.available_day_ids).to eq([ 1 ])
-        expect(teacher.reload.student_ids).to eq([ 1 ])
       end
     end
     context "returns ArgumentError if invalid enum values are provided" do
@@ -104,8 +90,7 @@ RSpec.describe Teachers::Updater do
           name: "ok",
           employment_status: "invalid_status", # Invalid enum value
           subject_ids: [ 1, 2 ],
-          available_day_ids: [ 1, 2 ],
-          student_ids: [ 1, 2 ]
+          available_day_ids: [ 1, 2 ]
         }
       end
 

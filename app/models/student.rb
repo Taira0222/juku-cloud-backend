@@ -26,17 +26,17 @@
 #
 class Student < ApplicationRecord
   belongs_to :school
-  # User:Student N:N
-  has_many :teaching_assignments,
-           class_name: "Teaching::Assignment",
-           dependent: :destroy
-  has_many :users, through: :teaching_assignments
-  # Student:ClassSubject N:N
+
+  # 直接の関連付け
   has_many :student_class_subjects,
            class_name: "Subjects::StudentLink",
            dependent: :destroy
   has_many :class_subjects, through: :student_class_subjects
-  # Student:AvailableDay N:N
+
+  # Teaching::Assignmentとの直接関連
+  has_many :teaching_assignments, through: :student_class_subjects
+  has_many :teachers, through: :teaching_assignments, source: :user
+
   has_many :student_available_days,
            class_name: "Availability::StudentLink",
            dependent: :destroy
