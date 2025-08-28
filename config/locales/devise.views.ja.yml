@@ -33,6 +33,13 @@ ja:
       school:
         name: 学校名
         school_code: 学校コード
+
+      student:
+        name: 名前
+        grade: 学年
+        joined_on: 入塾日
+        desired_school: 志望校
+        school_stage: 学年
     # これがないと、会員登録時にエラーになるので消さない
     models:
       user:
@@ -55,6 +62,23 @@ ja:
               invalid: が無効です。
             name:
               blank: を入力してください
+        student:
+          attributes:
+            name:
+              blank: を入力してください
+              too_long: は50文字以下で入力してください
+            grade:
+              blank: を入力してください
+              not_a_number: は数値で入力してください
+              invalid_range: 正しい範囲で入力してください
+            joined_on:
+              blank: を入力してください
+            school_stage:
+              blank: を入力してください
+              inclusion: は不正な値です
+            status:
+              blank: を入力してください
+              inclusion: は不正な値です
   application:
     errors:
       not_found_school: 学校が見つかりませんでした。

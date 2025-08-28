@@ -6,19 +6,16 @@
 #  desired_school :string
 #  grade          :integer          not null
 #  joined_on      :date
-#  left_on        :date
 #  name           :string           not null
 #  school_stage   :integer          not null
 #  status         :integer          default("active"), not null
-#  student_code   :string           not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  school_id      :bigint           not null
 #
 # Indexes
 #
-#  index_students_on_school_id     (school_id)
-#  index_students_on_student_code  (student_code) UNIQUE
+#  index_students_on_school_id  (school_id)
 #
 # Foreign Keys
 #
@@ -42,17 +39,10 @@ class Student < ApplicationRecord
            dependent: :destroy
   has_many :available_days, through: :student_available_days
 
-  enum :status, { active: 0, graduated: 1, quit: 2, paused: 3 }
+  enum :status, { active: 0, inactive: 1, graduated: 2, on_leave: 3 }
   enum :school_stage,
        { elementary_school: 0, junior_high_school: 1, high_school: 2 }
 
-  # Student code format: S followed by 4 digits (e.g., S0001)
-  validates :student_code,
-            presence: true,
-            uniqueness: true,
-            format: {
-              with: /\AS\d{4}\z/
-            }
   validates :name, presence: true, length: { maximum: 50 }
   validates :status, presence: true
   validates :joined_on, presence: true
@@ -60,21 +50,28 @@ class Student < ApplicationRecord
   validates :grade, presence: true
   validates :desired_school, length: { maximum: 100 }, allow_blank: true
 
-  # 退塾日は入塾日以降であることを確認する 自作validate なので単数形
-  validate :left_on_after_joined_on
-
-  before_validation :set_student_code, on: :create
+  validate :grade_must_be_valid_for_stage, on: %i[create update]
 
   private
 
-  def set_student_code
-    last_code = Student.maximum(:student_code)
-    last_number = last_code ? last_code.delete_prefix("S").to_i : 0
-    self.student_code = format("S%04d", last_number + 1)
-  end
+  def grade_must_be_valid_for_stage
+    return if grade.nil? || school_stage.nil?
 
-  def left_on_after_joined_on
-    return if left_on.blank? || joined_on.blank?
-    errors.add(:left_on, "は入塾日以降の日付である必要があります") if left_on < joined_on
+    case school_stage.to_sym
+    when :elementary_school
+      unless (1..6).include?(grade)
+        errors.add(
+          :grade,
+          I18n.t("errors.models.student.attributes.grade.invalid_range")
+        )
+      end
+    when :junior_high_school, :high_school
+      unless (1..3).include?(grade)
+        errors.add(
+          :grade,
+          I18n.t("errors.models.student.attributes.grade.invalid_range")
+        )
+      end
+    end
   end
 end
