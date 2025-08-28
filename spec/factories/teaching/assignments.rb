@@ -2,25 +2,26 @@
 #
 # Table name: teaching_assignments
 #
-#  id         :bigint           not null, primary key
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  student_id :bigint           not null
-#  user_id    :bigint           not null
+#  id                       :bigint           not null, primary key
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  student_class_subject_id :bigint           not null
+#  user_id                  :bigint           not null
 #
 # Indexes
 #
-#  index_teaching_assignments_on_student_id  (student_id)
-#  index_teaching_assignments_on_user_id     (user_id)
+#  index_teaching_assignments_on_scs_and_user              (student_class_subject_id,user_id) UNIQUE
+#  index_teaching_assignments_on_student_class_subject_id  (student_class_subject_id)
+#  index_teaching_assignments_on_user_id                   (user_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (student_id => students.id)
+#  fk_rails_...  (student_class_subject_id => student_class_subjects.id)
 #  fk_rails_...  (user_id => users.id)
 #
 FactoryBot.define do
   factory :teaching_assignment, class: "Teaching::Assignment" do
     association :user
-    association :student
+    association :student_class_subject
   end
 end
