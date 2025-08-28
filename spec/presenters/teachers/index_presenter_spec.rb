@@ -15,7 +15,7 @@ RSpec.describe Teachers::IndexPresenter do
       {
         include: {
           students: {
-            only: %i[id student_code name status school_stage grade]
+            only: %i[id name status school_stage grade]
           },
           class_subjects: {
             only: %i[id name]
