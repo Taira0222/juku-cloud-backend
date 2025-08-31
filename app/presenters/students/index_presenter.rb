@@ -2,7 +2,7 @@ class Students::IndexPresenter
   def initialize(students)
     @students = students
   end
-  # *は引数を無視するため
+  # *は可変長引数を受け取るため
   def as_json(*)
     {
       students: @students.map { |student| format_student(student) },
