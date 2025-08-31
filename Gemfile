@@ -42,6 +42,8 @@ gem "devise-i18n", "~> 1.0"
 # ダミーデータを生成するためのgem
 gem "faker", "~> 3.5"
 
+gem "kaminari", "~> 1.2"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

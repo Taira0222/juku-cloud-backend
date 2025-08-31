@@ -20,6 +20,10 @@ SECOND_TEACHER_START_NUMBER = FIRST_TEACHER_START_NUMBER + TEACHERS_COUNT
 STUDENT_SUBJECTS_MIN = 1
 STUDENT_SUBJECTS_MAX = 3
 
+# 生徒1人あたりの受講曜日数（例：1〜3曜日）
+STUDENT_DAYS_MIN = 1
+STUDENT_DAYS_MAX = 3
+
 # 科目(5教科)と曜日を取得して配列化
 SUBJECTS = ClassSubject.order(:id).limit(5).to_a
 DAYS = AvailableDay.all.to_a
@@ -100,10 +104,15 @@ def create_students_for_teacher(teachers, school_code, num_students = 2)
           max: STUDENT_SUBJECTS_MAX
         )
 
+      student_days =
+        pick_some(DAYS, min: STUDENT_DAYS_MIN, max: STUDENT_DAYS_MAX)
+
       student.class_subjects = student_subjects
+      student.available_days = student_days
       student.save!
 
       teacher.class_subjects = student_subjects
+      teacher.available_days = student_days
       teacher.save!
 
       student.student_class_subjects.each do |scs|
@@ -161,8 +170,9 @@ create_students_for_teacher(second_teachers, "DEF123")
 
 # 管理者と講師を対象にランダム割り当て
 User
-  .where(role: %i[admin teacher])
+  .where(role: %i[admin])
   .each do |user|
+    user.class_subjects = pick_some(SUBJECTS, min: 1, max: 5)
     user.available_days = pick_some(DAYS, min: 1, max: 4)
     user.save!
   end

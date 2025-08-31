@@ -71,13 +71,17 @@ class User < ActiveRecord::Base
   has_many :user_class_subjects,
            class_name: "Subjects::UserLink",
            dependent: :destroy
-  has_many :teachable_subjects, through: :user_class_subjects
+  has_many :teachable_subjects,
+           through: :user_class_subjects,
+           source: :class_subject
   # teachable_subjects のエイリアス
   has_many :class_subjects, through: :user_class_subjects
 
   has_many :user_available_days,
            class_name: "Availability::UserLink",
            dependent: :destroy
+  has_many :workable_days, through: :user_available_days, source: :available_day
+  # workable_days のエイリアス
   has_many :available_days, through: :user_available_days
   # User:Invite 1:1 adminはinvite なしで作成予定
   belongs_to :invite, optional: true

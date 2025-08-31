@@ -32,14 +32,18 @@ class Student < ApplicationRecord
 
   # Teaching::Assignmentとの直接関連
   has_many :teaching_assignments, through: :student_class_subjects
-  has_many :teachers, through: :teaching_assignments, source: :user
+  # token がjson 形式のため、必要なカラムのみ選択して重複を削除する
+  has_many :teachers,
+           -> { select("users.id, users.name, users.role").distinct },
+           through: :teaching_assignments,
+           source: :user
 
   has_many :student_available_days,
            class_name: "Availability::StudentLink",
            dependent: :destroy
   has_many :available_days, through: :student_available_days
 
-  enum :status, { active: 0, inactive: 1, graduated: 2, on_leave: 3 }
+  enum :status, { active: 0, inactive: 1, on_leave: 2, graduated: 3 }
   enum :school_stage,
        { elementary_school: 0, junior_high_school: 1, high_school: 2 }
 
