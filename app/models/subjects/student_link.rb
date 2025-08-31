@@ -30,5 +30,4 @@ class Subjects::StudentLink < ApplicationRecord
            class_name: "Teaching::Assignment",
            foreign_key: :student_class_subject_id,
            dependent: :destroy
-  has_many :teachers, through: :teaching_assignments, source: :user
 end
