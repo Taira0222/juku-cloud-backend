@@ -80,5 +80,11 @@ RSpec.describe School, type: :model do
       it { expect(association.macro).to eq :has_many }
       it { expect(association.class_name).to eq "Invite" }
     end
+
+    context "students association" do
+      let(:target) { :students }
+      it { expect(association.macro).to eq :has_many }
+      it { expect(association.class_name).to eq "Student" }
+    end
   end
 end

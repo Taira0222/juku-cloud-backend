@@ -22,9 +22,14 @@ class School < ApplicationRecord
   # Admin:School 1:1
   belongs_to :owner, class_name: "User"
   # User(teacher): School 1:N
-  has_many :teachers, -> { where(role: :teacher) }, class_name: "User", foreign_key: :school_id
+  has_many :teachers,
+           -> { where(role: :teacher) },
+           class_name: "User",
+           foreign_key: :school_id
   # School:Invite 1:N
   has_many :invites, dependent: :destroy
+  # School:Student 1:N
+  has_many :students, dependent: :destroy
 
   # Validations
   validates :owner, presence: true
