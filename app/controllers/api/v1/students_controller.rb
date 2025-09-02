@@ -4,17 +4,13 @@ class Api::V1::StudentsController < ApplicationController
 
   def index
     students =
-      Students::IndexQuery.call(
-        school: @school,
-        page: index_params[:page],
-        per_page: index_params[:perPage]
-      )
+      Students::IndexQuery.call(school: @school, index_params: index_params)
     render json: Students::IndexPresenter.new(students).as_json
   end
 
   private
 
   def index_params
-    params.permit(:page, :perPage)
+    params.permit(:searchKeyword, :school_stage, :grade, :page, :perPage)
   end
 end
