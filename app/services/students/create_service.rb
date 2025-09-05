@@ -95,9 +95,9 @@ module Students
       # ActiveRecordのバリデーションエラー -> 422用に整形
       Result[false, nil, normalize_ar_errors(e.record)]
     rescue ActiveRecord::RecordNotFound => e
-      Result[false, nil, [{ code: "VALIDATION_FAILED", message: e.message }]]
+      Result[false, nil, [ { code: "VALIDATION_FAILED", message: e.message } ]]
     rescue ArgumentError => e
-      Result[false, nil, [{ code: "VALIDATION_FAILED", message: e.message }]]
+      Result[false, nil, [ { code: "VALIDATION_FAILED", message: e.message } ]]
     end
 
     private
