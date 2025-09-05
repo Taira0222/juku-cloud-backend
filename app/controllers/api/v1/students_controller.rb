@@ -3,6 +3,7 @@ class Api::V1::StudentsController < ApplicationController
   before_action :set_school!
   before_action :require_admin_role!, only: %i[create]
 
+  # GET /api/v1/students
   def index
     students =
       Students::IndexQuery.call(school: @school, index_params: index_params)
@@ -17,6 +18,7 @@ class Api::V1::StudentsController < ApplicationController
            }
   end
 
+  # POST /api/v1/students
   def create
     result =
       Students::CreateService.call(
