@@ -13,7 +13,7 @@ module Students
 
     def call
       student = nil
-      # upsert_all はAR を通らずtimestamp が入らないので、自前で設定
+      # upsert_all はActiveRecord を通らずtimestamp が入らないので、自前で設定
       now = Time.current
 
       ActiveRecord::Base.transaction do
@@ -39,7 +39,7 @@ module Students
                 updated_at: now
               }
             end
-          # ただの代入だと3回クエリを発行してしまうので、upsert_all で一括登録
+          # 通常の関連付けだと3回クエリを発行してしまうので、upsert_all で一括登録
           Subjects::StudentLink.upsert_all(
             rows,
             unique_by: %i[student_id class_subject_id]
@@ -104,7 +104,7 @@ module Students
         return [
           {
             code: "VALIDATION_FAILED",
-            message: record.errors.full_messages.join(", ")
+            message: I18n.t("students.errors.create_service.unknown_validation")
           }
         ]
       end

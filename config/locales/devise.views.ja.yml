@@ -99,6 +99,10 @@ ja:
         failure: 講師の削除に失敗しました。
       not_found: ユーザーが見つかりませんでした。
       invalid_argument: 無効な引数が指定されました。
+  students:
+    errors:
+      create_service:
+        unknown_validation: 不明なバリデーションエラーが発生しました。
 
   devise:
     confirmations:
