@@ -111,14 +111,15 @@ def create_students_for_teacher(teachers, school_code, num_students = 2)
       student.available_days = student_days
       student.save!
 
-      teacher.class_subjects = student_subjects
-      teacher.available_days = student_days
+      teacher.teachable_subjects = student_subjects
+      teacher.workable_days = student_days
       teacher.save!
 
       student.student_class_subjects.each do |scs|
         Teaching::Assignment.find_or_create_by!(
           user: teacher,
-          student_class_subject: scs
+          student_class_subject: scs,
+          available_day: student_days.sample
         )
       end
     end
