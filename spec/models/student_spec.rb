@@ -115,6 +115,14 @@ RSpec.describe Student, type: :model do
         I18n.t("errors.models.student.attributes.grade.invalid_range")
       )
     end
+
+    it "is not valid with future joined_on date" do
+      student.joined_on = Date.current + 1
+      expect(student).not_to be_valid
+      expect(student.errors[:joined_on]).to include(
+        I18n.t("errors.models.student.attributes.joined_on.not_future")
+      )
+    end
   end
 
   describe "associations" do
