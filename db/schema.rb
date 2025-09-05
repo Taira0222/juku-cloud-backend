@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_28_225131) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_04_204746) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -88,8 +88,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_28_225131) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "student_class_subject_id", null: false
+    t.bigint "available_day_id", null: false
+    t.index ["available_day_id"], name: "index_teaching_assignments_on_available_day_id"
     t.index ["student_class_subject_id", "user_id"], name: "index_teaching_assignments_on_scs_and_user", unique: true
     t.index ["student_class_subject_id"], name: "index_teaching_assignments_on_student_class_subject_id"
+    t.index ["user_id", "student_class_subject_id", "available_day_id"], name: "idx_assignments_user_subject_day_unique", unique: true
     t.index ["user_id"], name: "index_teaching_assignments_on_user_id"
   end
 
@@ -154,6 +157,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_28_225131) do
   add_foreign_key "student_class_subjects", "class_subjects"
   add_foreign_key "student_class_subjects", "students"
   add_foreign_key "students", "schools"
+  add_foreign_key "teaching_assignments", "available_days"
   add_foreign_key "teaching_assignments", "student_class_subjects"
   add_foreign_key "teaching_assignments", "users"
   add_foreign_key "user_available_days", "available_days"

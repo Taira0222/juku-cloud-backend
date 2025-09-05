@@ -55,6 +55,7 @@ class Student < ApplicationRecord
   validates :desired_school, length: { maximum: 100 }, allow_blank: true
 
   validate :grade_must_be_valid_for_stage, on: %i[create update]
+  validate :joined_on_cannot_be_future, on: %i[create update]
 
   private
 
@@ -76,6 +77,15 @@ class Student < ApplicationRecord
           I18n.t("errors.models.student.attributes.grade.invalid_range")
         )
       end
+    end
+  end
+
+  def joined_on_cannot_be_future
+    if joined_on.present? && joined_on > Date.current
+      errors.add(
+        :joined_on,
+        I18n.t("errors.models.student.attributes.joined_on.not_future")
+      )
     end
   end
 end

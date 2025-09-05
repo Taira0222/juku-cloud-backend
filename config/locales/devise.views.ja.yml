@@ -73,6 +73,7 @@ ja:
               invalid_range: 正しい範囲で入力してください
             joined_on:
               blank: を入力してください
+              not_future: は今日以前の日付を入力してください
             school_stage:
               blank: を入力してください
               inclusion: は不正な値です
@@ -98,6 +99,11 @@ ja:
         failure: 講師の削除に失敗しました。
       not_found: ユーザーが見つかりませんでした。
       invalid_argument: 無効な引数が指定されました。
+  students:
+    errors:
+      create_service:
+        unknown_validation: 不明なバリデーションエラーが発生しました。
+        assignments_empty: 講師の割り当てが必要です
 
   devise:
     confirmations:
