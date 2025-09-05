@@ -59,7 +59,7 @@ RSpec.describe "Api::V1::Students", type: :request do
       expect(json_response[:meta][:per_page]).to eq(10)
     end
 
-    it "will return empty array when no students match the search criteria" do
+    it "returns empty array when no students match the search criteria" do
       get_with_auth(
         api_v1_students_path,
         admin_user,
