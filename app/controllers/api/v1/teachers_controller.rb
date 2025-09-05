@@ -6,7 +6,14 @@ class Api::V1::TeachersController < ApplicationController
   # GET /api/v1/teachers
   def index
     result = Teachers::IndexQuery.call(current_user, school: @school)
-    render json: Teachers::IndexPresenter.new(result).as_json, status: :ok
+    render json: {
+             current_user:
+               Teachers::IndexResource.new(result[:current]).serializable_hash,
+             teachers:
+               result[:teachers].map { |teacher|
+                 Teachers::IndexResource.new(teacher).serializable_hash
+               }
+           }
   end
 
   # PATCH /api/v1/teachers/:id

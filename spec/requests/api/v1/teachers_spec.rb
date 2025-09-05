@@ -10,11 +10,40 @@ RSpec.describe "Api::V1::Teachers", type: :request do
     it "returns a list of teachers for the specified school" do
       get_with_auth(api_v1_teachers_path, user)
       expect(response).to have_http_status(:ok)
-      json_response = JSON.parse(response.body)
+      json_response = JSON.parse(response.body, symbolize_names: true)
 
-      expect(json_response).to have_key("current_user")
-      expect(json_response).to have_key("teachers")
-      expect(json_response["teachers"].length).to eq(2)
+      expect(json_response).to include(:current_user, :teachers)
+      current_user = json_response[:current_user]
+      teachers = json_response[:teachers]
+      teacher1 = teachers[0]
+      teacher2 = teachers[1]
+
+      expect(current_user).not_to be_an(Array)
+      expect(teachers).to be_an(Array)
+      expect(teachers.length).to eq(2)
+
+      # current_user, teachers の中身を確認
+      [ current_user, teacher1, teacher2 ].each do |user|
+        expect(user).to include(
+          :id,
+          :provider,
+          :uid,
+          :allow_password_change,
+          :name,
+          :role,
+          :email,
+          :created_at,
+          :updated_at,
+          :school_id,
+          :employment_status,
+          :current_sign_in_at
+        )
+        expect(user[:class_subjects]).to all(include(:id, :name))
+        expect(user[:available_days]).to all(include(:id, :name))
+        expect(user[:students]).to all(
+          include(:id, :name, :status, :school_stage, :grade)
+        )
+      end
     end
   end
 
