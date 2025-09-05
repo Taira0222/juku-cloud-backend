@@ -10,7 +10,9 @@ class Api::V1::TeachersController < ApplicationController
              current_user:
                Teachers::IndexResource.new(result[:current]).serializable_hash,
              teachers:
-               Teachers::IndexResource.new(result[:teachers]).serializable_hash
+               result[:teachers].map { |teacher|
+                 Teachers::IndexResource.new(teacher).serializable_hash
+               }
            }
   end
 

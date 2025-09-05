@@ -41,7 +41,7 @@ RSpec.describe "Api::V1::Teachers", type: :request do
         expect(user[:class_subjects]).to all(include(:id, :name))
         expect(user[:available_days]).to all(include(:id, :name))
         expect(user[:students]).to all(
-          include(:id, :cname, :status, :school_stage, :grade)
+          include(:id, :name, :status, :school_stage, :grade)
         )
       end
     end
