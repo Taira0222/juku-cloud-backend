@@ -63,7 +63,10 @@ module Students
           )
         end
 
-        raise ArgumentError, "講師の割り当てが必要です" if @params[:assignments].blank?
+        if @params[:assignments].blank?
+          raise ArgumentError,
+                I18n.t("students.errors.create_service.assignments_empty")
+        end
         links_by_cs_id =
           student
             .student_class_subjects
@@ -92,9 +95,9 @@ module Students
       # ActiveRecordのバリデーションエラー -> 422用に整形
       Result[false, nil, normalize_ar_errors(e.record)]
     rescue ActiveRecord::RecordNotFound => e
-      Result[false, nil, [ { code: "VALIDATION_FAILED", message: e.message } ]]
+      Result[false, nil, [{ code: "VALIDATION_FAILED", message: e.message }]]
     rescue ArgumentError => e
-      Result[false, nil, [ { code: "VALIDATION_FAILED", message: e.message } ]]
+      Result[false, nil, [{ code: "VALIDATION_FAILED", message: e.message }]]
     end
 
     private
