@@ -73,6 +73,7 @@ ja:
               invalid_range: 正しい範囲で入力してください
             joined_on:
               blank: を入力してください
+              not_future: は今日以前の日付を入力してください
             school_stage:
               blank: を入力してください
               inclusion: は不正な値です
