@@ -26,7 +26,7 @@ class Api::V1::StudentsController < ApplicationController
         create_params: create_params
       )
     if result.ok?
-      student = result.value
+      student = Student.includes(Students::ASSOCS).find(result.value.id)
       render json: Students::CreateResource.new(student).serializable_hash,
              status: :created
     else
