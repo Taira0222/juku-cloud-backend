@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::API
-  before_action { I18n.locale = :ja }
   rescue_from StandardError, with: :render_internal_error
   include DeviseTokenAuth::Concerns::SetUserByToken
   include DeviseHackFakeSession
