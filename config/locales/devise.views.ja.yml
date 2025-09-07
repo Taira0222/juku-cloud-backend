@@ -33,6 +33,7 @@ ja:
       school:
         name: 学校名
         school_code: 学校コード
+        owner_id: 管理者ID
 
       student:
         name: 名前
@@ -40,6 +41,20 @@ ja:
         joined_on: 入塾日
         desired_school: 志望校
         school_stage: 学年
+
+      class_subject:
+        name: 教科名
+
+      available_day:
+        name: 曜日
+
+      invite:
+        token_digest: トークン
+        max_uses: 最大使用回数
+        used_at: 最終使用日時
+        uses_count: 使用回数
+        role: 権限
+        expired_at: 招待有効期限
     # これがないと、会員登録時にエラーになるので消さない
     models:
       user:
@@ -47,6 +62,8 @@ ja:
         other: ユーザー
 
     errors:
+      messages:
+        record_invalid: "バリデーションに失敗しました: %{errors}"
       models:
         user:
           attributes:
@@ -104,6 +121,8 @@ ja:
       create_service:
         unknown_validation: 不明なバリデーションエラーが発生しました。
         assignments_empty: 講師の割り当てが必要です
+        subject_ids_empty: 教科を1つ以上選択してください。
+        available_day_ids_empty: 曜日を1つ以上選択してください。
 
   devise:
     confirmations:
