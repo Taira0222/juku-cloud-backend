@@ -65,9 +65,7 @@ RSpec.describe Students::CreateService, type: :service do
           desired_school: "Some High School",
           subject_ids: [ 1, 2 ],
           available_day_ids: [ 1, 3 ],
-          assignments: [
-            { teacher_id: 1, subject_id: 1, day_id: 1 }
-          ]
+          assignments: [ { teacher_id: 1, subject_id: 1, day_id: 1 } ]
         }
       end
 
@@ -85,7 +83,13 @@ RSpec.describe Students::CreateService, type: :service do
         result = call
         expect(result).not_to be_ok
         expect(result.errors).to eq(
-          [ { code: "VALIDATION_FAILED", message: I18n.t("students.errors.create_service.subject_ids_empty") } ]
+          [
+            {
+              code: "VALIDATION_FAILED",
+              message:
+                I18n.t("students.errors.create_service.subject_ids_empty")
+            }
+          ]
         )
       end
 
@@ -94,7 +98,13 @@ RSpec.describe Students::CreateService, type: :service do
         result = call
         expect(result).not_to be_ok
         expect(result.errors).to eq(
-          [ { code: "VALIDATION_FAILED", message: I18n.t("students.errors.create_service.available_day_ids_empty") } ]
+          [
+            {
+              code: "VALIDATION_FAILED",
+              message:
+                I18n.t("students.errors.create_service.available_day_ids_empty")
+            }
+          ]
         )
       end
 
@@ -103,17 +113,30 @@ RSpec.describe Students::CreateService, type: :service do
         result = call
         expect(result).not_to be_ok
         expect(result.errors).to eq(
-          [ { code: "VALIDATION_FAILED", message: I18n.t("students.errors.create_service.assignments_empty") } ]
+          [
+            {
+              code: "VALIDATION_FAILED",
+              message:
+                I18n.t("students.errors.create_service.assignments_empty")
+            }
+          ]
         )
       end
 
       it "returns a record not found error when a teacher does not exist" do
-        create_params[:assignments] = [ { teacher_id: 999, subject_id: 1, day_id: 1 } ]
+        create_params[:assignments] = [
+          { teacher_id: 999, subject_id: 1, day_id: 1 }
+        ]
         result = call
         expect(result).not_to be_ok
         expect(result.errors).to eq(
-          [ { code: "VALIDATION_FAILED",
-        message: I18n.t("students.errors.create_service.unknown_validation") } ]
+          [
+            {
+              code: "VALIDATION_FAILED",
+              message:
+                I18n.t("students.errors.create_service.unknown_validation")
+            }
+          ]
         )
       end
     end

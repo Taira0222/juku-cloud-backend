@@ -96,6 +96,13 @@ module Students
           unique_by: %i[student_class_subject_id user_id available_day_id]
         )
       end
+      assos = Students::IndexQuery::ASSOCS
+
+      # eager load 検知しないようにする
+      ActiveRecord::Associations::Preloader.new(
+        records: [ student ],
+        associations: assos
+      ).call
 
       Result[true, student, []]
     rescue ActiveRecord::RecordInvalid => e

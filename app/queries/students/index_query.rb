@@ -1,11 +1,12 @@
 module Students
-  # 定数なのでfreezeしておく
-  ASSOCS = [
-    :class_subjects,
-    :available_days,
-    { teachers: %i[teachable_subjects workable_days] }
-  ].freeze
   class IndexQuery
+    # 定数なのでfreezeしておく
+    ASSOCS = [
+      :class_subjects,
+      :available_days,
+      { teachers: %i[teachable_subjects workable_days] }
+    ].freeze
+
     def self.call(school:, index_params:)
       search_keyword = index_params[:searchKeyword]
       school_stage = index_params[:school_stage]
@@ -26,7 +27,7 @@ module Students
       # 学年による絞り込み
       students = students.where(grade: grade) if grade.present?
 
-      students.includes(Students::ASSOCS).order(:id).page(page).per(per_page)
+      students.includes(ASSOCS).order(:id).page(page).per(per_page)
     end
   end
 end
