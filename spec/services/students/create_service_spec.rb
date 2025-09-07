@@ -5,18 +5,14 @@ RSpec.describe Students::CreateService, type: :service do
     subject(:call) { described_class.call(school:, create_params:) }
 
     let!(:school) { create(:school) }
-    let!(:teacher1) { create(:user, :teacher, id: 1) }
-    let!(:teacher2) { create(:user, :teacher, id: 2) }
-    let!(:subjects) do
-      %i[english japanese mathematics].each_with_index.map do |trait, i|
-        create(:class_subject, trait, id: i + 1)
-      end
-    end
-    let!(:available_days) do
-      %i[sunday monday tuesday].each_with_index.map do |trait, i|
-        create(:available_day, trait, id: i + 1)
-      end
-    end
+    let!(:teacher1) { create(:user, :teacher) }
+    let!(:teacher2) { create(:user, :teacher) }
+    let!(:subject1) { create(:class_subject, :english) }
+    let!(:subject2) { create(:class_subject, :japanese) }
+    let!(:subject3) { create(:class_subject, :mathematics) }
+    let!(:available_day1) { create(:available_day, :sunday) }
+    let!(:available_day2) { create(:available_day, :monday) }
+    let!(:available_day3) { create(:available_day, :tuesday) }
 
     context "with valid attributes" do
       let(:create_params) do
@@ -27,11 +23,19 @@ RSpec.describe Students::CreateService, type: :service do
           grade: 3,
           joined_on: Date.new(2023, 4, 1),
           desired_school: "Some High School",
-          subject_ids: [ 1, 2 ],
-          available_day_ids: [ 1, 3 ],
+          subject_ids: [ subject1.id, subject2.id ],
+          available_day_ids: [ available_day1.id, available_day3.id ],
           assignments: [
-            { teacher_id: 1, subject_id: 1, day_id: 1 },
-            { teacher_id: 2, subject_id: 2, day_id: 3 }
+            {
+              teacher_id: teacher1.id,
+              subject_id: subject1.id,
+              day_id: available_day1.id
+            },
+            {
+              teacher_id: teacher2.id,
+              subject_id: subject2.id,
+              day_id: available_day2.id
+            }
           ]
         }
       end
@@ -48,9 +52,13 @@ RSpec.describe Students::CreateService, type: :service do
         expect(student.joined_on).to eq(Date.new(2023, 4, 1))
         expect(student.desired_school).to eq("Some High School")
         expect(student.school).to eq(school)
-        expect(student.class_subject_ids).to match_array([ 1, 2 ])
-        expect(student.available_day_ids).to match_array([ 1, 3 ])
-        expect(student.teacher_ids).to match_array([ 1, 2 ])
+        expect(student.class_subject_ids).to match_array(
+          [ subject1.id, subject2.id ]
+        )
+        expect(student.available_day_ids).to match_array(
+          [ available_day1.id, available_day3.id ]
+        )
+        expect(student.teacher_ids).to match_array([ teacher1.id, teacher2.id ])
       end
     end
 
@@ -63,9 +71,15 @@ RSpec.describe Students::CreateService, type: :service do
           grade: 3,
           joined_on: Date.new(2023, 4, 1),
           desired_school: "Some High School",
-          subject_ids: [ 1, 2 ],
-          available_day_ids: [ 1, 3 ],
-          assignments: [ { teacher_id: 1, subject_id: 1, day_id: 1 } ]
+          subject_ids: [ subject1.id, subject2.id ],
+          available_day_ids: [ available_day1.id, available_day3.id ],
+          assignments: [
+            {
+              teacher_id: teacher1.id,
+              subject_id: subject1.id,
+              day_id: available_day1.id
+            }
+          ]
         }
       end
 

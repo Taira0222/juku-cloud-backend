@@ -77,10 +77,10 @@ RSpec.describe "Api::V1::Students", type: :request do
   describe "POST /create" do
     let!(:admin_user) { create(:user, role: :admin) }
     let!(:school) { create(:school, owner: admin_user) }
-    let!(:subject1) { create(:class_subject, :english, id: 1) }
-    let!(:subject2) { create(:class_subject, :japanese, id: 2) }
-    let!(:available_day1) { create(:available_day, :sunday, id: 1) }
-    let!(:available_day2) { create(:available_day, :monday, id: 2) }
+    let!(:subject1) { create(:class_subject, :english) }
+    let!(:subject2) { create(:class_subject, :japanese) }
+    let!(:available_day1) { create(:available_day, :sunday) }
+    let!(:available_day2) { create(:available_day, :monday) }
     let!(:teachers) { create_list(:user, 2, role: :teacher, school: school) }
 
     context "with valid parameters" do

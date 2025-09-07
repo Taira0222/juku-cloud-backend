@@ -78,7 +78,7 @@ module Students
           student
             .student_class_subjects
             .where(class_subject_id: @params[:subject_ids])
-            .pluck(:class_subject_id, :id)
+            .pluck(:class_subject_id, :id) # pluck は指定したカラムだけの配列を返す
             .to_h
 
         assign_rows =
