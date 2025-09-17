@@ -8,22 +8,18 @@ RSpec.describe Teachers::Validator do
 
       it "returns a successful result" do
         result = call
-        expect(result.ok?).to be true
-        expect(result.teacher).to eq(teacher)
-        expect(result.status).to eq(:ok)
-        expect(result.error).to be_nil
+        expect(result).to eq(teacher)
       end
     end
 
     context "when teacher does not exist" do
       let(:id) { -1 }
 
-      it "returns a not found result" do
-        result = call
-        expect(result.ok?).to be false
-        expect(result.teacher).to be_nil
-        expect(result.status).to eq(:not_found)
-        expect(result.error).to eq(I18n.t("teachers.errors.not_found"))
+      it "raise RecordNotFound" do
+        expect { call }.to raise_error(
+          ActiveRecord::RecordNotFound,
+          I18n.t("teachers.errors.not_found")
+        )
       end
     end
 
@@ -31,12 +27,11 @@ RSpec.describe Teachers::Validator do
       let(:admin) { create(:user, :admin) }
       let(:id) { admin.id }
 
-      it "returns a forbidden result" do
-        result = call
-        expect(result.ok?).to be false
-        expect(result.teacher).to eq(admin)
-        expect(result.status).to eq(:forbidden)
-        expect(result.error).to eq(I18n.t("teachers.errors.delete.admin"))
+      it "raise ForbiddenError" do
+        expect { call }.to raise_error(
+          ForbiddenError,
+          I18n.t("teachers.errors.delete.admin")
+        )
       end
     end
   end

@@ -1,8 +1,5 @@
 module Teachers
   class Updater
-    # errors は配列で返す
-    Result = Data.define(:ok?, :teacher, :errors)
-
     def self.call(teacher:, attrs:)
       new(teacher, attrs).call
     end
@@ -15,19 +12,15 @@ module Teachers
     def call
       base, subject_ids, day_ids = extract(@raw)
 
-      # 更新操作
       ActiveRecord::Base.transaction do
-        @teacher.update!(base)
+        @teacher.update!(base) # 失敗→RecordInvalid
         @teacher.class_subject_ids = subject_ids if subject_ids
         @teacher.available_day_ids = day_ids if day_ids
       end
 
-      # 成功時の結果を返す
-      Result.new(true, @teacher.reload, [])
-    rescue ActiveRecord::RecordInvalid => e
-      Result.new(false, @teacher, e.record.errors.full_messages)
-    rescue ArgumentError => e # enum無効値など
-      Result.new(false, @teacher, [ I18n.t("teachers.errors.invalid_argument") ])
+      @teacher.reload
+    rescue ArgumentError
+      raise ArgumentError, I18n.t("teachers.errors.invalid_argument")
     end
 
     private

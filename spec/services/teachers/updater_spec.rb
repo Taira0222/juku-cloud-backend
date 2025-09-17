@@ -36,11 +36,12 @@ RSpec.describe Teachers::Updater do
       it "updates the teacher's attributes and returns a successful result" do
         # updater を呼んで更新されることを確認
         result = call
-        expect(result).to be_ok
-        expect(teacher.reload.name).to eq("New Name")
-        expect(teacher.reload.employment_status).to eq("active")
-        expect(teacher.reload.class_subject_ids).to eq([ 1, 2, 3 ])
-        expect(teacher.reload.available_day_ids).to eq([ 1, 2, 3 ])
+        expect(result).to have_attributes(
+          name: "New Name",
+          employment_status: "active",
+          class_subject_ids: [ 1, 2, 3 ],
+          available_day_ids: [ 1, 2, 3 ]
+        )
       end
     end
 
@@ -57,9 +58,12 @@ RSpec.describe Teachers::Updater do
 
       it "sets associations with uniq" do
         result = call
-        expect(result.ok?).to be true
-        expect(teacher.reload.class_subject_ids).to eq([ 1, 2 ])
-        expect(teacher.reload.available_day_ids).to eq([ 2, 3 ])
+        expect(result).to have_attributes(
+          name: "ok",
+          employment_status: "active",
+          class_subject_ids: [ 1, 2 ],
+          available_day_ids: [ 2, 3 ]
+        )
       end
     end
 
@@ -78,9 +82,12 @@ RSpec.describe Teachers::Updater do
 
       it "does not touch associations" do
         result = call
-        expect(result).to be_ok
-        expect(teacher.reload.class_subject_ids).to eq([ 1 ])
-        expect(teacher.reload.available_day_ids).to eq([ 1 ])
+        expect(result).to have_attributes(
+          name: "ok",
+          employment_status: "active",
+          class_subject_ids: [ 1 ],
+          available_day_ids: [ 1 ]
+        )
       end
     end
     context "returns ArgumentError if invalid enum values are provided" do
@@ -95,9 +102,8 @@ RSpec.describe Teachers::Updater do
       end
 
       it "returns an error result" do
-        result = call
-        expect(result.ok?).to be false
-        expect(result.errors).to include(
+        expect { call }.to raise_error(
+          ArgumentError,
           I18n.t("teachers.errors.invalid_argument")
         )
       end

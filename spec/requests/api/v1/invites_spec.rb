@@ -14,15 +14,15 @@ RSpec.describe "Api::V1::Invites", type: :request do
     it "returns not found for invalid token" do
       get api_v1_invite_path(token: "invalid_token")
       expect(response).to have_http_status(:not_found)
-      json_response = JSON.parse(response.body)
-      expect(json_response["message"]).to eq(I18n.t("invites.errors.invalid"))
+      json_response = JSON.parse(response.body, symbolize_names: true)
+      errors = json_response[:errors].first
+      expect(errors[:message]).to eq(I18n.t("invites.errors.invalid"))
     end
   end
 
   describe "POST /create" do
     let!(:admin_user) { create(:admin_user) }
     let!(:school) { create(:school, owner: admin_user) }
-    before { sign_in(admin_user) }
 
     it "creates an invite token" do
       post_with_auth api_v1_invites_path, admin_user

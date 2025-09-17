@@ -20,33 +20,14 @@ class Api::V1::TeachersController < ApplicationController
   def update
     teacher = User.find(params[:id])
     result = Teachers::Updater.call(teacher:, attrs: update_params)
-
-    if result.ok?
-      render json: { teacher_id: result.teacher.id }, status: :ok
-    else
-      # errors は配列
-      render json: { errors: result.errors }, status: :unprocessable_content
-    end
+    render json: { teacher_id: result.id }
   end
 
   # DELETE /api/v1/teachers/:id
   def destroy
-    validation = Teachers::Validator.call(id: params[:id])
-    # バリデーションエラー時の処理
-    unless validation.ok?
-      return render json: { error: validation.error }, status: validation.status
-    end
-
-    if validation.teacher.destroy
-      # 成功時は204 No Contentを返す
-      head :no_content
-    else
-      # 422 エラー
-      render json: {
-               error: I18n.t("teachers.errors.delete.failure")
-             },
-             status: :unprocessable_content
-    end
+    teacher = Teachers::Validator.call(id: params[:id])
+    teacher.destroy!
+    head :no_content
   end
 
   private
