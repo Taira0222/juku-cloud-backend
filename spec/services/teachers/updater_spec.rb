@@ -28,8 +28,8 @@ RSpec.describe Teachers::Updater do
         {
           name: "New Name",
           employment_status: "active",
-          subject_ids: [1, 2, 3],
-          available_day_ids: [1, 2, 3]
+          subject_ids: [ 1, 2, 3 ],
+          available_day_ids: [ 1, 2, 3 ]
         }
       end
 
@@ -39,8 +39,8 @@ RSpec.describe Teachers::Updater do
         expect(result).to have_attributes(
           name: "New Name",
           employment_status: "active",
-          class_subject_ids: [1, 2, 3],
-          available_day_ids: [1, 2, 3]
+          class_subject_ids: [ 1, 2, 3 ],
+          available_day_ids: [ 1, 2, 3 ]
         )
       end
     end
@@ -51,8 +51,8 @@ RSpec.describe Teachers::Updater do
         {
           name: "Updated Teacher",
           employment_status: "active",
-          subject_ids: [1, 1, 2],
-          available_day_ids: [2, 2, 3]
+          subject_ids: [ 1, 1, 2 ],
+          available_day_ids: [ 2, 2, 3 ]
         }
       end
 
@@ -61,15 +61,15 @@ RSpec.describe Teachers::Updater do
         expect(result).to have_attributes(
           name: "Updated Teacher",
           employment_status: "active",
-          class_subject_ids: [1, 2],
-          available_day_ids: [2, 3]
+          class_subject_ids: [ 1, 2 ],
+          available_day_ids: [ 2, 3 ]
         )
       end
     end
 
     context "when arrays are empty (skip-update spec)" do
       let(:teacher) do
-        create(:user, :teacher, class_subject_ids: [1], available_day_ids: [1])
+        create(:user, :teacher, class_subject_ids: [ 1 ], available_day_ids: [ 1 ])
       end
       let(:attrs) do
         {
@@ -85,8 +85,8 @@ RSpec.describe Teachers::Updater do
         expect(result).to have_attributes(
           name: "Updated Teacher",
           employment_status: "active",
-          class_subject_ids: [1],
-          available_day_ids: [1]
+          class_subject_ids: [ 1 ],
+          available_day_ids: [ 1 ]
         )
       end
     end
@@ -96,8 +96,8 @@ RSpec.describe Teachers::Updater do
         {
           name: "Updated Teacher",
           employment_status: "invalid_status", # Invalid enum value
-          subject_ids: [1, 2],
-          available_day_ids: [1, 2]
+          subject_ids: [ 1, 2 ],
+          available_day_ids: [ 1, 2 ]
         }
       end
 
