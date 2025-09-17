@@ -5,7 +5,8 @@ Rails.application.routes.draw do
                                   at: "auth",
                                   controllers: {
                                     confirmations: "api/v1/auth/confirmations",
-                                    registrations: "api/v1/auth/registrations"
+                                    registrations: "api/v1/auth/registrations",
+                                    sessions: "api/v1/auth/sessions"
                                   }
       resources :teachers, only: %i[index update destroy]
       resources :invites, only: %i[show create], param: :token

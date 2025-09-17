@@ -176,12 +176,13 @@ RSpec.describe "Api::V1::Students", type: :request do
       end
 
       it "returns errors when subject_ids is empty" do
-        expect(response).to have_http_status(:unprocessable_content)
+        expect(response).to have_http_status(:bad_request)
         json_response = JSON.parse(response.body, symbolize_names: true)
-        expect(json_response).to include(:errors)
-        expect(json_response[:errors]).to include(
+        errors = json_response[:errors].first
+        expect(errors).to include(
           {
-            code: "VALIDATION_FAILED",
+            code: "INVALID_ARGUMENT",
+            field: "base",
             message: I18n.t("students.errors.create_service.subject_ids_empty")
           }
         )
