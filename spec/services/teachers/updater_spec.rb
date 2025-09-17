@@ -28,8 +28,8 @@ RSpec.describe Teachers::Updater do
         {
           name: "New Name",
           employment_status: "active",
-          subject_ids: [ 1, 2, 3 ],
-          available_day_ids: [ 1, 2, 3 ]
+          subject_ids: [1, 2, 3],
+          available_day_ids: [1, 2, 3]
         }
       end
 
@@ -39,8 +39,8 @@ RSpec.describe Teachers::Updater do
         expect(result).to have_attributes(
           name: "New Name",
           employment_status: "active",
-          class_subject_ids: [ 1, 2, 3 ],
-          available_day_ids: [ 1, 2, 3 ]
+          class_subject_ids: [1, 2, 3],
+          available_day_ids: [1, 2, 3]
         )
       end
     end
@@ -49,31 +49,31 @@ RSpec.describe Teachers::Updater do
       let(:teacher) { create(:user, :teacher) }
       let(:attrs) do
         {
-          name: "ok",
+          name: "Updated Teacher",
           employment_status: "active",
-          subject_ids: [ 1, 1, 2 ],
-          available_day_ids: [ 2, 2, 3 ]
+          subject_ids: [1, 1, 2],
+          available_day_ids: [2, 2, 3]
         }
       end
 
       it "sets associations with uniq" do
         result = call
         expect(result).to have_attributes(
-          name: "ok",
+          name: "Updated Teacher",
           employment_status: "active",
-          class_subject_ids: [ 1, 2 ],
-          available_day_ids: [ 2, 3 ]
+          class_subject_ids: [1, 2],
+          available_day_ids: [2, 3]
         )
       end
     end
 
     context "when arrays are empty (skip-update spec)" do
       let(:teacher) do
-        create(:user, :teacher, class_subject_ids: [ 1 ], available_day_ids: [ 1 ])
+        create(:user, :teacher, class_subject_ids: [1], available_day_ids: [1])
       end
       let(:attrs) do
         {
-          name: "ok",
+          name: "Updated Teacher",
           employment_status: "active",
           subject_ids: [], # extract の .presence で nil になり、代入をスキップ
           available_day_ids: []
@@ -83,10 +83,10 @@ RSpec.describe Teachers::Updater do
       it "does not touch associations" do
         result = call
         expect(result).to have_attributes(
-          name: "ok",
+          name: "Updated Teacher",
           employment_status: "active",
-          class_subject_ids: [ 1 ],
-          available_day_ids: [ 1 ]
+          class_subject_ids: [1],
+          available_day_ids: [1]
         )
       end
     end
@@ -94,10 +94,10 @@ RSpec.describe Teachers::Updater do
       let(:teacher) { create(:user, :teacher) }
       let(:attrs) do
         {
-          name: "ok",
+          name: "Updated Teacher",
           employment_status: "invalid_status", # Invalid enum value
-          subject_ids: [ 1, 2 ],
-          available_day_ids: [ 1, 2 ]
+          subject_ids: [1, 2],
+          available_day_ids: [1, 2]
         }
       end
 

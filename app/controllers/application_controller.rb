@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
   include DeviseHackFakeSession
-  include ResultRenderable
   include ApiErrorRenderable # 共通のエラーレスポンス処理
   include ErrorHandlers # 外部・システムエラーのハンドリング
 
