@@ -15,7 +15,7 @@ RSpec.describe Invites::Validator, type: :service do
 
     context "when invite does not exist" do
       let(:token) { "not_found_token" }
-      it { expect { call }.to raise_error(Invites::InvalidInviteError) }
+      it { expect { call }.to raise_error(ActiveRecord::RecordNotFound) }
     end
 
     context "when invite is expired" do
@@ -26,7 +26,7 @@ RSpec.describe Invites::Validator, type: :service do
           inv.update_column(:expires_at, 1.hour.ago)
         end
       end
-      it { expect { call }.to raise_error(Invites::InvalidInviteError) }
+      it { expect { call }.to raise_error(ActiveRecord::RecordNotFound) }
     end
 
     context "when invite is exhausted" do
@@ -34,7 +34,7 @@ RSpec.describe Invites::Validator, type: :service do
       let!(:invite) do
         create(:invite, raw_token: token, uses_count: 5, max_uses: 5)
       end
-      it { expect { call }.to raise_error(Invites::InvalidInviteError) }
+      it { expect { call }.to raise_error(ActiveRecord::RecordNotFound) }
     end
   end
 end

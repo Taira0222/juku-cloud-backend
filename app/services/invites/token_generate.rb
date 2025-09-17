@@ -11,11 +11,7 @@ module Invites
         expires_at: expires_at || 7.days.from_now,
         max_uses: max_uses
       )
-      { raw_token: raw_token }
-    rescue ActiveRecord::RecordInvalid
-      # 発行失敗のみドメイン例外にラップ（controllerで422にする）
-      raise Invites::TokenGenerateError,
-            I18n.t("invites.errors.generate_token_failed")
+      raw_token
     end
   end
 end

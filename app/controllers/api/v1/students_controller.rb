@@ -20,18 +20,13 @@ class Api::V1::StudentsController < ApplicationController
 
   # POST /api/v1/students
   def create
-    result =
+    student =
       Students::CreateService.call(
         school: @school,
         create_params: create_params
       )
-    if result.ok?
-      student = result.value
-      render json: Students::CreateResource.new(student).serializable_hash,
-             status: :created
-    else
-      render json: { errors: result.errors }, status: :unprocessable_content
-    end
+    render json: Students::CreateResource.new(student).serializable_hash,
+           status: :created
   end
 
   private

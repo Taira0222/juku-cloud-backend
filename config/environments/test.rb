@@ -5,9 +5,9 @@
 
 Rails.application.configure do
   config.after_initialize do
-    Bullet.enable        = true
+    Bullet.enable = true
     Bullet.bullet_logger = true
-    Bullet.raise         = true # raise an error if n+1 query occurs
+    Bullet.raise = true # raise an error if n+1 query occurs
   end
 
   # Settings specified here will take precedence over those in config/application.rb.
@@ -22,7 +22,9 @@ Rails.application.configure do
   config.eager_load = ENV["CI"].present?
 
   # Configure public file server for tests with cache-control for performance.
-  config.public_file_server.headers = { "cache-control" => "public, max-age=3600" }
+  config.public_file_server.headers = {
+    "cache-control" => "public, max-age=3600"
+  }
 
   # Show full error reports.
   config.consider_all_requests_local = true
@@ -47,7 +49,6 @@ Rails.application.configure do
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
-
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true

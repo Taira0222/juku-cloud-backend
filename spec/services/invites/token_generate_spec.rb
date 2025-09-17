@@ -8,7 +8,8 @@ RSpec.describe Invites::TokenGenerate, type: :service do
     context "when the school is valid" do
       it "generates a new invite token" do
         result = call
-        expect(result).to include(:raw_token)
+        expect(result).to be_a(String)
+        expect(result.length).to be >= 43 # SecureRandom.urlsafe_base64(32)の長さ
       end
 
       it "creates a new invite record" do
@@ -19,7 +20,7 @@ RSpec.describe Invites::TokenGenerate, type: :service do
     context "when the school is invalid" do
       let(:school) { nil }
       it "does not generate a new invite token" do
-        expect { call }.to raise_error(Invites::TokenGenerateError)
+        expect { call }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end
