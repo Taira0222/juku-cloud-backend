@@ -84,7 +84,7 @@ RSpec.describe "User Registrations", type: :request do
              password_confirmation: "password",
              token: "invalid_token"
            }
-      expect(response).to have_http_status(:unprocessable_content)
+      expect(response).to have_http_status(:not_found)
       invite.reload
       expect(invite.used_at).not_to be_present
     end
@@ -97,7 +97,7 @@ RSpec.describe "User Registrations", type: :request do
              password: "password",
              password_confirmation: "password"
            }
-      expect(response).to have_http_status(:unprocessable_content)
+      expect(response).to have_http_status(:not_found)
       invite.reload
       expect(invite.used_at).not_to be_present
     end

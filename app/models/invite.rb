@@ -45,6 +45,8 @@ class Invite < ApplicationRecord
   def self.find_by_raw_token!(raw_token)
     digest = digest(raw_token)
     find_by!(token_digest: digest)
+  rescue ActiveRecord::RecordNotFound
+    raise ActiveRecord::RecordNotFound, I18n.t("invites.errors.invalid")
   end
 
   # 期限切れチェック

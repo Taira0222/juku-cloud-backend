@@ -55,6 +55,7 @@ ja:
         uses_count: 使用回数
         role: 権限
         expired_at: 招待有効期限
+        school: 塾
     # これがないと、会員登録時にエラーになるので消さない
     models:
       user:
@@ -62,6 +63,8 @@ ja:
         other: ユーザー
 
     errors:
+      invalid_foreign_key: "関連するデータが存在しません。"
+      duplicate: "一意でない値が指定されました。"
       messages:
         record_invalid: "バリデーションに失敗しました: %{errors}"
       models:
@@ -99,9 +102,11 @@ ja:
               inclusion: は不正な値です
   application:
     errors:
+      forbidden: 権限がありません。
       not_found_school: 学校が見つかりませんでした。
       teacher_unable_operate: 講師はこの操作を行うことができません。
       internal_server_error: サーバー内部でエラーが発生しました。しばらくしてから再度お試しください。
+      record_not_destroyed: "レコードの削除に失敗しました。"
 
   invites:
     errors:
@@ -122,7 +127,14 @@ ja:
         unknown_validation: 不明なバリデーションエラーが発生しました。
         assignments_empty: 講師の割り当てが必要です
         subject_ids_empty: 教科を1つ以上選択してください。
+        missing_subject_ids: 選択された教科が存在しません。
         available_day_ids_empty: 曜日を1つ以上選択してください。
+        missing_available_day_ids: 選択された曜日が存在しません。
+        
+      assignment:
+        subject_not_linked: 講師が担当していない教科が含まれています。
+        missing_teacher: 担当講師が見つかりません。
+        missing_day: 指定された曜日が存在しません。
 
   devise:
     confirmations:
@@ -229,6 +241,19 @@ ja:
       send_instructions: アカウントのロック解除方法を数分以内にメールでご連絡します。
       send_paranoid_instructions: アカウントが見つかった場合、アカウントのロック解除方法を数分以内にメールでご連絡します。
       unlocked: アカウントをロック解除しました。
+  devise_token_auth:
+    sessions:
+        not_confirmed: "%{email} は確認されていません。確認用メールのリンクをクリックしてアカウントを有効化してください。"
+        bad_credentials: メールアドレスまたはパスワードが正しくありません。
+        user_not_found: ユーザーが見つかりませんでした。
+    confirmation:
+      missing_email: メールアドレスが見つかりません。
+      user_not_found: ユーザーが見つかりませんでした。
+    registrations:
+      missing_confirm_success_url: 確認成功URLが見つかりません。
+      create_error: アカウントの作成に失敗しました。入力内容をご確認ください。
+      user_not_found: ユーザーが見つかりませんでした。
+      account_to_destroy_not_found: 削除するアカウントが見つかりませんでした。
   errors:
     messages:
       blank: を入力してください。

@@ -1,7 +1,4 @@
 class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsController
-  # 例外をまとめて処理
-  rescue_from Invites::InvalidInviteError, with: :render_invalid_invite
-
   # POST /api/v1/auth デフォルトのcreateアクションを使用
   def create
     # Invite::InvalidInviteError が発生するかも
@@ -29,6 +26,49 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
     params.permit(:name, :email, :password, :password_confirmation)
   end
 
+  def render_create_error_missing_confirm_success_url
+    render_error!(
+      code: "MISSING_CONFIRM_SUCCESS_URL",
+      message:
+        I18n.t("devise_token_auth.registrations.missing_confirm_success_url"),
+      field: "confirm_success_url",
+      status: :unprocessable_content
+    )
+  end
+
+  def render_create_error
+    render_model_errors!(
+      @resource,
+      status: :unprocessable_content,
+      default_code: "REGISTRATION_FAILED"
+    )
+  end
+
+  def render_update_error
+    render_model_errors!(
+      @resource,
+      status: :unprocessable_content,
+      default_code: "UPDATE_FAILED"
+    )
+  end
+
+  def render_update_error_user_not_found
+    render_error!(
+      code: "USER_NOT_FOUND",
+      message: I18n.t("devise_token_auth.registrations.user_not_found"),
+      status: :not_found
+    )
+  end
+
+  def render_destroy_error
+    render_error!(
+      code: "ACCOUNT_NOT_FOUND",
+      message:
+        I18n.t("devise_token_auth.registrations.account_to_destroy_not_found"),
+      status: :not_found
+    )
+  end
+
   private
 
   # token をparamsから抽出
@@ -36,7 +76,7 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
     @raw_token = params.delete(:token)
     # token が存在しない場合は例外を発生させる
     unless @raw_token.present?
-      raise Invites::InvalidInviteError, I18n.t("invites.errors.invalid")
+      raise ActiveRecord::RecordNotFound, I18n.t("invites.errors.invalid")
     end
   end
 

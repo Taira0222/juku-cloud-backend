@@ -67,6 +67,13 @@ RSpec.describe Invite, type: :model do
       invite.expires_at = 1.day.ago
       expect(invite).not_to be_valid
     end
+
+    it "raise ActiveRecord::RecordNotFound with invalid raw_token" do
+      expect { Invite.find_by_raw_token!("invalid_token") }.to raise_error(
+        ActiveRecord::RecordNotFound,
+        I18n.t("invites.errors.invalid")
+      )
+    end
   end
 
   describe "associations" do

@@ -64,17 +64,27 @@ RSpec.describe "Api::V1::Teachers", type: :request do
       expect(response.body).to include(I18n.t("teachers.errors.not_found"))
     end
 
-    it "does not destroy a teacher and returns 422 unprocessable_content" do
-      # destroy アクションが呼ばれたらfalse を返す
-      allow(teacher).to receive(:destroy).and_return(false)
-      # Teachers::Validator のteacher を差し替える必要がある
+    it "fails to destroy a teacher and returns 422 unprocessable_content" do
+      # Teachers::Validator が呼ばれたらteacher を返す
       allow(Teachers::Validator).to receive(:call).with(
         id: teacher.id.to_s
-      ).and_return(double(ok?: true, teacher: teacher, error: nil, status: nil))
+      ).and_return(teacher)
+      # 帰ってきた teacher の destroy! が呼ばれたら例外を発生させる
+      allow(teacher).to receive(:destroy!).and_raise(
+        ActiveRecord::RecordNotDestroyed
+      )
 
       delete_with_auth(api_v1_teacher_path(teacher), user)
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include(I18n.t("teachers.errors.delete.failure"))
+      json_response = JSON.parse(response.body, symbolize_names: true)
+      errors = json_response[:errors]
+      expect(errors).to be_an(Array)
+      expect(errors.length).to eq(1)
+      expect(errors.first[:code]).to eq("RECORD_NOT_DESTROYED")
+      expect(errors.first[:field]).to eq("base")
+      expect(errors.first[:message]).to eq(
+        I18n.t("application.errors.record_not_destroyed")
+      )
     end
   end
 
@@ -109,7 +119,7 @@ RSpec.describe "Api::V1::Teachers", type: :request do
           employment_status: "invalid_status"
         }
       )
-      expect(response).to have_http_status(:unprocessable_content)
+      expect(response).to have_http_status(:bad_request)
       expect(response.body).to include(
         I18n.t("teachers.errors.invalid_argument")
       )
