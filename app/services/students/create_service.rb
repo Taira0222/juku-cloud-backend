@@ -77,10 +77,7 @@ module Students
             # Assignment の subject_id が student がリンクしている教科に含まれていない場合はエラー
             unless scs_id
               raise ArgumentError,
-                    I18n.t(
-                      "students.errors.assignment.subject_not_linked",
-                      subject_id: sid
-                    )
+                    I18n.t("students.errors.assignment.subject_not_linked")
             end
 
             # teacher / day の存在確認
