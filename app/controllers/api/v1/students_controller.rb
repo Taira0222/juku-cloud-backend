@@ -7,6 +7,7 @@ class Api::V1::StudentsController < ApplicationController
   def index
     students =
       Students::IndexQuery.call(school: @school, index_params: index_params)
+
     render json: {
              students: Students::IndexResource.new(students).serializable_hash,
              meta: {
@@ -29,23 +30,40 @@ class Api::V1::StudentsController < ApplicationController
            status: :created
   end
 
+  # PATCH/PUT /api/v1/students/:id
+  def update
+    student_id =
+      Students::Updater.call(school: @school, update_params: update_params)
+    render json: { id: student_id }
+  end
+
   private
 
   def index_params
     params.permit(:searchKeyword, :school_stage, :grade, :page, :perPage)
   end
 
-  def create_params
-    params.permit(
+  def base_params
+    [
       :name,
       :status,
       :school_stage,
       :grade,
       :joined_on,
       :desired_school,
-      subject_ids: [],
-      available_day_ids: [],
-      assignments: %i[teacher_id subject_id day_id]
-    )
+      {
+        subject_ids: [],
+        available_day_ids: [],
+        assignments: %i[teacher_id subject_id day_id]
+      }
+    ]
+  end
+
+  def create_params
+    params.permit(*base_params)
+  end
+
+  def update_params
+    params.permit(:id, *base_params)
   end
 end

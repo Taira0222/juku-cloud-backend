@@ -88,7 +88,7 @@ RSpec.describe Students::CreateService, type: :service do
         create_params[:subject_ids] = []
         expect { call }.to raise_error(
           ArgumentError,
-          I18n.t("students.errors.create_service.subject_ids_empty")
+          I18n.t("students.errors.subject_ids_empty")
         )
       end
 
@@ -96,7 +96,7 @@ RSpec.describe Students::CreateService, type: :service do
         create_params[:available_day_ids] = []
         expect { call }.to raise_error(
           ArgumentError,
-          I18n.t("students.errors.create_service.available_day_ids_empty")
+          I18n.t("students.errors.available_day_ids_empty")
         )
       end
 
@@ -104,7 +104,7 @@ RSpec.describe Students::CreateService, type: :service do
         create_params[:assignments] = []
         expect { call }.to raise_error(
           ArgumentError,
-          I18n.t("students.errors.create_service.assignments_empty")
+          I18n.t("students.errors.assignments_empty")
         )
       end
 
