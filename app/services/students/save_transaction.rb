@@ -14,14 +14,15 @@ module Students
             )
             s
           end
-
+        # 変更を反映させる
+        student.reload
         # eager load 検知しないようにする
         ActiveRecord::Associations::Preloader.new(
           records: [ student ],
           associations: ASSOCS
         ).call
 
-        student.reload
+        student
       end
     end
   end
