@@ -10,20 +10,11 @@ module Students
     end
 
     def call
-      student = @school.students.find(@raw[:id]) # 失敗→RecordNotFound
-
-      ActiveRecord::Base.transaction do
+      Students::SaveTransaction.run!(@raw) do
+        id = @raw[:id].to_i
+        student = @school.students.find(id) # 失敗→RecordNotFound
         update_student!(student) # 失敗→RecordInvalid
-
-        Students::RelationSetter.call(
-          student: student,
-          subject_ids: @raw[:subject_ids],
-          available_day_ids: @raw[:available_day_ids],
-          assignments: @raw[:assignments]
-        )
       end
-
-      student.id
     end
 
     private
@@ -35,9 +26,9 @@ module Students
         school_stage: @raw[:school_stage],
         grade: @raw[:grade],
         joined_on: @raw[:joined_on],
-        desired_school: @raw[:desired_school],
-        school: @school
+        desired_school: @raw[:desired_school]
       )
+      student
     end
   end
 end
