@@ -4,7 +4,14 @@ module Students
     ASSOCS = [
       :class_subjects,
       :available_days,
-      { teachers: %i[teachable_subjects workable_days] }
+      { teachers: %i[teachable_subjects workable_days] },
+      {
+        teaching_assignments: [
+          :available_day,
+          :user,
+          { student_class_subject: :class_subject }
+        ]
+      }
     ].freeze
 
     def self.call(school:, index_params:)
