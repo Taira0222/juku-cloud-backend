@@ -123,14 +123,12 @@ ja:
       invalid_argument: 無効な引数が指定されました。
   students:
     errors:
-      create_service:
-        unknown_validation: 不明なバリデーションエラーが発生しました。
-        assignments_empty: 講師の割り当てが必要です
-        subject_ids_empty: 教科を1つ以上選択してください。
-        missing_subject_ids: 選択された教科が存在しません。
-        available_day_ids_empty: 曜日を1つ以上選択してください。
-        missing_available_day_ids: 選択された曜日が存在しません。
-        
+      subject_ids_empty: 教科を1つ以上選択してください。
+      missing_subject_ids: 選択された教科が存在しません。
+      available_day_ids_empty: 曜日を1つ以上選択してください。
+      missing_available_day_ids: 選択された曜日が存在しません。
+      assignments_empty: 講師の割り当てが必要です
+      
       assignment:
         subject_not_linked: 講師が担当していない教科が含まれています。
         missing_teacher: 担当講師が見つかりません。

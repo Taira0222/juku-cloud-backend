@@ -40,6 +40,7 @@ RSpec.describe "Api::V1::Students", type: :request do
           class_subjects
           available_days
           teachers
+          teaching_assignments
         ]
       )
       expect(first[:class_subjects]).to all(include(:id, :name))
@@ -130,6 +131,7 @@ RSpec.describe "Api::V1::Students", type: :request do
             class_subjects
             available_days
             teachers
+            teaching_assignments
           ]
         )
         expect(json_response[:id]).to be_present
@@ -183,7 +185,7 @@ RSpec.describe "Api::V1::Students", type: :request do
           {
             code: "INVALID_ARGUMENT",
             field: "base",
-            message: I18n.t("students.errors.create_service.subject_ids_empty")
+            message: I18n.t("students.errors.subject_ids_empty")
           }
         )
       end

@@ -25,8 +25,8 @@ STUDENT_DAYS_MIN = 1
 STUDENT_DAYS_MAX = 3
 
 # 科目(5教科)と曜日を取得して配列化
-SUBJECTS = ClassSubject.order(:id).limit(5).to_a
-DAYS = AvailableDay.all.to_a
+SUBJECTS = ClassSubject.order(:id).to_a
+DAYS = AvailableDay.order(:id).to_a
 # ユーザーを作成するメソッド
 def create_user(email, name, role, employment_status, school)
   User.create!(email: email) do |user|
@@ -70,6 +70,12 @@ def create_teacher(count, teachers, start_number, school)
         employment_status,
         school
       )
+
+    # 教師の担当可能教科/曜日は「作成時に一度だけ」割り当てる
+    teacher.teachable_subjects = pick_some(SUBJECTS, min: 1, max: 5)
+    teacher.workable_days = pick_some(DAYS, min: 1, max: 4)
+    teacher.save!
+
     teachers << teacher
   end
 end
@@ -80,7 +86,15 @@ GRADES = [ 1, 2, 3 ] # 1 ~ 3 年生
 
 # 生徒を作成するメソッド
 def create_students_for_teacher(teachers, school_code, num_students = 2)
+  school = School.find_by!(school_code: school_code)
+
   teachers.each do |teacher|
+    # 教師の担当可能セット（オブジェクト配列/ID配列）
+    teacher_subjects = teacher.teachable_subjects.to_a
+    teacher_days = teacher.workable_days.to_a
+    teacher_subject_ids = teacher_subjects.map(&:id)
+    teacher_day_ids = teacher_days.map(&:id)
+
     num_students.times do |i|
       status = STUDENT_STATUSES[i % STUDENT_STATUSES.size]
       school_stage = SCHOOL_STAGES[i % SCHOOL_STAGES.size]
@@ -89,7 +103,7 @@ def create_students_for_teacher(teachers, school_code, num_students = 2)
       student =
         Student.create! do |s|
           s.name = Faker::Name.name
-          s.school = School.find_by!(school_code: school_code)
+          s.school = school
           s.status = status
           s.joined_on = Time.current
           s.school_stage = school_stage
@@ -97,29 +111,26 @@ def create_students_for_teacher(teachers, school_code, num_students = 2)
           s.desired_school = Faker::University.name
         end
 
+      # 生徒の科目・曜日は「教師が可能な集合」のサブセットから選ぶ（必ず交差する）
       student_subjects =
         pick_some(
-          SUBJECTS,
+          teacher_subjects,
           min: STUDENT_SUBJECTS_MIN,
           max: STUDENT_SUBJECTS_MAX
         )
-
       student_days =
-        pick_some(DAYS, min: STUDENT_DAYS_MIN, max: STUDENT_DAYS_MAX)
+        pick_some(teacher_days, min: STUDENT_DAYS_MIN, max: STUDENT_DAYS_MAX)
 
       student.class_subjects = student_subjects
       student.available_days = student_days
       student.save!
 
-      teacher.teachable_subjects = student_subjects
-      teacher.workable_days = student_days
-      teacher.save!
-
       student.student_class_subjects.each do |scs|
-        Teaching::Assignment.find_or_create_by!(
+        day = student.available_days.sample
+        Teaching::Assignment.create!(
           user: teacher,
           student_class_subject: scs,
-          available_day: student_days.sample
+          available_day: day
         )
       end
     end
