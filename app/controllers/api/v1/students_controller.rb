@@ -32,9 +32,10 @@ class Api::V1::StudentsController < ApplicationController
 
   # PATCH/PUT /api/v1/students/:id
   def update
-    student_id =
+    student =
       Students::Updater.call(school: @school, update_params: update_params)
-    render json: { id: student_id }
+    render json: Students::UpdateResource.new(student).serializable_hash,
+           status: :ok
   end
 
   private

@@ -10,26 +10,7 @@ module Students
     end
 
     def call
-      student = nil
-      ActiveRecord::Base.transaction do
-        student = create_student!
-
-        Students::RelationSetter.call(
-          student: student,
-          subject_ids: @params[:subject_ids],
-          available_day_ids: @params[:available_day_ids],
-          assignments: @params[:assignments]
-        )
-      end
-      assos = Students::IndexQuery::ASSOCS
-
-      # eager load 検知しないようにする
-      ActiveRecord::Associations::Preloader.new(
-        records: [ student ],
-        associations: assos
-      ).call
-
-      student.reload
+      Students::SaveTransaction.run!(@params) { create_student! }
     end
 
     private
