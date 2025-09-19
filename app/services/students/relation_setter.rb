@@ -140,22 +140,6 @@ module Students
           unique_by: %i[student_id available_day_id]
         )
       end
-
-      def upsert_student_day_links!(student_id, day_ids, now:)
-        rows =
-          day_ids.map do |d|
-            {
-              student_id: student_id,
-              available_day_id: d,
-              created_at: now,
-              updated_at: now
-            }
-          end
-        Availability::StudentLink.upsert_all(
-          rows,
-          unique_by: %i[student_id available_day_id]
-        )
-      end
     end
   end
 end
