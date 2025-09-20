@@ -249,7 +249,6 @@ ja:
       missing_email: メールアドレスが見つかりません。
       user_not_found: ユーザーが見つかりませんでした。
     registrations:
-      missing_confirm_success_url: 確認成功URLが見つかりません。
       create_error: アカウントの作成に失敗しました。入力内容をご確認ください。
       user_not_found: ユーザーが見つかりませんでした。
       account_to_destroy_not_found: 削除するアカウントが見つかりませんでした。
