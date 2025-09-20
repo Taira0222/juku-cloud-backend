@@ -10,6 +10,9 @@ module Students
     end
 
     def call
+      if @params.nil?
+        raise ArgumentError, I18n.t("students.errors.params_must_not_be_nil")
+      end
       Students::SaveTransaction.run!(@params) { create_student! }
     end
 
