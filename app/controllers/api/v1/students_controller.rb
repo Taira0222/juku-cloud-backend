@@ -74,8 +74,4 @@ class Api::V1::StudentsController < ApplicationController
   def update_params
     params.permit(:id, *base_params)
   end
-
-  def destroy_params
-    params.permit(:id)
-  end
 end
