@@ -1,6 +1,6 @@
 if defined?(Bullet)
   Bullet.enable = true
-  Bullet.n_plus_one_query_enable = true
+  Bullet.n_plus_one_query_enable = true # N+1 検知
   Bullet.unused_eager_loading_enable = false
   Bullet.counter_cache_enable = false
 
