@@ -14,8 +14,8 @@ RSpec.describe Students::SaveTransaction, type: :service do
     context "with valid attributes" do
       let(:params) do
         {
-          subject_ids: [subject1.id, subject2.id],
-          available_day_ids: [available_day1.id, available_day2.id],
+          subject_ids: [ subject1.id, subject2.id ],
+          available_day_ids: [ available_day1.id, available_day2.id ],
           assignments: [
             {
               teacher_id: teacher1.id,
@@ -52,10 +52,10 @@ RSpec.describe Students::SaveTransaction, type: :service do
             joined_on: Date.yesterday,
             desired_school: "Test School",
             school: school,
-            class_subject_ids: match_array([subject1.id, subject2.id]),
+            class_subject_ids: match_array([ subject1.id, subject2.id ]),
             available_day_ids:
-              match_array([available_day1.id, available_day2.id]),
-            teacher_ids: match_array([teacher1.id, teacher2.id])
+              match_array([ available_day1.id, available_day2.id ]),
+            teacher_ids: match_array([ teacher1.id, teacher2.id ])
           )
         end
       end
@@ -84,10 +84,10 @@ RSpec.describe Students::SaveTransaction, type: :service do
             joined_on: Date.yesterday,
             desired_school: "Test School",
             school: school,
-            class_subject_ids: match_array([subject1.id, subject2.id]),
+            class_subject_ids: match_array([ subject1.id, subject2.id ]),
             available_day_ids:
-              match_array([available_day1.id, available_day2.id]),
-            teacher_ids: match_array([teacher1.id, teacher2.id])
+              match_array([ available_day1.id, available_day2.id ]),
+            teacher_ids: match_array([ teacher1.id, teacher2.id ])
           )
         end
       end

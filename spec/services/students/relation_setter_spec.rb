@@ -20,8 +20,8 @@ RSpec.describe Students::RelationSetter, type: :service do
     let!(:teacher2) { create(:user, :teacher) }
 
     context "with valid attributes" do
-      let(:subject_ids) { [subject1.id, subject2.id] }
-      let(:available_day_ids) { [available_day1.id, available_day2.id] }
+      let(:subject_ids) { [ subject1.id, subject2.id ] }
+      let(:available_day_ids) { [ available_day1.id, available_day2.id ] }
       let(:assignments) do
         [
           {
@@ -41,16 +41,16 @@ RSpec.describe Students::RelationSetter, type: :service do
         call
         student.reload
         expect(student).to have_attributes(
-          class_subject_ids: match_array([subject1.id, subject2.id]),
+          class_subject_ids: match_array([ subject1.id, subject2.id ]),
           available_day_ids:
-            match_array([available_day1.id, available_day2.id]),
-          teacher_ids: match_array([teacher1.id, teacher2.id])
+            match_array([ available_day1.id, available_day2.id ]),
+          teacher_ids: match_array([ teacher1.id, teacher2.id ])
         )
       end
     end
 
     context "subject_ids" do
-      let(:available_day_ids) { [available_day1.id] }
+      let(:available_day_ids) { [ available_day1.id ] }
       let(:assignments) do
         [
           {
@@ -62,7 +62,7 @@ RSpec.describe Students::RelationSetter, type: :service do
       end
 
       context "when subject_ids has duplicates" do
-        let(:subject_ids) { [subject1.id, subject1.id, subject2.id] }
+        let(:subject_ids) { [ subject1.id, subject1.id, subject2.id ] }
 
         it "does not raise an error even if subject_ids includes duplicates" do
           expect { call }.not_to raise_error
@@ -81,7 +81,7 @@ RSpec.describe Students::RelationSetter, type: :service do
       end
 
       context "when subject_ids contains non-existing IDs" do
-        let(:subject_ids) { [subject1.id, 9999] }
+        let(:subject_ids) { [ subject1.id, 9999 ] }
 
         it "raises a RecordNotFound when subject_ids contains non-existing IDs" do
           expect { call }.to raise_error(
@@ -93,7 +93,7 @@ RSpec.describe Students::RelationSetter, type: :service do
     end
 
     context "available_day_ids" do
-      let(:subject_ids) { [subject1.id] }
+      let(:subject_ids) { [ subject1.id ] }
       let(:assignments) do
         [
           {
@@ -105,7 +105,7 @@ RSpec.describe Students::RelationSetter, type: :service do
       end
 
       context "when available_day_ids has duplicates" do
-        let(:available_day_ids) { [available_day1.id, available_day1.id] }
+        let(:available_day_ids) { [ available_day1.id, available_day1.id ] }
 
         it "does not raise an error even if available_day_ids includes duplicates" do
           expect { call }.not_to raise_error
@@ -124,7 +124,7 @@ RSpec.describe Students::RelationSetter, type: :service do
       end
 
       context "when available_day_ids contains non-existing IDs" do
-        let(:available_day_ids) { [available_day1.id, 9999] }
+        let(:available_day_ids) { [ available_day1.id, 9999 ] }
 
         it "raises a RecordNotFound when available_day_ids contains non-existing IDs" do
           expect { call }.to raise_error(
@@ -136,8 +136,8 @@ RSpec.describe Students::RelationSetter, type: :service do
     end
 
     context "assignments" do
-      let(:subject_ids) { [subject1.id] }
-      let(:available_day_ids) { [available_day1.id] }
+      let(:subject_ids) { [ subject1.id ] }
+      let(:available_day_ids) { [ available_day1.id ] }
 
       context "when assignments is empty" do
         let(:assignments) { [] }
@@ -189,7 +189,7 @@ RSpec.describe Students::RelationSetter, type: :service do
 
       context "when day_id does not exist" do
         let(:assignments) do
-          [{ teacher_id: teacher1.id, subject_id: subject1.id, day_id: 9999 }]
+          [ { teacher_id: teacher1.id, subject_id: subject1.id, day_id: 9999 } ]
         end
 
         it "raises an ActiveRecord::RecordNotFound" do
