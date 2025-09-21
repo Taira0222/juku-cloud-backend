@@ -57,7 +57,7 @@ module ErrorHandlers
     # 422 DB 制約
     rescue_from ActiveRecord::InvalidForeignKey do |e|
       render_error!(
-        code: "CONFLICT",
+        code: "INVALID_FOREIGN_KEY",
         field: "base",
         message: I18n.t("errors.invalid_foreign_key"),
         status: :unprocessable_content
@@ -66,9 +66,18 @@ module ErrorHandlers
 
     rescue_from ActiveRecord::RecordNotUnique do |e|
       render_error!(
-        code: "CONFLICT",
+        code: "NOT_UNIQUE",
         field: "base",
         message: I18n.t("errors.duplicate"),
+        status: :unprocessable_content
+      )
+    end
+
+    rescue_from ActiveRecord::NotNullViolation do |e|
+      render_error!(
+        code: "NOT_NULL_VIOLATION",
+        field: "base",
+        message: I18n.t("errors.not_null_violation"),
         status: :unprocessable_content
       )
     end

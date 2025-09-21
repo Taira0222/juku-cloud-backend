@@ -6,12 +6,15 @@ module Students
 
     def initialize(school, params)
       @school = school
-      @raw = params
+      @params = params
     end
 
     def call
-      Students::SaveTransaction.run!(@raw) do
-        id = @raw[:id].to_i
+      if @params.nil?
+        raise ArgumentError, I18n.t("students.errors.params_must_not_be_nil")
+      end
+      Students::SaveTransaction.run!(@params) do
+        id = @params[:id].to_i
         student = @school.students.find(id) # 失敗→RecordNotFound
         update_student!(student) # 失敗→RecordInvalid
       end
@@ -21,12 +24,12 @@ module Students
 
     def update_student!(student)
       student.update!(
-        name: @raw[:name],
-        status: @raw[:status],
-        school_stage: @raw[:school_stage],
-        grade: @raw[:grade],
-        joined_on: @raw[:joined_on],
-        desired_school: @raw[:desired_school]
+        name: @params[:name],
+        status: @params[:status],
+        school_stage: @params[:school_stage],
+        grade: @params[:grade],
+        joined_on: @params[:joined_on],
+        desired_school: @params[:desired_school]
       )
       student
     end

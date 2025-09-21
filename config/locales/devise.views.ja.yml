@@ -123,6 +123,7 @@ ja:
       invalid_argument: 無効な引数が指定されました。
   students:
     errors:
+      params_must_not_be_nil: パラメータが必須です。
       subject_ids_empty: 教科を1つ以上選択してください。
       missing_subject_ids: 選択された教科が存在しません。
       available_day_ids_empty: 曜日を1つ以上選択してください。
@@ -248,7 +249,6 @@ ja:
       missing_email: メールアドレスが見つかりません。
       user_not_found: ユーザーが見つかりませんでした。
     registrations:
-      missing_confirm_success_url: 確認成功URLが見つかりません。
       create_error: アカウントの作成に失敗しました。入力内容をご確認ください。
       user_not_found: ユーザーが見つかりませんでした。
       account_to_destroy_not_found: 削除するアカウントが見つかりませんでした。
