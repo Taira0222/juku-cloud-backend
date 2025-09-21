@@ -1,7 +1,7 @@
 class Api::V1::TeachersController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin_role!
-  before_action :set_school!, only: [:index]
+  before_action :set_school!, only: [ :index ]
 
   # GET /api/v1/teachers
   def index
