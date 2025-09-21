@@ -124,7 +124,7 @@ RSpec.describe ErrorHandlers, type: :controller do
       error = json[:errors].first
       expect(error[:code]).to eq "NOT_UNIQUE"
       expect(error[:field]).to eq "base"
-      expect(error[:message]).to eq I18n.t("errors.duplicate")
+      expect(error[:message]).to eq I18n.t("errors.not_unique")
     end
 
     it "handles ActiveRecord::NotNullViolation with 422" do
