@@ -68,7 +68,7 @@ module ErrorHandlers
       render_error!(
         code: "NOT_UNIQUE",
         field: "base",
-        message: I18n.t("errors.duplicate"),
+        message: I18n.t("errors.not_unique"),
         status: :unprocessable_content
       )
     end

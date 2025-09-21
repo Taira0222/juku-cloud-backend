@@ -50,6 +50,8 @@ RSpec.configure do |config|
 
   config.include AuthorizationSpecHelper, type: :request
   config.include RequestSpecHelper, type: :request
+  config.include ResponseHelper, type: :request
+  config.include ResponseHelper, type: :controller
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false

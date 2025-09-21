@@ -64,7 +64,7 @@ ja:
 
     errors:
       invalid_foreign_key: "関連するデータが存在しません。"
-      duplicate: "一意でない値が指定されました。"
+      not_unique: "既に存在する値です。"
       messages:
         record_invalid: "バリデーションに失敗しました: %{errors}"
       models:
