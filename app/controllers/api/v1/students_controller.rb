@@ -38,6 +38,13 @@ class Api::V1::StudentsController < ApplicationController
            status: :ok
   end
 
+  # DELETE /api/v1/students/:id
+  def destroy
+    student = Students::Validator.call(id: params[:id])
+    student.destroy!
+    head :no_content
+  end
+
   private
 
   def index_params
@@ -66,5 +73,9 @@ class Api::V1::StudentsController < ApplicationController
 
   def update_params
     params.permit(:id, *base_params)
+  end
+
+  def destroy_params
+    params.permit(:id)
   end
 end

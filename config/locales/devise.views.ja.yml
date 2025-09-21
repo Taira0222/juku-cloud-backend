@@ -123,6 +123,7 @@ ja:
       invalid_argument: 無効な引数が指定されました。
   students:
     errors:
+      not_found: 生徒が見つかりませんでした。
       params_must_not_be_nil: パラメータが必須です。
       subject_ids_empty: 教科を1つ以上選択してください。
       missing_subject_ids: 選択された教科が存在しません。
