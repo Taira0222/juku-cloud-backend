@@ -45,7 +45,7 @@ RSpec.describe "User Sessions", type: :request do
         )
       end
 
-      it "fauls due to bad credentials" do
+      it "fails due to bad credentials" do
         post "/api/v1/auth/sign_in",
              params: {
                email: user.email,

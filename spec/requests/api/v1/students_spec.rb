@@ -91,8 +91,8 @@ RSpec.describe "Api::V1::Students", type: :request do
           grade: 3,
           joined_on: "2024-01-15",
           desired_school: "Sample High School",
-          subject_ids: [subject1.id, subject2.id],
-          available_day_ids: [available_day1.id, available_day2.id],
+          subject_ids: [ subject1.id, subject2.id ],
+          available_day_ids: [ available_day1.id, available_day2.id ],
           assignments: [
             {
               teacher_id: teachers[0].id,
@@ -155,7 +155,7 @@ RSpec.describe "Api::V1::Students", type: :request do
           joined_on: "2024-01-15",
           desired_school: "Sample High School",
           subject_ids: [],
-          available_day_ids: [available_day1.id, available_day2.id],
+          available_day_ids: [ available_day1.id, available_day2.id ],
           assignments: [
             {
               teacher_id: teachers[0].id,
@@ -208,8 +208,8 @@ RSpec.describe "Api::V1::Students", type: :request do
           grade: 3,
           joined_on: "2024-01-15",
           desired_school: "Sample High School",
-          subject_ids: [subject1.id, subject2.id],
-          available_day_ids: [available_day1.id, available_day2.id],
+          subject_ids: [ subject1.id, subject2.id ],
+          available_day_ids: [ available_day1.id, available_day2.id ],
           assignments: [
             {
               teacher_id: teachers[0].id,
@@ -233,7 +233,7 @@ RSpec.describe "Api::V1::Students", type: :request do
         )
       end
 
-      it "creates a new student with valid parameters" do
+      it "updates a student with valid parameters" do
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body, symbolize_names: true)
 
@@ -276,7 +276,7 @@ RSpec.describe "Api::V1::Students", type: :request do
           joined_on: "2024-01-15",
           desired_school: "Sample High School",
           subject_ids: [],
-          available_day_ids: [available_day1.id, available_day2.id],
+          available_day_ids: [ available_day1.id, available_day2.id ],
           assignments: [
             {
               teacher_id: teachers[0].id,
