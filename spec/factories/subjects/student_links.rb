@@ -24,4 +24,9 @@ FactoryBot.define do
     association :student
     association :class_subject
   end
+
+  factory :another_student_class_subject, parent: :student_class_subject do
+    association :student, factory: :another_student
+    association :class_subject
+  end
 end
