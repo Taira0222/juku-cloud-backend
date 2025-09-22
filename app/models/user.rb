@@ -105,8 +105,4 @@ class User < ActiveRecord::Base
       base.merge(school: admin_school&.as_json(only: %i[id name]))
     end
   end
-
-  def admin?
-    role == "admin"
-  end
 end

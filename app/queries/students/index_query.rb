@@ -37,7 +37,7 @@ module Students
       students = students.where(grade: grade) if grade.present?
 
       # 管理者でない場合は、自分が担当している生徒のみに絞り込む
-      unless current_user.admin?
+      unless current_user.admin_role?
         students =
           students
             .joins(:teaching_assignments)

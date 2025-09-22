@@ -117,16 +117,6 @@ RSpec.describe User, type: :model do
     it "does not allow invalid roles" do
       expect { build(:user, role: :invalid_role) }.to raise_error(ArgumentError)
     end
-
-    it "returns true if user is admin" do
-      user = create(:user, role: :admin)
-      expect(user.admin?).to be true
-    end
-
-    it "returns false if user is not admin" do
-      user = create(:user)
-      expect(user.admin?).to be false
-    end
   end
 
   describe "associations" do
