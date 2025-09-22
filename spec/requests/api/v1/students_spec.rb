@@ -82,6 +82,18 @@ RSpec.describe "Api::V1::Students", type: :request do
     let!(:available_day2) { create(:available_day, :monday) }
     let!(:teachers) { create_list(:user, 2, role: :teacher, school: school) }
 
+    it "returns forbidden for non-admin users" do
+      non_admin_user = create(:user, role: :teacher, school: school)
+      post_with_auth(
+        api_v1_students_path,
+        non_admin_user,
+        params: {
+          name: "New Student"
+        }
+      )
+      expect(response).to have_http_status(:forbidden)
+    end
+
     context "with valid parameters" do
       let(:valid_params) do
         {
@@ -198,6 +210,18 @@ RSpec.describe "Api::V1::Students", type: :request do
     let!(:teachers) { create_list(:user, 2, role: :teacher, school: school) }
     let!(:student) { create(:student, school: school) }
 
+    it "returns forbidden for non-admin users" do
+      non_admin_user = create(:user, role: :teacher, school: school)
+      patch_with_auth(
+        api_v1_student_path(student.id),
+        non_admin_user,
+        params: {
+          name: "New Name"
+        }
+      )
+      expect(response).to have_http_status(:forbidden)
+    end
+
     context "with valid parameters" do
       let(:valid_params) do
         {
@@ -312,6 +336,27 @@ RSpec.describe "Api::V1::Students", type: :request do
           }
         )
       end
+    end
+  end
+  describe "DELETE /destroy" do
+    let!(:student) { create(:student, school: school) }
+
+    it "deletes the student" do
+      expect {
+        delete_with_auth(api_v1_student_path(student.id), admin_user)
+      }.to change(Student, :count).by(-1)
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it "returns not found when student does not exist" do
+      delete_with_auth(api_v1_student_path(0), admin_user)
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns forbidden for non-admin users" do
+      non_admin_user = create(:user, role: :teacher, school: school)
+      delete_with_auth(api_v1_student_path(student.id), non_admin_user)
+      expect(response).to have_http_status(:forbidden)
     end
   end
 end

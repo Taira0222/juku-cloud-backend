@@ -1,7 +1,7 @@
 class Api::V1::StudentsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_school!
-  before_action :require_admin_role!, only: %i[create]
+  before_action :require_admin_role!, only: %i[create update destroy]
 
   # GET /api/v1/students
   def index
