@@ -6,7 +6,11 @@ class Api::V1::StudentsController < ApplicationController
   # GET /api/v1/students
   def index
     students =
-      Students::IndexQuery.call(school: @school, index_params: index_params)
+      Students::IndexQuery.call(
+        school: @school,
+        index_params: index_params,
+        current_user: current_user
+      )
 
     render json: {
              students: Students::IndexResource.new(students).serializable_hash,

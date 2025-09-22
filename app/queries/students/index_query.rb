@@ -14,7 +14,7 @@ module Students
       }
     ].freeze
 
-    def self.call(school:, index_params:)
+    def self.call(school:, index_params:, current_user:)
       search_keyword = index_params[:searchKeyword]
       school_stage = index_params[:school_stage]
       grade = index_params[:grade]
@@ -25,7 +25,9 @@ module Students
 
       # 検索キーワードによる絞り込み（名前での部分一致）
       if search_keyword.present?
-        students = students.where("name ILIKE ?", "%#{search_keyword}%")
+        # SQLインジェクション対策
+        kw = ActiveRecord::Base.sanitize_sql_like(search_keyword.to_s.strip)
+        students = students.where("name ILIKE ?", "%#{kw}%")
       end
       # 学校段階による絞り込み
       if school_stage.present?
@@ -33,6 +35,15 @@ module Students
       end
       # 学年による絞り込み
       students = students.where(grade: grade) if grade.present?
+
+      # 管理者でない場合は、自分が担当している生徒のみに絞り込む
+      unless current_user.admin?
+        students =
+          students
+            .joins(:teaching_assignments)
+            .where(teaching_assignments: { user_id: current_user.id })
+            .distinct
+      end
 
       students.includes(ASSOCS).order(:id).page(page).per(per_page)
     end
