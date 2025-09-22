@@ -33,4 +33,8 @@ FactoryBot.define do
     grade { 1 }
     desired_school { "Stanford University" }
   end
+
+  factory :another_student, parent: :student do
+    sequence(:name) { |n| "Another Student #{n}" }
+  end
 end
