@@ -70,4 +70,9 @@ FactoryBot.define do
     school { nil } # 管理者は学校に属さない
     invite { nil }
   end
+
+  factory :another_user, parent: :user do
+    sequence(:name) { |n| "Another User #{n}" }
+    sequence(:email) { |n| "another_user#{n}@example.com" }
+  end
 end
