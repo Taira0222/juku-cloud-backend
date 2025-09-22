@@ -117,21 +117,27 @@ RSpec.describe User, type: :model do
     it "does not allow invalid roles" do
       expect { build(:user, role: :invalid_role) }.to raise_error(ArgumentError)
     end
+
+    it "returns true if user is admin" do
+      user = create(:user, role: :admin)
+      expect(user.admin?).to be true
+    end
+
+    it "returns false if user is not admin" do
+      user = create(:user)
+      expect(user.admin?).to be false
+    end
   end
 
-
-
   describe "associations" do
-    let(:association) do
-      described_class.reflect_on_association(target)
-    end
+    let(:association) { described_class.reflect_on_association(target) }
 
     context "school association" do
       let(:target) { :school }
 
       it "belongs to school" do
         expect(association.macro).to eq :belongs_to
-        expect(association.class_name).to eq 'School'
+        expect(association.class_name).to eq "School"
         expect(association.options[:optional]).to eq true
       end
     end
@@ -141,8 +147,8 @@ RSpec.describe User, type: :model do
 
       it "has one owned school" do
         expect(association.macro).to eq :has_one
-        expect(association.class_name).to eq 'School'
-        expect(association.foreign_key).to eq 'owner_id'
+        expect(association.class_name).to eq "School"
+        expect(association.foreign_key).to eq "owner_id"
       end
     end
 
@@ -151,7 +157,7 @@ RSpec.describe User, type: :model do
 
       it "has many teaching assignments" do
         expect(association.macro).to eq :has_many
-        expect(association.class_name).to eq 'Teaching::Assignment'
+        expect(association.class_name).to eq "Teaching::Assignment"
         expect(association.options[:dependent]).to eq :destroy
       end
     end
@@ -161,7 +167,7 @@ RSpec.describe User, type: :model do
 
       it "has many students" do
         expect(association.macro).to eq :has_many
-        expect(association.class_name).to eq 'Student'
+        expect(association.class_name).to eq "Student"
       end
     end
 
@@ -170,7 +176,7 @@ RSpec.describe User, type: :model do
 
       it "has many user_class_subjects" do
         expect(association.macro).to eq :has_many
-        expect(association.class_name).to eq 'Subjects::UserLink'
+        expect(association.class_name).to eq "Subjects::UserLink"
         expect(association.options[:dependent]).to eq :destroy
       end
     end
@@ -180,7 +186,7 @@ RSpec.describe User, type: :model do
 
       it "has many class_subjects" do
         expect(association.macro).to eq :has_many
-        expect(association.class_name).to eq 'ClassSubject'
+        expect(association.class_name).to eq "ClassSubject"
       end
     end
 
@@ -189,7 +195,7 @@ RSpec.describe User, type: :model do
 
       it "has many user_available_days" do
         expect(association.macro).to eq :has_many
-        expect(association.class_name).to eq 'Availability::UserLink'
+        expect(association.class_name).to eq "Availability::UserLink"
         expect(association.options[:dependent]).to eq :destroy
       end
     end
@@ -199,16 +205,16 @@ RSpec.describe User, type: :model do
 
       it "has many available_days" do
         expect(association.macro).to eq :has_many
-        expect(association.class_name).to eq 'AvailableDay'
+        expect(association.class_name).to eq "AvailableDay"
       end
     end
 
-    context 'invite association' do
+    context "invite association" do
       let(:target) { :invite }
 
-      it 'belongs to an invite' do
+      it "belongs to an invite" do
         expect(association.macro).to eq(:belongs_to)
-        expect(association.class_name).to eq('Invite')
+        expect(association.class_name).to eq("Invite")
       end
     end
   end
