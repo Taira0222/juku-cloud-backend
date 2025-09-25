@@ -76,7 +76,7 @@ module Students
         if assignments.blank?
           raise ArgumentError, I18n.t("students.errors.assignments_empty")
         end
-        # student がリンクしている教科のidをキー、student_class_subject_idを値とするハッシュ
+        # 新しく作成された student_class_subject のリンク情報（教科IDをキー、student_class_subject_idを値とするハッシュ）を取得
         links_by_cs_id =
           Subjects::StudentLink
             .where(student_id: student.id, class_subject_id: found_subject_ids)
@@ -113,8 +113,7 @@ module Students
               updated_at: now
             }
           end
-        # studentの関連のある student_class_subjectのid を取得
-        scs_ids = Subjects::StudentLink.where(student_id: student.id).pluck(:id)
+
         Teaching::Assignment.insert_all(assign_rows) unless assign_rows.empty?
       end
 
