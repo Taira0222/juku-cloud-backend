@@ -14,10 +14,31 @@ RSpec.describe Students::RelationSetter, type: :service do
     let!(:student) { create(:student) }
     let!(:subject1) { create(:class_subject, :english) }
     let!(:subject2) { create(:class_subject, :japanese) }
+    let!(:subject3) { create(:class_subject, :mathematics) }
     let!(:available_day1) { create(:available_day, :sunday) }
     let!(:available_day2) { create(:available_day, :monday) }
+    let!(:available_day3) { create(:available_day, :tuesday) }
     let!(:teacher1) { create(:user, :teacher) }
     let!(:teacher2) { create(:user, :teacher) }
+    let!(:teacher3) { create(:user, :teacher) }
+    let!(:student_class_subject) do
+      create(:student_class_subject, student: student, class_subject: subject3)
+    end
+    let!(:student_available_day) do
+      create(
+        :student_available_day,
+        student: student,
+        available_day: available_day3
+      )
+    end
+    let!(:teaching_assignment) do
+      create(
+        :teaching_assignment,
+        user: teacher3,
+        student_class_subject: student_class_subject,
+        available_day: available_day3
+      )
+    end
 
     context "with valid attributes" do
       let(:subject_ids) { [ subject1.id, subject2.id ] }
@@ -38,8 +59,15 @@ RSpec.describe Students::RelationSetter, type: :service do
       end
 
       it "sets relations correctly" do
+        # 初期状態で属性を持っていることを確認
+        expect(student).to have_attributes(
+          class_subject_ids: [ subject3.id ],
+          available_day_ids: [ available_day3.id ],
+          teacher_ids: [ teacher3.id ]
+        )
         call
         student.reload
+        # 追加ではなく置換されていることを確認
         expect(student).to have_attributes(
           class_subject_ids: match_array([ subject1.id, subject2.id ]),
           available_day_ids:
@@ -66,6 +94,10 @@ RSpec.describe Students::RelationSetter, type: :service do
 
         it "does not raise an error even if subject_ids includes duplicates" do
           expect { call }.not_to raise_error
+          call
+          expect(student.class_subject_ids).to match_array(
+            [ subject1.id, subject2.id ]
+          )
         end
       end
 
