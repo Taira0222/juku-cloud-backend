@@ -116,13 +116,8 @@ module Students
         # studentの関連のある student_class_subjectのid を取得
         scs_ids = Subjects::StudentLink.where(student_id: student.id).pluck(:id)
 
-        # トランザクションで一括削除・一括挿入
-        Teaching::Assignment.transaction do
-          Teaching::Assignment.where(
-            student_class_subject_id: scs_ids
-          ).delete_all
-          Teaching::Assignment.insert_all(assign_rows) unless assign_rows.empty?
-        end
+        Teaching::Assignment.where(student_class_subject_id: scs_ids).delete_all
+        Teaching::Assignment.insert_all(assign_rows) unless assign_rows.empty?
       end
 
       def update_student_subject_links!(student_id, subject_ids, now:)
@@ -135,11 +130,9 @@ module Students
               updated_at: now
             }
           end
-        # トランザクションで一括削除・一括挿入
-        Subjects::StudentLink.transaction do
-          Subjects::StudentLink.where(student_id: student_id).delete_all
-          Subjects::StudentLink.insert_all(rows) unless rows.empty?
-        end
+
+        Subjects::StudentLink.where(student_id: student_id).delete_all
+        Subjects::StudentLink.insert_all(rows) unless rows.empty?
       end
 
       def update_student_day_links!(student_id, day_ids, now:)
@@ -152,11 +145,9 @@ module Students
               updated_at: now
             }
           end
-        # トランザクションで一括削除・一括挿入
-        Availability::StudentLink.transaction do
-          Availability::StudentLink.where(student_id: student_id).delete_all
-          Availability::StudentLink.insert_all(rows) unless rows.empty?
-        end
+
+        Availability::StudentLink.where(student_id: student_id).delete_all
+        Availability::StudentLink.insert_all(rows) unless rows.empty?
       end
     end
   end
