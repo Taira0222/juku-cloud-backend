@@ -115,8 +115,6 @@ module Students
           end
         # studentの関連のある student_class_subjectのid を取得
         scs_ids = Subjects::StudentLink.where(student_id: student.id).pluck(:id)
-
-        Teaching::Assignment.where(student_class_subject_id: scs_ids).delete_all
         Teaching::Assignment.insert_all(assign_rows) unless assign_rows.empty?
       end
 
