@@ -3,15 +3,26 @@ module Students
     class << self
       def call(student:, subject_ids:, available_day_ids:, assignments:)
         now = Time.current
-        found_subject_ids = set_subjects(student, subject_ids, now: now)
-        found_day_ids = set_available_days(student, available_day_ids, now: now)
-        set_assignments(
-          student,
-          assignments,
-          found_subject_ids,
-          found_day_ids,
-          now: now
-        )
+
+        ActiveRecord::Base.transaction do
+          # 古い関連データを削除
+          old_scs_ids =
+            Subjects::StudentLink.where(student_id: student.id).pluck(:id)
+          Teaching::Assignment.where(
+            student_class_subject_id: old_scs_ids
+          ).delete_all
+
+          found_subject_ids = set_subjects(student, subject_ids, now: now)
+          found_day_ids =
+            set_available_days(student, available_day_ids, now: now)
+          set_assignments(
+            student,
+            assignments,
+            found_subject_ids,
+            found_day_ids,
+            now: now
+          )
+        end
       end
 
       private
@@ -31,7 +42,7 @@ module Students
                 I18n.t("students.errors.missing_subject_ids")
         end
 
-        upsert_student_subject_links!(student.id, found_subject_ids, now: now)
+        update_student_subject_links!(student.id, found_subject_ids, now: now)
         # return
         found_subject_ids
       end
@@ -50,7 +61,7 @@ module Students
                 I18n.t("students.errors.missing_available_day_ids")
         end
 
-        upsert_student_day_links!(student.id, found_day_ids, now: now)
+        update_student_day_links!(student.id, found_day_ids, now: now)
         # return
         found_day_ids
       end
@@ -65,12 +76,11 @@ module Students
         if assignments.blank?
           raise ArgumentError, I18n.t("students.errors.assignments_empty")
         end
-
+        # 新しく作成された student_class_subject のリンク情報（教科IDをキー、student_class_subject_idを値とするハッシュ）を取得
         links_by_cs_id =
-          student
-            .student_class_subjects
-            .where(class_subject_id: found_subject_ids)
-            .pluck(:class_subject_id, :id) # pluck は指定したカラムだけの配列を返す
+          Subjects::StudentLink
+            .where(student_id: student.id, class_subject_id: found_subject_ids)
+            .pluck(:class_subject_id, :id)
             .to_h
 
         assign_rows =
@@ -103,13 +113,11 @@ module Students
               updated_at: now
             }
           end
-        Teaching::Assignment.upsert_all(
-          assign_rows,
-          unique_by: %i[student_class_subject_id user_id available_day_id]
-        )
+
+        Teaching::Assignment.insert_all(assign_rows) unless assign_rows.empty?
       end
 
-      def upsert_student_subject_links!(student_id, subject_ids, now:)
+      def update_student_subject_links!(student_id, subject_ids, now:)
         rows =
           subject_ids.map do |sid|
             {
@@ -119,13 +127,12 @@ module Students
               updated_at: now
             }
           end
-        Subjects::StudentLink.upsert_all(
-          rows,
-          unique_by: %i[student_id class_subject_id]
-        )
+
+        Subjects::StudentLink.where(student_id: student_id).delete_all
+        Subjects::StudentLink.insert_all(rows) unless rows.empty?
       end
 
-      def upsert_student_day_links!(student_id, day_ids, now:)
+      def update_student_day_links!(student_id, day_ids, now:)
         rows =
           day_ids.map do |d|
             {
@@ -135,10 +142,9 @@ module Students
               updated_at: now
             }
           end
-        Availability::StudentLink.upsert_all(
-          rows,
-          unique_by: %i[student_id available_day_id]
-        )
+
+        Availability::StudentLink.where(student_id: student_id).delete_all
+        Availability::StudentLink.insert_all(rows) unless rows.empty?
       end
     end
   end
