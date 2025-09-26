@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_04_204746) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_26_042312) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -38,6 +38,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_204746) do
     t.datetime "updated_at", null: false
     t.index ["school_id"], name: "index_invites_on_school_id"
     t.index ["token_digest"], name: "index_invites_on_token_digest", unique: true
+  end
+
+  create_table "lesson_notes", force: :cascade do |t|
+    t.bigint "student_class_subject_id", null: false
+    t.string "title", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["student_class_subject_id"], name: "index_lesson_notes_on_student_class_subject_id"
   end
 
   create_table "schools", force: :cascade do |t|
@@ -68,6 +77,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_204746) do
     t.index ["class_subject_id"], name: "index_student_class_subjects_on_class_subject_id"
     t.index ["student_id", "class_subject_id"], name: "idx_on_student_id_class_subject_id_c0e296835a", unique: true
     t.index ["student_id"], name: "index_student_class_subjects_on_student_id"
+  end
+
+  create_table "student_traits", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.integer "category"
+    t.string "title"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["student_id"], name: "index_student_traits_on_student_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -151,11 +170,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_204746) do
   end
 
   add_foreign_key "invites", "schools"
+  add_foreign_key "lesson_notes", "student_class_subjects"
   add_foreign_key "schools", "users", column: "owner_id"
   add_foreign_key "student_available_days", "available_days"
   add_foreign_key "student_available_days", "students"
   add_foreign_key "student_class_subjects", "class_subjects"
   add_foreign_key "student_class_subjects", "students"
+  add_foreign_key "student_traits", "students"
   add_foreign_key "students", "schools"
   add_foreign_key "teaching_assignments", "available_days"
   add_foreign_key "teaching_assignments", "student_class_subjects"
