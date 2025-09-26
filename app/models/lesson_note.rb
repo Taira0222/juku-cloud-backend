@@ -29,8 +29,11 @@
 #
 class LessonNote < ApplicationRecord
   belongs_to :student_class_subject, class_name: "Subjects::StudentLink"
-  # DBではnull許容、アプリでは必須
-  belongs_to :created_by, class_name: "User", inverse_of: :lesson_notes_created
+  # DBでは nullify だが、アプリケーション上では必須とする
+  belongs_to :created_by,
+             class_name: "User",
+             inverse_of: :lesson_notes_created,
+             optional: false
   belongs_to :last_updated_by,
              class_name: "User",
              inverse_of: :lesson_notes_updated,
@@ -54,10 +57,10 @@ class LessonNote < ApplicationRecord
   private
 
   def snapshot_creator_name
-    self.created_by_name = created_by&.name.to_s if created_by_name.blank?
+    self.created_by_name = created_by&.name if created_by_name.blank?
   end
 
   def snapshot_updater_name
-    self.last_updated_by_name = last_updated_by&.name.to_s
+    self.last_updated_by_name = last_updated_by&.name
   end
 end
