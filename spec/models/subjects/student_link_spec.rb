@@ -41,7 +41,7 @@ RSpec.describe Subjects::StudentLink, type: :model do
       end
     end
 
-    context "teachig_assignments association" do
+    context "teaching_assignments association" do
       let(:target) { :teaching_assignments }
       it "has many teaching_assignments" do
         expect(association.macro).to eq :has_many
