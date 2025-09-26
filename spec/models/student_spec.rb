@@ -185,5 +185,13 @@ RSpec.describe Student, type: :model do
         expect(association.class_name).to eq "AvailableDay"
       end
     end
+    context "student_traits association" do
+      let(:target) { :student_traits }
+      it "has many student_traits" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq "StudentTrait"
+        expect(association.options[:dependent]).to eq :destroy
+      end
+    end
   end
 end
