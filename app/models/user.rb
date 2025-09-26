@@ -94,16 +94,6 @@ class User < ActiveRecord::Base
            foreign_key: "last_updated_by_id",
            inverse_of: :last_updated_by
 
-  has_many :student_traits_created,
-           class_name: "StudentTrait",
-           foreign_key: "created_by_id",
-           inverse_of: :created_by
-
-  has_many :student_traits_updated,
-           class_name: "StudentTrait",
-           foreign_key: "last_updated_by_id",
-           inverse_of: :last_updated_by
-
   # User:Invite 1:1 adminはinvite なしで作成予定
   belongs_to :invite, optional: true
 
