@@ -19,27 +19,41 @@
 #  fk_rails_...  (class_subject_id => class_subjects.id)
 #  fk_rails_...  (student_id => students.id)
 #
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Subjects::StudentLink, type: :model do
-   describe 'associations' do
-    let(:association) do
-      described_class.reflect_on_association(target)
-    end
+  describe "associations" do
+    let(:association) { described_class.reflect_on_association(target) }
 
-    context 'student association' do
+    context "student association" do
       let(:target) { :student }
       it "belongs to student" do
         expect(association.macro).to eq :belongs_to
-        expect(association.class_name).to eq 'Student'
+        expect(association.class_name).to eq "Student"
       end
     end
 
-    context 'class_subject association' do
+    context "class_subject association" do
       let(:target) { :class_subject }
       it "belongs to class_subject" do
         expect(association.macro).to eq :belongs_to
-        expect(association.class_name).to eq 'ClassSubject'
+        expect(association.class_name).to eq "ClassSubject"
+      end
+    end
+
+    context "teaching_assignments association" do
+      let(:target) { :teaching_assignments }
+      it "has many teaching_assignments" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq "Teaching::Assignment"
+      end
+    end
+
+    context "lesson_notes association" do
+      let(:target) { :lesson_notes }
+      it "has many lesson_notes" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq "LessonNote"
       end
     end
   end
