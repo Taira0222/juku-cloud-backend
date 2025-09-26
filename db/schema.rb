@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_26_042312) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_26_095818) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -46,6 +46,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_042312) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "created_by_id"
+    t.bigint "last_updated_by_id"
+    t.string "created_by_name", default: "", null: false
+    t.string "last_updated_by_name"
+    t.date "expire_date", null: false
+    t.index ["created_by_id"], name: "index_lesson_notes_on_created_by_id"
+    t.index ["expire_date"], name: "index_lesson_notes_on_expire_date"
+    t.index ["last_updated_by_id"], name: "index_lesson_notes_on_last_updated_by_id"
     t.index ["student_class_subject_id"], name: "index_lesson_notes_on_student_class_subject_id"
   end
 
@@ -86,6 +94,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_042312) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "created_by_id"
+    t.bigint "last_updated_by_id"
+    t.string "created_by_name", default: "", null: false
+    t.string "last_updated_by_name"
+    t.index ["created_by_id"], name: "index_student_traits_on_created_by_id"
+    t.index ["last_updated_by_id"], name: "index_student_traits_on_last_updated_by_id"
     t.index ["student_id"], name: "index_student_traits_on_student_id"
   end
 
@@ -171,12 +185,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_042312) do
 
   add_foreign_key "invites", "schools"
   add_foreign_key "lesson_notes", "student_class_subjects"
+  add_foreign_key "lesson_notes", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "lesson_notes", "users", column: "last_updated_by_id", on_delete: :nullify
   add_foreign_key "schools", "users", column: "owner_id"
   add_foreign_key "student_available_days", "available_days"
   add_foreign_key "student_available_days", "students"
   add_foreign_key "student_class_subjects", "class_subjects"
   add_foreign_key "student_class_subjects", "students"
   add_foreign_key "student_traits", "students"
+  add_foreign_key "student_traits", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "student_traits", "users", column: "last_updated_by_id", on_delete: :nullify
   add_foreign_key "students", "schools"
   add_foreign_key "teaching_assignments", "available_days"
   add_foreign_key "teaching_assignments", "student_class_subjects"
