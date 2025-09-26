@@ -104,7 +104,8 @@ RSpec.describe StudentTrait, type: :model do
       it "belongs to user" do
         expect(association.macro).to eq :belongs_to
         expect(association.options).to include(
-          inverse_of: :student_traits_created
+          inverse_of: :student_traits_created,
+          optional: false
         )
         expect(association.class_name).to eq "User"
       end

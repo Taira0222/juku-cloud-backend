@@ -119,6 +119,10 @@ RSpec.describe LessonNote, type: :model do
       it "belongs to created_by" do
         expect(association.macro).to eq :belongs_to
         expect(association.class_name).to eq "User"
+        expect(association.options).to include(
+          inverse_of: :lesson_notes_created,
+          optional: false
+        )
       end
     end
 
@@ -127,6 +131,10 @@ RSpec.describe LessonNote, type: :model do
       it "belongs to last_updated_by" do
         expect(association.macro).to eq :belongs_to
         expect(association.class_name).to eq "User"
+        expect(association.options).to include(
+          inverse_of: :lesson_notes_updated,
+          optional: true
+        )
       end
     end
   end
