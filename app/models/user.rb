@@ -83,6 +83,27 @@ class User < ActiveRecord::Base
   has_many :workable_days, through: :user_available_days, source: :available_day
   # workable_days のエイリアス
   has_many :available_days, through: :user_available_days
+
+  has_many :lesson_notes_created,
+           class_name: "LessonNote",
+           foreign_key: "created_by_id",
+           inverse_of: :created_by
+
+  has_many :lesson_notes_updated,
+           class_name: "LessonNote",
+           foreign_key: "last_updated_by_id",
+           inverse_of: :last_updated_by
+
+  has_many :student_traits_created,
+           class_name: "StudentTrait",
+           foreign_key: "created_by_id",
+           inverse_of: :created_by
+
+  has_many :student_traits_updated,
+           class_name: "StudentTrait",
+           foreign_key: "last_updated_by_id",
+           inverse_of: :last_updated_by
+
   # User:Invite 1:1 adminはinvite なしで作成予定
   belongs_to :invite, optional: true
 

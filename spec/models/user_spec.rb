@@ -207,5 +207,49 @@ RSpec.describe User, type: :model do
         expect(association.class_name).to eq("Invite")
       end
     end
+
+    context "lesson_notes_created association" do
+      let(:target) { :lesson_notes_created }
+
+      it "has many lesson notes created" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq "LessonNote"
+        expect(association.foreign_key).to eq "created_by_id"
+        expect(association.options[:inverse_of]).to eq :created_by
+      end
+    end
+
+    context "lesson_notes_updated association" do
+      let(:target) { :lesson_notes_updated }
+
+      it "has many lesson notes updated" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq "LessonNote"
+        expect(association.foreign_key).to eq "last_updated_by_id"
+        expect(association.options[:inverse_of]).to eq :last_updated_by
+      end
+    end
+
+    context "student_traits_created association" do
+      let(:target) { :student_traits_created }
+
+      it "has many student traits created" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq "StudentTrait"
+        expect(association.foreign_key).to eq "created_by_id"
+        expect(association.options[:inverse_of]).to eq :created_by
+      end
+    end
+
+    context "student_traits_updated association" do
+      let(:target) { :student_traits_updated }
+
+      it "has many student traits updated" do
+        expect(association.macro).to eq :has_many
+        expect(association.class_name).to eq "StudentTrait"
+        expect(association.foreign_key).to eq "last_updated_by_id"
+        expect(association.options[:inverse_of]).to eq :last_updated_by
+      end
+    end
   end
 end
