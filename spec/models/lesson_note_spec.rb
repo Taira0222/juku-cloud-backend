@@ -79,7 +79,7 @@ RSpec.describe LessonNote, type: :model do
       expect(lesson_note).not_to be_valid
     end
 
-    it "is not valid enum note_type" do
+    it "is not valid with invalid note_type enum value" do
       expect { lesson_note.note_type = 99 }.to raise_error(ArgumentError)
     end
 

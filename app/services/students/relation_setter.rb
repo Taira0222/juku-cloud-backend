@@ -170,13 +170,13 @@ module Students
             available_day_id: day_ids
           ).pluck(:id)
         # 削除するday_idsを取得
-        to_remove_scs =
+        to_remove_day_links =
           Availability::StudentLink
             .where(student_id: student_id)
             .where.not(id: keep_day_ids)
 
         # 削除
-        to_remove_scs.delete_all
+        to_remove_day_links.delete_all
       end
     end
   end
