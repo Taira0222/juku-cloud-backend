@@ -27,20 +27,19 @@ RSpec.describe ErrorHandlers, type: :controller do
     end
 
     def invalid_foreign_key
-      raise ActiveRecord::InvalidForeignKey,
-            I18n.t("errors.invalid_foreign_key")
+      raise ActiveRecord::InvalidForeignKey
     end
 
     def record_not_unique
-      raise ActiveRecord::RecordNotUnique, I18n.t("errors.record_not_unique")
+      raise ActiveRecord::RecordNotUnique
     end
 
     def not_null_violation
-      raise ActiveRecord::NotNullViolation, I18n.t("errors.not_null_violation")
+      raise ActiveRecord::NotNullViolation
     end
 
     def argument_error
-      raise ArgumentError, I18n.t("errors.argument_error")
+      raise ArgumentError, I18n.t("activerecord.errors.argument_error")
     end
   end
 
@@ -115,7 +114,9 @@ RSpec.describe ErrorHandlers, type: :controller do
       error = json[:errors].first
       expect(error[:code]).to eq "INVALID_FOREIGN_KEY"
       expect(error[:field]).to eq "base"
-      expect(error[:message]).to eq I18n.t("errors.invalid_foreign_key")
+      expect(error[:message]).to eq I18n.t(
+           "activerecord.errors.invalid_foreign_key"
+         )
     end
 
     it "handles ActiveRecord::RecordNotUnique with 422" do
@@ -124,7 +125,7 @@ RSpec.describe ErrorHandlers, type: :controller do
       error = json[:errors].first
       expect(error[:code]).to eq "NOT_UNIQUE"
       expect(error[:field]).to eq "base"
-      expect(error[:message]).to eq I18n.t("errors.not_unique")
+      expect(error[:message]).to eq I18n.t("activerecord.errors.not_unique")
     end
 
     it "handles ActiveRecord::NotNullViolation with 422" do
@@ -133,7 +134,9 @@ RSpec.describe ErrorHandlers, type: :controller do
       error = json[:errors].first
       expect(error[:code]).to eq "NOT_NULL_VIOLATION"
       expect(error[:field]).to eq "base"
-      expect(error[:message]).to eq I18n.t("errors.not_null_violation")
+      expect(error[:message]).to eq I18n.t(
+           "activerecord.errors.not_null_violation"
+         )
     end
 
     it "handles ArgumentError with 400" do
@@ -142,7 +145,7 @@ RSpec.describe ErrorHandlers, type: :controller do
       error = json[:errors].first
       expect(error[:code]).to eq "INVALID_ARGUMENT"
       expect(error[:field]).to eq "base"
-      expect(error[:message]).to eq I18n.t("errors.argument_error")
+      expect(error[:message]).to eq I18n.t("activerecord.errors.argument_error")
     end
   end
 end

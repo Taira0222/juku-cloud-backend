@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_26_084634) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_27_080312) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -51,9 +51,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_084634) do
     t.string "created_by_name", default: "", null: false
     t.string "last_updated_by_name"
     t.date "expire_date", null: false
+    t.integer "note_type", null: false
     t.index ["created_by_id"], name: "index_lesson_notes_on_created_by_id"
     t.index ["expire_date"], name: "index_lesson_notes_on_expire_date"
     t.index ["last_updated_by_id"], name: "index_lesson_notes_on_last_updated_by_id"
+    t.index ["note_type"], name: "index_lesson_notes_on_note_type"
     t.index ["student_class_subject_id"], name: "index_lesson_notes_on_student_class_subject_id"
   end
 

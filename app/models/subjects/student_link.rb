@@ -30,5 +30,7 @@ class Subjects::StudentLink < ApplicationRecord
            class_name: "Teaching::Assignment",
            foreign_key: :student_class_subject_id,
            dependent: :destroy
-  has_many :lesson_notes, dependent: :destroy
+  has_many :lesson_notes,
+           foreign_key: :student_class_subject_id,
+           dependent: :destroy
 end

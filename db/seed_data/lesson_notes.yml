@@ -1,0 +1,102 @@
+
+# 英語
+1:
+- note_type: homework
+  title: 単語帳50単語を覚える宿題を出す
+  description: 単語帳の内容を確認し、50単語を覚えてくること。
+- note_type: homework
+  title: 定期テストが終わった後から、単語帳暗記の宿題を出す
+  description: 定期テスト期間中はテスト対策を優先する
+- note_type: homework
+  title: 英語のリスニング対策を行う
+  description: リスニングが苦手なため、リスニングの宿題を出す
+- note_type: lesson
+  title: 定期テスト範囲の英語教材を授業で扱う
+  description: 定期テスト期間中のため、テスト範囲の教材を中心に授業を行う。
+- note_type: lesson
+  title: 英検対策の問題集を使用する
+  description: 英検を受験する予定があるので、対策問題集を使って授業を進める。
+- note_type: lesson
+  title: 現在完了形の理解度が低いので、復習を重点的に行う
+  description: 現在完了形の理解が不十分なため、教材はシリウス英語中学3年生を使用する
+- note_type: lesson
+  title: 英語の長文読解を授業で扱う
+  description: 前回の模試や過去問演習の際に長文読解で点数が取れておらず、宿題ではなく授業で扱いなぜできないかを分析し、解決策を考える
+- note_type: other
+  title: 同じ時間帯の同級生と相性が良くないため、時間帯を変更する
+  description: 相性が良くないため、授業時間帯を変更する
+
+
+# 国語
+2:
+- note_type: homework
+  title: 毎週金曜日に国語のシリウスの文章読解の宿題を1章分出す
+  description: 国語の文章読解力を向上させるため、シリウスの文章読解を宿題として出す
+- note_type: homework
+  title: 古典単語を30個覚える宿題を出す
+  description: 古典の基礎力をつけるため、古典単語を覚える宿題を出す
+- note_type: lesson
+  title: 定期テスト範囲の国語教材を授業で扱う
+  description: 定期テスト期間中のため、学校の授業で使用しているプリントを中心に授業を行う
+- note_type: other
+  title: 同じ時間帯の同級生と相性が良くないため、時間帯を変更する
+  description: 相性が良くないため、授業時間帯を変更する
+
+
+# 数学
+3:
+- note_type: homework
+  title: 部活が忙しいため、数学のジャックの宿題は出さずシリウスだけにする
+  description: 部活が忙しいため、宿題の負担を減らす
+- note_type: homework
+  title: 前回受けた模試の数学の解きなおし
+  description: 授業内で模試でわからない箇所の解説を行ったので、解きなおしを宿題として出す
+- note_type: homework
+  title: 今日シリウスで進めた章に対応する箇所のジャックの宿題を出す
+  description: 本日授業で進めた内容の理解度の確認と定着のため。
+- note_type: lesson
+  title: 定期テスト範囲の数学教材を授業で扱う
+  description: 定期テスト期間中のため、学校で使用しているワークを中心に授業を行いわからない部分を重点的に解説する。
+- note_type: lesson
+  title: 二次関数の文章題の問題を扱う
+  description: 模試で二次関数の文章題の点数が取れていなかったため、文章題の問題を扱う
+- note_type: other
+  title: 同じ時間帯の同級生と相性が良くないため、時間帯を変更する
+  description: 相性が良くないため、授業時間帯を変更する
+
+
+# 理科
+4:
+- note_type: homework
+  title: 今日授業で進めたシリウスの宿題を出す
+  description: 今日授業で進めた内容の理解度の確認と定着のために演習問題を宿題として出す
+- note_type: homework
+  title: 前回受けた模試の理科の解きなおし
+  description: 授業内で模試でわからない箇所の解説を行ったので、解きなおしを宿題として出す
+- note_type: lesson
+  title: 定期テスト範囲の理科教材を授業で扱う
+  description: 定期テスト期間中のため、学校で使用している教材を中心に授業を行う。
+- note_type: lesson
+  title: 化学分野の苦手克服のため、酸化還元反応の問題を扱う
+  description: 模試で化学分野の点数が取れていなかったため、酸化還元反応の問題を扱う
+- note_type: other
+  title: 同じ時間帯の同級生と相性が良くないため、時間帯を変更する
+  description: 相性が良くないため、授業時間帯を変更する
+
+# 社会
+5:
+- note_type: homework
+  title: 今日授業で進めたシリウスの宿題を出す
+  description: 今日授業で進めた内容の理解度の確認と定着のために演習問題を宿題として出す
+- note_type: homework
+  title: 前回受けた模試の社会の解きなおし
+  description: 授業内で模試でわからない箇所の解説を行ったので、解きなおしを宿題として出す
+- note_type: lesson
+  title: 定期テスト範囲の社会教材を授業で扱う
+  description: 定期テスト期間中のため、学校で使用している教材を中心に授業を行う。
+- note_type: lesson
+  title: 地理分野の苦手克服のため、世界地理の問題を扱う
+  description: 模試で地理分野の点数が取れていなかったため、世界地理の問題を扱う
+- note_type: other
+  title: 同じ時間帯の同級生と相性が良くないため、時間帯を変更する
+  description: 相性が良くないため、授業時間帯を変更する
