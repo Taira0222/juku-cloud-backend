@@ -1,3 +1,31 @@
+require "yaml"
+require "erb"
+
+SEED_DIR = Rails.root.join("db", "seed_data")
+
+def yaml_safe_load(file_name)
+  path = SEED_DIR.join(file_name)
+  YAML.safe_load(File.read(path))
+end
+
+def load_trait_sets(file_name)
+  raw = yaml_safe_load(file_name)
+  #  [{title=>'...', ...}] → [{title: :title, ...}] に整形
+  raw.map { |set| set.map { |h| h.deep_symbolize_keys } }
+end
+
+def load_notes_by_subject(file_name)
+  raw = yaml_safe_load(file_name)
+
+  # {"1"=>[{...}, ...]} → {1=> [{...}, ...]} に整形
+  raw
+    .transform_keys { |k| k.to_i }
+    .transform_values { |arr| Array(arr).map { |h| h.deep_symbolize_keys } }
+end
+
+TRAIT_SETS = load_trait_sets("student_traits.yml")
+NOTES_BY_SUBJECT = load_notes_by_subject("lesson_notes.yml")
+
 # 教科が9科目
 CLASS_SUBJECTS_COUNT = 5
 # 教科を作成
@@ -142,6 +170,45 @@ def pick_some(arr, min:, max:)
   arr.sample(count)
 end
 
+def create_student_traits_and_lesson_notes(school, admin)
+  school.students.each_with_index do |student, i|
+    # student_traitの作成
+    TRAIT_SETS[i % TRAIT_SETS.size].each do |trait_attrs|
+      student.student_traits.create!(
+        title: trait_attrs[:title],
+        category: trait_attrs[:category],
+        description: trait_attrs[:description]
+      )
+    end
+
+    # NOTES_BY_SUBJECTから、studentの受講科目に対応するものを抽出
+    match_subjects =
+      student.class_subjects.select { |subj| NOTES_BY_SUBJECT.key?(subj.id) }
+    scs_ids =
+      Subjects::StudentLink.where(
+        student: student,
+        class_subject: match_subjects
+      ).pluck(:id, :class_subject_id)
+
+    scs_ids.each do |scs_id, class_subject_id|
+      notes = NOTES_BY_SUBJECT[class_subject_id]
+      notes.each_with_index do |note_attrs, j|
+        is_updated = (j % 3 == 0) # 3つに1つは更新履歴あり
+        updated_by = is_updated ? admin : nil
+        LessonNote.create!(
+          student_class_subject_id: scs_id,
+          title: note_attrs[:title],
+          description: note_attrs[:description],
+          note_type: note_attrs[:note_type],
+          expire_date: Date.current + (rand(-5..30).days),
+          created_by: admin,
+          last_updated_by: updated_by
+        )
+      end
+    end
+  end
+end
+
 # 管理者1を作成
 admin = create_user("admin@example.com", "Admin User", :admin, :active, nil)
 # 1つ目の塾を作成
@@ -188,3 +255,6 @@ User
     user.available_days = pick_some(DAYS, min: 1, max: 4)
     user.save!
   end
+
+create_student_traits_and_lesson_notes(first_school, admin)
+create_student_traits_and_lesson_notes(second_school, another_admin)

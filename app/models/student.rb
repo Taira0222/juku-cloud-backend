@@ -43,6 +43,10 @@ class Student < ApplicationRecord
            dependent: :destroy
   has_many :available_days, through: :student_available_days
   has_many :student_traits, dependent: :destroy
+  # 作成日順にソートして取得できるようにする
+  has_many :lesson_notes,
+           -> { order(created_at: :asc) },
+           through: :student_class_subjects
 
   enum :status, { active: 0, inactive: 1, on_leave: 2, graduated: 3 }
   enum :school_stage,
