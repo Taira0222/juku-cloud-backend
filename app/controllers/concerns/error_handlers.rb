@@ -21,7 +21,8 @@ module ErrorHandlers
       render_error!(
         code: "NOT_FOUND",
         field: "base",
-        message: e.message,
+        # 空文字列の場合にデフォルトメッセージを使う
+        message: e.message.presence || I18n.t("application.errors.not_found"),
         status: :not_found
       )
     end
@@ -30,7 +31,7 @@ module ErrorHandlers
       render_error!(
         code: "FORBIDDEN",
         field: "base",
-        message: (e.message || I18n.t("application.errors.forbidden")),
+        message: (e.message.presence || I18n.t("application.errors.forbidden")),
         status: :forbidden
       )
     end
@@ -59,7 +60,7 @@ module ErrorHandlers
       render_error!(
         code: "INVALID_FOREIGN_KEY",
         field: "base",
-        message: I18n.t("errors.invalid_foreign_key"),
+        message: I18n.t("activerecord.errors.invalid_foreign_key"),
         status: :unprocessable_content
       )
     end
@@ -68,7 +69,7 @@ module ErrorHandlers
       render_error!(
         code: "NOT_UNIQUE",
         field: "base",
-        message: I18n.t("errors.not_unique"),
+        message: I18n.t("activerecord.errors.not_unique"),
         status: :unprocessable_content
       )
     end
@@ -77,17 +78,17 @@ module ErrorHandlers
       render_error!(
         code: "NOT_NULL_VIOLATION",
         field: "base",
-        message: I18n.t("errors.not_null_violation"),
+        message: I18n.t("activerecord.errors.not_null_violation"),
         status: :unprocessable_content
       )
     end
-
     # 400
     rescue_from ArgumentError do |e|
       render_error!(
         code: "INVALID_ARGUMENT",
         field: "base",
-        message: e.message,
+        message:
+          e.message.presence || I18n.t("activerecord.errors.argument_error"),
         status: :bad_request
       )
     end

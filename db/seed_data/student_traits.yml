@@ -1,0 +1,336 @@
+- - title: 明るい
+    category: good
+    description: いつもニコニコしている
+  - title: すぐに泣いてしまう
+    category: careful
+    description: 感情が高ぶると涙が出やすい
+  - title: 宿題をやったふりをしてしまう
+    category: careful
+    description: 実際にはやっていないのにやったと言ってしまう
+
+- - title: "責任感が強い"
+    category: good
+    description: "宿題などを出したら必ずやり遂げようとする" 
+
+  - title: "負けず嫌い"
+    category: good
+    description: "自分に厳しく、他人と競うことが好き"
+
+  - title: "興味がある分野にとても詳しい"
+    category: good
+    description: "特定の教科やテーマに対して深い知識を持っている"
+
+- - title: 明るい
+    category: good
+    description: いつもニコニコしている
+  - title: 負けず嫌い
+    category: good
+    description: 自分に厳しく、他人と競うことが好き
+  - title: 勉強以外の社会人の話にも興味を持ってる
+    category: good
+    description: 将来の仕事や社会の仕組みに関心がある
+  - title: 完璧主義すぎる
+    category: careful
+    description: 自分に厳しいので、小さいミスでもかなり落ち込んでしまう
+
+- - title: 楽しい雰囲気で学ぶのが好き
+    category: good
+    description: 勉強だけの話ではなく、雑談やゲームも交えた学習が好き
+  - title: 宿題をやったふりをしてしまう
+    category: careful
+    description: 実際にはやっていないのにやったと言ってしまう
+  - title: 親にやらされている感が強い
+    category: careful
+    description: 塾で勉強しているのは親に怒られないため、という気持ちが強い
+
+- - title: 再現性が高い
+    category: good
+    description: 数学などの計算問題を解く際に、公式や解法を正確に覚えている
+  - title: 親にやらされている感が強い
+    category: careful
+    description: 塾で勉強しているのは親に怒られないため、という気持ちが強い
+  - title: 宿題をやったふりをしてしまう
+    category: careful
+    description: 実際にはやっていないのにやったと言ってしまう
+  - title: 集中力が続かない
+    category: careful
+    description: 勉強中に気が散りやすく、集中力が続かない
+  - title: 忘れ物が多い
+    category: careful
+    description: 必要な教材や宿題を忘れてしまうことが多い
+  - title: 授業に遅れてくる
+    category: careful
+    description: 時間管理が苦手で、授業に遅れてくることがある
+
+- - title: 再現性が高い
+    category: good
+    description: 数学などの計算問題を解く際に、公式や解法を正確に覚えている
+  - title: 親にやらされている感が強い
+    category: careful
+    description: 塾で勉強しているのは親に怒られないため、という気持ちが強い
+  - title: 宿題をやったふりをしてしまう
+    category: careful
+    description: 実際にはやっていないのにやったと言ってしまう
+  - title: 学力が低いことへの危機感が薄い
+    category: careful
+    description: 親に言われて勉強の重要性はわかっているが、実感が湧かず、学力が上がっていないことへの危機感が薄い
+
+- - title: まじめ
+    category: good
+    description: 授業中は集中して取り組み、宿題もきちんとこなす
+  - title: 運動部に所属しガッツがある
+    category: good
+    description: 部活動に積極的に参加し、仲間と協力して目標に向かって努力する姿勢がある
+  - title: 信頼を置いている人の意見をよく聞く
+    category: good
+    description: 親や先生など、信頼している人の意見を尊重し、アドバイスを素直に受け入れる
+  - title: 親への依存度が高く、自分の意見をあまり持たない
+    category: careful
+    description: 重要な決定をする際に、親の意見に過度に依存し、自分の考えを持たないことがある
+  - title: 自分の上限を決めてしまいがち
+    category: careful
+    description: 自分の能力や可能性に対して過小評価をし、挑戦することを避ける傾向がある
+
+- - title: まじめ
+    category: good
+    description: 授業中は集中して取り組み、宿題もきちんとこなす
+  - title: 運動部に所属しガッツがある
+    category: good
+    description: 部活動に積極的に参加し、仲間と協力して目標に向かって努力する姿勢がある
+  - title: 兄弟がいるので受験についてある程度の知識がある
+    category: good
+    description: 兄弟がいるため、受験に関する情報を自然と得ることができる
+  - title: 地頭が良い
+    category: good
+    description: 物事を素早く理解し、応用する能力が高い
+  - title: 年上の人にはものおじしてしまう
+    category: careful
+    description: 友達の前なら堂々としているが、年上の人と話すときには緊張してしまう
+  - title: わからないことを言語化するのが苦手
+    category: careful
+    description: 自分が理解できていないことをうまく説明できず、質問するのが苦手でそのままにしてしまう
+  - title: 部活に熱中しすぎて勉強がおろそかになることがある
+    category: careful
+    description: 部活動に多くの時間とエネルギーを注ぎすぎて、学業に十分な注意を払えないことがある
+
+- - title: まじめ
+    category: good
+    description: 授業中は集中して取り組み、宿題もきちんとこなす
+  - title: 負けず嫌い
+    category: good
+    description: 自分に厳しく、他人と競うことが好き
+  - title: 兄弟がいるので受験についてある程度の知識がある
+    category: good
+    description: 兄弟がいるため、受験に関する情報を自然と得ることができる
+  - title: 勉強の重要性を理解し積み重ねて学習しようとする姿勢がある
+    category: good
+    description: 勉強の重要性を理解し、日々の学習を積み重ねていく姿勢がある
+  - title: 自分の中でかみ砕いて理解し、わからない場合は質問できる
+    category: good
+    description: 自分の理解を深めるために、わからないことがあれば積極的に質問する
+  - title: 勉強以外の視点が乏しい
+    category: careful
+    description: 勉強以外の話題にはあまり興味がなく、視野が狭くなりがち
+  - title: ストレス耐性が低い
+    category: careful
+    description: ストレスに対して敏感で、プレッシャーに弱い
+
+- - title: 勉強以外の社会人の話にも興味を持ってる
+    category: good
+    description: 将来の仕事や社会の仕組みに関心がある
+  - title: 信頼を置いている人の意見をよく聞く
+    category: good
+    description: 親や先生など、信頼している人の意見を尊重し、アドバイスを素直に受け入れる
+  - title: 勉強の重要性を理解し積み重ねて学習しようとする姿勢がある
+    category: good
+    description: 勉強の重要性を理解し、日々の学習を積み重ねていく姿勢がある
+  - title: 自分の中でかみ砕いて理解し、わからない場合は質問できる
+    category: good
+    description: 自分の理解を深めるために、わからないことがあれば積極的に質問する
+  - title: 論理的思考力が高い
+    category: good
+    description: 物事を論理的に考え、筋道を立てて説明する能力が高い
+  - title: 頑固で自分の意見を曲げない
+    category: careful
+    description: 自分の意見に固執し、他人の意見を受け入れないことがある
+  - title: 正義感が強く、冗談が通じにくい
+    category: careful
+    description: 物事を白黒で捉えがちで、冗談や軽い話を真剣に受け止めてしまうことがある
+
+- - title: まじめ
+    category: good
+    description: 授業中は集中して取り組み、宿題もきちんとこなす
+  - title: 努力家
+    category: good
+    description: 目標に向かってコツコツと努力を続ける姿勢がある
+  - title: 素直
+    category: good
+    description: 自分の意見をしっかり持ちながらも、他人の意見を受け入れる柔軟さがある
+  - title: 計画性がある
+    category: good
+    description: テスト期間などに向けて、計画的に学習を進めることができる
+  - title: 仲のいい人以外にはあまり自我を出さない
+    category: careful
+    description: 親しい友達以外には自分の意見や感情をあまり表に出さない傾向がある
+  - title: 行動するときは友達と常に一緒
+    category: careful
+    description: 一人で行動することが苦手で、常に友達と一緒にいることを好む
+
+- - title: まじめ
+    category: good
+    description: 授業中は集中して取り組み、宿題もきちんとこなす
+  - title: 努力家
+    category: good
+    description: 目標に向かってコツコツと努力を続ける姿勢がある
+  - title: 自己主張ができる
+    category: good
+    description: 自分の意見をしっかり持ちながらも、他人の意見を受け入れる柔軟さがある
+  - title: スマホやゲーム依存が強い
+    category: careful
+    description: スマホやゲームに多くの時間を費やし、勉強の妨げになっている
+  - title: 宿題をやったふりをしてしまう
+    category: careful
+    description: 実際にはやっていないのにやったと言ってしまう
+  - title: 行動するときは友達と常に一緒
+    category: careful
+    description: 一人で行動することが苦手で、常に友達と一緒にいることを好む
+  - title: 反抗期で親の言うことを聞かない
+    category: careful
+    description: 親の言うことに反発し、自分の意見を優先することがある
+
+- - title: 勉強以外の社会人の話にも興味を持ってる
+    category: good
+    description: 将来の仕事や社会の仕組みに関心がある
+  - title: 保護者が高学歴のため、学習の重要性を理解している
+    category: good
+    description: 保護者が高学歴であるため、家庭内で学習の重要性が強調されている
+  - title: 精神年齢が低い
+    category: careful
+    description: 同年代の子供と比べて、感情のコントロールや社会的なスキルが未熟である
+  - title: 宿題をやったふりをしてしまう
+    category: careful
+    description: 実際にはやっていないのにやったと言ってしまう
+  - title: 親への依存度が高く、自分の意見をあまり持たない
+    category: careful
+    description: 重要な決定をする際に、親の意見に過度に依存し、自分の考えを持たないことがある
+
+- - title: まじめ
+    category: good
+    description: 授業中は集中して取り組み、宿題もきちんとこなす
+  - title: 運動部に所属しガッツがある
+    category: good
+    description: 部活動に積極的に参加し、仲間と協力して目標に向かって努力する姿勢がある
+  - title: 信頼を置いている人の意見をよく聞く
+    category: good
+    description: 親や先生など、信頼している人の意見を尊重し、アドバイスを素直に受け入れる
+  - title: 理解力が乏しく、正しく理解できていないことがある
+    category: careful
+    description: 説明を聞いても正しく理解できていないことがあり、基礎的な内容の理解に時間がかかる
+
+- - title: まじめ
+    category: good
+    description: 授業中は集中して取り組み、宿題もきちんとこなす
+  - title: 運動部に所属しガッツがある
+    category: good
+    description: 部活動に積極的に参加し、仲間と協力して目標に向かって努力する姿勢がある
+  - title: 負けず嫌い
+    category: good
+    description: 自分に厳しく、他人と競うことが好き
+  - title: 社交的
+    category: good
+    description: 人と話すことが好きで、友達が多い
+  - title: 信頼を置いている人の意見をよく聞く
+    category: good
+    description: 親や先生など、信頼している人の意見を尊重し、アドバイスを素直に受け入れる
+  - title: 勉強の重要性を理解し積み重ねて学習しようとする姿勢がある
+    category: good
+    description: 勉強の重要性を理解し、日々の学習を積み重ねていく姿勢がある
+  - title: 完璧主義すぎる
+    category: careful
+    description: 自分に厳しいので、小さいミスでもかなり落ち込んでしまう
+  - title: 勉強以外の視点が乏しい
+    category: careful
+    description: 勉強以外の話題にはあまり興味がなく、視野が狭くなりがち
+
+
+- - title: まじめ
+    category: good
+    description: 授業中は集中して取り組み、宿題もきちんとこなす
+  - title: 素直
+    category: good
+    description: 自分の意見をしっかり持ちながらも、他人の意見を受け入れる柔軟さがある
+  - title: 信頼を置いている人の意見をよく聞く
+    category: good
+    description: 親や先生など、信頼している人の意見を尊重し、アドバイスを素直に受け入れる
+  - title: 努力家
+    category: good
+    description: 目標に向かってコツコツと努力を続ける姿勢がある
+  - title: 自己主張は得意ではない
+    category: careful
+    description: 自分の意見はあるが、あまり積極的に表現しない傾向がある
+  - title: 理解力が乏しく、正しく理解できていないことがある
+    category: careful
+    description: 説明を聞いても正しく理解できていないことがあり、基礎的な内容の理解に時間がかかる
+  - title: 完璧主義すぎる
+    category: careful
+    description: 自分に厳しいので、宿題ができないかった時があるとかなり落ち込んでしまう
+
+- - title: まじめ
+    category: good
+    description: 授業中は集中して取り組み、宿題もきちんとこなす
+  - title: 運動部に所属しガッツがある
+    category: good
+    description: 部活動に積極的に参加し、仲間と協力して目標に向かって努力する姿勢がある
+  - title: 兄弟がいるので受験についてある程度の知識がある
+    category: good
+    description: 兄弟がいるため、受験に関する情報を自然と得ることができる
+  - title: 地頭が良い
+    category: good
+    description: 物事を素早く理解し、応用する能力が高い
+  - title: 社交的
+    category: good
+    description: 人と話すことが好きで、友達が多い
+  - title: 勉強以外の社会人の話にも興味を持ってる
+    category: good
+    description: 将来の仕事や社会の仕組みに関心がある
+  - title: 信頼を置いている人の意見をよく聞く
+    category: good
+    description: 親や先生など、信頼している人の意見を尊重し、アドバイスを素直に受け入れる
+  - title: 部活に熱中しすぎて勉強がおろそかになることがある
+    category: careful
+    description: 部活動に多くの時間とエネルギーを注ぎすぎて、宿題をできないことがある
+
+- - title: 再現性が高い
+    category: good
+    description: 数学などの計算問題を解く際に、公式や解法を正確に覚えている
+  - title: 保護者が高学歴のため、学習の重要性を理解している
+    category: good
+    description: 保護者が高学歴であるため、家庭内で学習の重要性が強調されている
+  - title: 宿題をやったふりをしてしまう
+    category: careful
+    description: 実際にはやっていないのにやったと言ってしまう
+  - title: 人に流されやすい
+    category: careful
+    description: 友達や周囲の意見に影響されやすく、自分の意見を持ちにくい
+
+- - title: まじめ
+    category: good
+    description: 授業中は集中して取り組み、宿題もきちんとこなす
+  - title: 地頭が良い
+    category: good
+    description: 物事を素早く理解し、応用する能力が高い
+  - title: 努力家
+    category: good
+    description: 目標に向かってコツコツと努力を続ける姿勢がある
+  - title: 勉強以外の社会人の話にも興味を持ってる
+    category: good
+    description: 将来の仕事や社会の仕組みに関心がある
+  - title: 信頼を置いている人の意見をよく聞く
+    category: good
+    description: 親や先生など、信頼している人の意見を尊重し、アドバイスを素直に受け入れる
+  - title: 自分の意見をしっかり持っている
+    category: good
+    description: 自分の考えや意見をしっかり持ち、他人に流されない
+  - title: ストレス耐性が低い
+    category: careful
+    description: ストレスに対して敏感で、プレッシャーに弱い

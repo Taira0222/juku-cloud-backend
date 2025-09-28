@@ -127,9 +127,26 @@ module Students
               updated_at: now
             }
           end
+        Subjects::StudentLink.upsert_all(
+          rows,
+          unique_by: %i[student_id class_subject_id]
+        )
+        # 残すscs_idsを取得
+        keep_link_ids =
+          Subjects::StudentLink.where(
+            student_id: student_id,
+            class_subject_id: subject_ids
+          ).pluck(:id)
 
-        Subjects::StudentLink.where(student_id: student_id).delete_all
-        Subjects::StudentLink.insert_all(rows) unless rows.empty?
+        # 削除するscs_idsを取得
+        to_remove_scs =
+          Subjects::StudentLink
+            .where(student_id: student_id)
+            .where.not(id: keep_link_ids)
+
+        # 関連するlesson_notes を削除
+        LessonNote.where(student_class_subject_id: to_remove_scs).delete_all
+        to_remove_scs.delete_all
       end
 
       def update_student_day_links!(student_id, day_ids, now:)
@@ -142,9 +159,24 @@ module Students
               updated_at: now
             }
           end
+        Availability::StudentLink.upsert_all(
+          rows,
+          unique_by: %i[student_id available_day_id]
+        )
+        # 残すday_idsを取得
+        keep_day_ids =
+          Availability::StudentLink.where(
+            student_id: student_id,
+            available_day_id: day_ids
+          ).pluck(:id)
+        # 削除するday_idsを取得
+        to_remove_day_links =
+          Availability::StudentLink
+            .where(student_id: student_id)
+            .where.not(id: keep_day_ids)
 
-        Availability::StudentLink.where(student_id: student_id).delete_all
-        Availability::StudentLink.insert_all(rows) unless rows.empty?
+        # 削除
+        to_remove_day_links.delete_all
       end
     end
   end
