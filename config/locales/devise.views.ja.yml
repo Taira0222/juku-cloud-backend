@@ -63,8 +63,10 @@ ja:
         other: ユーザー
 
     errors:
-      invalid_foreign_key: "関連するデータが存在しません。"
-      not_unique: "既に存在する値です。"
+      invalid_foreign_key: 関連するデータが存在しません。
+      not_unique: 既に存在する値です。
+      not_null_violation: 必須項目です。
+      argument_error: 無効な引数が指定されました。
       messages:
         record_invalid: "バリデーションに失敗しました: %{errors}"
       models:
@@ -103,6 +105,7 @@ ja:
   application:
     errors:
       forbidden: 権限がありません。
+      not_found: リソースが見つかりませんでした。
       not_found_school: 学校が見つかりませんでした。
       teacher_unable_operate: 講師はこの操作を行うことができません。
       internal_server_error: サーバー内部でエラーが発生しました。しばらくしてから再度お試しください。
@@ -134,7 +137,11 @@ ja:
       assignment:
         subject_not_linked: 講師が担当していない教科が含まれています。
         missing_teacher: 担当講師が見つかりません。
-        missing_day: 指定された曜日が存在しません。
+        missing_day: 指定された曜日が存在しま
+  dashboard:
+    errors:
+      unable_operate: この操作を行う権限がありません。
+      
 
   devise:
     confirmations:
