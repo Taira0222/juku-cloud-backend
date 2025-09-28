@@ -13,10 +13,10 @@ class Api::V1::DashboardsController < ApplicationController
   private
 
   # 担当していない生徒の情報を見ようとした場合は403を返す
-  def ensure_student_access!(id = params[:id])
+  def ensure_student_access!
     return if current_user.admin_role?
 
-    allowed = current_user.students.exists?(id: id)
+    allowed = current_user.students.exists?(id: params[:id])
     unless allowed
       raise ForbiddenError, I18n.t("dashboard.errors.unable_operate")
     end
