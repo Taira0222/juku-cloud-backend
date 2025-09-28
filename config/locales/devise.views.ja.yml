@@ -137,7 +137,7 @@ ja:
       assignment:
         subject_not_linked: 講師が担当していない教科が含まれています。
         missing_teacher: 担当講師が見つかりません。
-        missing_day: 指定された曜日が存在しま
+        missing_day: 指定された曜日が存在しません
   dashboard:
     errors:
       unable_operate: この操作を行う権限がありません。
