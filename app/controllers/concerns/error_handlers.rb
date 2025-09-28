@@ -21,7 +21,8 @@ module ErrorHandlers
       render_error!(
         code: "NOT_FOUND",
         field: "base",
-        message: e.message || I18n.t("application.errors.not_found"),
+        # 空文字列の場合にデフォルトメッセージを使う
+        message: e.message.presence || I18n.t("application.errors.not_found"),
         status: :not_found
       )
     end
@@ -30,7 +31,7 @@ module ErrorHandlers
       render_error!(
         code: "FORBIDDEN",
         field: "base",
-        message: (e.message || I18n.t("application.errors.forbidden")),
+        message: (e.message.presence || I18n.t("application.errors.forbidden")),
         status: :forbidden
       )
     end
@@ -86,7 +87,8 @@ module ErrorHandlers
       render_error!(
         code: "INVALID_ARGUMENT",
         field: "base",
-        message: e.message || I18n.t("activerecord.errors.argument_error"),
+        message:
+          e.message.presence || I18n.t("activerecord.errors.argument_error"),
         status: :bad_request
       )
     end

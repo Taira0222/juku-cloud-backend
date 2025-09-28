@@ -10,7 +10,7 @@ end
 
 def load_trait_sets(file_name)
   raw = yaml_safe_load(file_name)
-  # [{title=>"...", ...] → [{title: "..." ...]}, ...] に整形
+  #  [{title=>'...', ...}] → [{title: :title, ...}] に整形
   raw.map { |set| set.map { |h| h.deep_symbolize_keys } }
 end
 
