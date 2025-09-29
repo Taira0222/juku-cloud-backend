@@ -10,7 +10,7 @@ RSpec.describe Students::RelationSetter, type: :service do
         assignments: assignments
       )
     end
-
+    let!(:admin_user) { create(:user) }
     let!(:student) { create(:student) }
     let!(:subject1) { create(:class_subject, :english) }
     let!(:subject2) { create(:class_subject, :japanese) }
@@ -23,6 +23,13 @@ RSpec.describe Students::RelationSetter, type: :service do
     let!(:teacher3) { create(:user, :teacher) }
     let!(:student_class_subject) do
       create(:student_class_subject, student: student, class_subject: subject3)
+    end
+    let!(:lesson_note) do
+      create(
+        :lesson_note,
+        student_class_subject: student_class_subject,
+        created_by: admin_user
+      )
     end
     let!(:student_available_day) do
       create(
@@ -63,8 +70,10 @@ RSpec.describe Students::RelationSetter, type: :service do
         expect(student).to have_attributes(
           class_subject_ids: [ subject3.id ],
           available_day_ids: [ available_day3.id ],
-          teacher_ids: [ teacher3.id ]
+          teacher_ids: [ teacher3.id ],
+          lesson_note_ids: [ lesson_note.id ]
         )
+
         call
         student.reload
         # 追加ではなく置換されていることを確認
@@ -74,6 +83,8 @@ RSpec.describe Students::RelationSetter, type: :service do
             match_array([ available_day1.id, available_day2.id ]),
           teacher_ids: match_array([ teacher1.id, teacher2.id ])
         )
+        # 授業引継ぎも正しく削除されていることを確認
+        expect(student.lesson_note_ids).to be_empty
       end
     end
 
