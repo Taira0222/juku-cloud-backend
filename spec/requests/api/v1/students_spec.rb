@@ -200,12 +200,41 @@ RSpec.describe "Api::V1::Students", type: :request do
   end
 
   describe "PATCH /update" do
+    let!(:student) { create(:student, school: school) }
     let!(:subject1) { create(:class_subject, :english) }
     let!(:subject2) { create(:class_subject, :japanese) }
+    let!(:subject3) { create(:class_subject, :mathematics) }
     let!(:available_day1) { create(:available_day, :sunday) }
     let!(:available_day2) { create(:available_day, :monday) }
-    let!(:teachers) { create_list(:user, 2, role: :teacher, school: school) }
-    let!(:student) { create(:student, school: school) }
+    let!(:available_day3) { create(:available_day, :tuesday) }
+    let!(:teacher1) { create(:user, :teacher, school: school) }
+    let!(:teacher2) { create(:user, :teacher, school: school) }
+    let!(:teacher3) { create(:user, :teacher, school: school) }
+    let!(:student_class_subject) do
+      create(:student_class_subject, student: student, class_subject: subject3)
+    end
+    let!(:lesson_note) do
+      create(
+        :lesson_note,
+        student_class_subject: student_class_subject,
+        created_by: admin_user
+      )
+    end
+    let!(:student_available_day) do
+      create(
+        :student_available_day,
+        student: student,
+        available_day: available_day3
+      )
+    end
+    let!(:teaching_assignment) do
+      create(
+        :teaching_assignment,
+        user: teacher3,
+        student_class_subject: student_class_subject,
+        available_day: available_day3
+      )
+    end
 
     it "returns forbidden for non-admin users" do
       non_admin_user = create(:user, role: :teacher, school: school)
@@ -233,12 +262,12 @@ RSpec.describe "Api::V1::Students", type: :request do
           available_day_ids: [ available_day1.id, available_day2.id ],
           assignments: [
             {
-              teacher_id: teachers[0].id,
+              teacher_id: teacher1.id,
               subject_id: subject1.id,
               day_id: available_day1.id
             },
             {
-              teacher_id: teachers[1].id,
+              teacher_id: teacher2.id,
               subject_id: subject2.id,
               day_id: available_day2.id
             }
@@ -246,15 +275,18 @@ RSpec.describe "Api::V1::Students", type: :request do
         }
       end
 
-      before do
+      it "updates a student with valid parameters" do
+        expect(student).to have_attributes(
+          class_subject_ids: [ subject3.id ],
+          available_day_ids: [ available_day3.id ],
+          teacher_ids: [ teacher3.id ],
+          lesson_note_ids: [ lesson_note.id ]
+        )
         patch_with_auth(
           api_v1_student_path(student.id),
           admin_user,
           params: valid_params
         )
-      end
-
-      it "updates a student with valid parameters" do
         expect(response).to have_http_status(:ok)
 
         # 形を確認
@@ -283,6 +315,12 @@ RSpec.describe "Api::V1::Students", type: :request do
         expect(json[:class_subjects].size).to eq(2)
         expect(json[:available_days].size).to eq(2)
         expect(json[:teachers].size).to eq(2)
+        expect(student.reload).not_to have_attributes(
+          class_subject_ids: [ subject3.id ],
+          available_day_ids: [ available_day3.id ],
+          teacher_ids: [ teacher3.id ],
+          lesson_note_ids: [ lesson_note.id ]
+        )
       end
     end
 
@@ -299,12 +337,12 @@ RSpec.describe "Api::V1::Students", type: :request do
           available_day_ids: [ available_day1.id, available_day2.id ],
           assignments: [
             {
-              teacher_id: teachers[0].id,
+              teacher_id: teacher1.id,
               subject_id: subject1.id,
               day_id: available_day1.id
             },
             {
-              teacher_id: teachers[1].id,
+              teacher_id: teacher2.id,
               subject_id: subject2.id,
               day_id: available_day2.id
             }
