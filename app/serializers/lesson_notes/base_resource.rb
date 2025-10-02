@@ -1,5 +1,5 @@
-module Shared
-  class LessonNoteResource
+module LessonNotes
+  class BaseResource
     include Alba::Resource
 
     attributes :id,
@@ -11,9 +11,5 @@ module Shared
                :expire_date,
                :created_at,
                :updated_at
-
-    one :created_by, resource: Dashboards::UserForDashboardResource
-    one :last_updated_by, resource: Dashboards::UserForDashboardResource
-    one :student_class_subject, resource: Shared::StudentClassSubjectResource
   end
 end

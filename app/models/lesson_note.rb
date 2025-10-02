@@ -46,7 +46,7 @@ class LessonNote < ApplicationRecord
   enum :note_type, { homework: 0, lesson: 1, other: 2 }, suffix: true
 
   validates :title, presence: true, length: { maximum: 50 }
-  validates :description, length: { maximum: 1000 }
+  validates :description, length: { maximum: 500 }
   # user.name の最大長に合わせる
   validates :created_by_name, presence: true, length: { maximum: 50 }
   validates :last_updated_by_name, length: { maximum: 50 }

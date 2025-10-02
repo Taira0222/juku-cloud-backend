@@ -25,5 +25,5 @@ class StudentTrait < ApplicationRecord
   enum :category, { good: 0, careful: 1 }, suffix: true
 
   validates :title, presence: true, length: { maximum: 50 }
-  validates :description, length: { maximum: 1000 }
+  validates :description, length: { maximum: 500 }
 end
