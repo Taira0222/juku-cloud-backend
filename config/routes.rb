@@ -12,6 +12,8 @@ Rails.application.routes.draw do
       resources :invites, only: %i[show create], param: :token
       resources :students, only: %i[index create update destroy]
       resources :dashboards, only: %i[show]
+      resources :lesson_notes, only: %i[index create update destroy]
+      resources :student_traits, only: %i[index create update destroy]
       if Rails.env.development?
         mount LetterOpenerWeb::Engine, at: "/letter_opener"
       end

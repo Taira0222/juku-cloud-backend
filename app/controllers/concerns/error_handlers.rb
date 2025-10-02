@@ -92,5 +92,15 @@ module ErrorHandlers
         status: :bad_request
       )
     end
+
+    # 400
+    rescue_from ActionController::BadRequest do |e|
+      render_error!(
+        code: "BAD_REQUEST",
+        field: "base",
+        message: e.message.presence || I18n.t("application.errors.bad_request"),
+        status: :bad_request
+      )
+    end
   end
 end
