@@ -22,7 +22,7 @@ FactoryBot.define do
   factory :student_trait do
     association :student
     category { 0 } # good
-    title { "MyString" }
+    title { "student Traits " }
     description { "MyText" }
   end
 end
