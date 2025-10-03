@@ -83,7 +83,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
         expect(json[:meta][:per_page]).to eq(10)
       end
 
-      it "returns 404 when accessing a student from another school" do
+      it "returns 403 when accessing a student from another school" do
         get_with_auth(
           api_v1_lesson_notes_path,
           teacher,
