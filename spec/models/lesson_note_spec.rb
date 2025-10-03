@@ -59,13 +59,13 @@ RSpec.describe LessonNote, type: :model do
       expect(lesson_note).to be_valid
     end
 
-    it "is valid with 1000 characters description" do
-      lesson_note.description = "a" * 1000
+    it "is valid with 500 characters description" do
+      lesson_note.description = "a" * 500
       expect(lesson_note).to be_valid
     end
 
-    it "is not valid with 1001 characters description" do
-      lesson_note.description = "a" * 1001
+    it "is not valid with 501 characters description" do
+      lesson_note.description = "a" * 501
       expect(lesson_note).not_to be_valid
     end
 
