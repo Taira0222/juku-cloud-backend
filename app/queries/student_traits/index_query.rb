@@ -28,7 +28,7 @@ module StudentTraits
       if search_keyword.present?
         # SQLインジェクション対策
         kw = ActiveRecord::Base.sanitize_sql_like(search_keyword.to_s.strip)
-        student_traits = student_traits.where("name ILIKE ?", "%#{kw}%")
+        student_traits = student_traits.where("title ILIKE ?", "%#{kw}%")
       end
       # safe リストに入れて、安全にしてからソート条件を適用
       order_option = SORT_OPTIONS[sort_by.to_s]
