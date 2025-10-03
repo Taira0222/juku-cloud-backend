@@ -45,7 +45,7 @@ module Students
             .distinct
       end
 
-      students.includes(ASSOCS).order(:id).page(page).per(per_page)
+      students.preload(ASSOCS).order(:id).page(page).per(per_page)
     end
   end
 end

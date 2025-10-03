@@ -28,6 +28,6 @@ class Api::V1::StudentTraitsController < ApplicationController
   private
 
   def index_params
-    params.permit(:studentId, :searchKeyword, :sortBy, :page, :perPage)
+    params.permit(:student_id, :searchKeyword, :sortBy, :page, :perPage)
   end
 end

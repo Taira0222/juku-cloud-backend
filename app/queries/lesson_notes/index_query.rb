@@ -17,13 +17,26 @@ module LessonNotes
     }.freeze
 
     def self.call(school:, index_params:)
-      student_id = index_params[:studentId]
+      student_id = index_params[:student_id]
+      subject_id = index_params[:subject_id]
       search_keyword = index_params[:searchKeyword]
       sort_by = index_params[:sortBy]
       page = index_params[:page]
       per_page = index_params[:perPage]
 
       lesson_notes = school.students.find(student_id).lesson_notes
+
+      if !subject_id.present?
+        raise ArgumentError, I18n.t("lesson_notes.errors.argument_invalid")
+      end
+
+      # subject_idによる絞り込み
+      scs_id =
+        Subjects::StudentLink.where(
+          student_id: student_id,
+          class_subject_id: subject_id
+        ).pluck(:id)
+      lesson_notes = lesson_notes.where(student_class_subject_id: scs_id)
 
       # 検索キーワードによる絞り込み（名前での部分一致）
       if search_keyword.present?
@@ -41,7 +54,7 @@ module LessonNotes
           lesson_notes.order(:id)
         end
 
-      lesson_notes.includes(ASSOCS).page(page).per(per_page)
+      lesson_notes.preload(ASSOCS).page(page).per(per_page)
     end
   end
 end

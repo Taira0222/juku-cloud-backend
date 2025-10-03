@@ -18,7 +18,7 @@ RSpec.describe StudentTraits::IndexQuery, type: :query do
     end
 
     context "valid params" do
-      let(:index_params) { { studentId: student.id, page: 1, perPage: 10 } }
+      let(:index_params) { { student_id: student.id, page: 1, perPage: 10 } }
 
       it "returns student traits with pagination" do
         result = call
@@ -82,9 +82,9 @@ RSpec.describe StudentTraits::IndexQuery, type: :query do
     end
 
     context "invalid params" do
-      let(:index_params) { { studentId: 0, page: 1, perPage: 10 } }
+      let(:index_params) { { student_id: 0, page: 1, perPage: 10 } }
 
-      it "raises ActiveRecord::RecordNotFound when studentId is nil" do
+      it "raises ActiveRecord::RecordNotFound when student_id is nil" do
         expect { call }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
