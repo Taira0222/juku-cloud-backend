@@ -8,11 +8,11 @@ module LessonNotes
     ].freeze
 
     SORT_OPTIONS = {
-      "expired_date_asc" => {
-        expired_date: :asc
+      "expire_date_asc" => {
+        expire_date: :asc
       },
-      "expired_date_desc" => {
-        expired_date: :desc
+      "expire_date_desc" => {
+        expire_date: :desc
       }
     }.freeze
 
@@ -29,7 +29,7 @@ module LessonNotes
       if search_keyword.present?
         # SQLインジェクション対策
         kw = ActiveRecord::Base.sanitize_sql_like(search_keyword.to_s.strip)
-        lesson_notes = lesson_notes.where("name ILIKE ?", "%#{kw}%")
+        lesson_notes = lesson_notes.where("title ILIKE ?", "%#{kw}%")
       end
       # safe リストに入れて、安全にしてからソート条件を適用
       order_option = SORT_OPTIONS[sort_by.to_s]
