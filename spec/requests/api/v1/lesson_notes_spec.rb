@@ -44,7 +44,14 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
     end
 
     context "an authenticated admin user" do
-      let(:index_params) { { studentId: student.id, page: 1, perPage: 10 } }
+      let(:index_params) do
+        {
+          student_id: student.id,
+          subject_id: class_subject.id,
+          page: 1,
+          perPage: 10
+        }
+      end
       it "returns a successful response with lesson notes" do
         get_with_auth(
           api_v1_lesson_notes_path,
@@ -64,15 +71,35 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
           api_v1_lesson_notes_path,
           admin_user,
           params: {
-            studentId: 0
+            student_id: 0
           }
         )
         expect(response).to have_http_status(:not_found)
       end
+
+      it "returns 400 when subject_id is missing" do
+        get_with_auth(
+          api_v1_lesson_notes_path,
+          admin_user,
+          params: {
+            student_id: student.id,
+            page: 1,
+            perPage: 10
+          }
+        )
+        expect(response).to have_http_status(:bad_request)
+      end
     end
 
     context "an authenticated teacher" do
-      let(:index_params) { { studentId: student.id, page: 1, perPage: 10 } }
+      let(:index_params) do
+        {
+          student_id: student.id,
+          subject_id: class_subject.id,
+          page: 1,
+          perPage: 10
+        }
+      end
       it "returns a successful response with lesson notes" do
         get_with_auth(api_v1_lesson_notes_path, teacher, params: index_params)
         expect(response).to have_http_status(:success)
@@ -88,7 +115,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
           api_v1_lesson_notes_path,
           teacher,
           params: {
-            studentId: other_student.id,
+            student_id: other_student.id,
             page: 1,
             perPage: 10
           }
@@ -101,7 +128,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
           api_v1_lesson_notes_path,
           teacher,
           params: {
-            studentId: student2.id,
+            student_id: student2.id,
             page: 1,
             perPage: 10
           }
@@ -112,7 +139,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
 
     context "an unauthenticated user" do
       it "returns 401 Unauthorized" do
-        get api_v1_lesson_notes_path, params: { studentId: student.id }
+        get api_v1_lesson_notes_path, params: { student_id: student.id }
         expect(response).to have_http_status(:unauthorized)
       end
     end
