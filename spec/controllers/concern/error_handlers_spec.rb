@@ -41,6 +41,11 @@ RSpec.describe ErrorHandlers, type: :controller do
     def argument_error
       raise ArgumentError, I18n.t("activerecord.errors.argument_error")
     end
+
+    def bad_request
+      raise ActionController::BadRequest,
+            I18n.t("application.errors.bad_request")
+    end
   end
 
   # 仮想のルーティングを設定し、get で各アクションを呼び出せるようにする
@@ -55,6 +60,7 @@ RSpec.describe ErrorHandlers, type: :controller do
       get "record_not_unique" => "anonymous#record_not_unique"
       get "not_null_violation" => "anonymous#not_null_violation"
       get "argument_error" => "anonymous#argument_error"
+      get "bad_request" => "anonymous#bad_request"
     end
   end
 
@@ -146,6 +152,15 @@ RSpec.describe ErrorHandlers, type: :controller do
       expect(error[:code]).to eq "INVALID_ARGUMENT"
       expect(error[:field]).to eq "base"
       expect(error[:message]).to eq I18n.t("activerecord.errors.argument_error")
+    end
+
+    it "handles ActionController::BadRequest with 400" do
+      get :bad_request
+      expect(response).to have_http_status(:bad_request)
+      error = json[:errors].first
+      expect(error[:code]).to eq "BAD_REQUEST"
+      expect(error[:field]).to eq "base"
+      expect(error[:message]).to eq I18n.t("application.errors.bad_request")
     end
   end
 end

@@ -48,13 +48,13 @@ RSpec.describe StudentTrait, type: :model do
       expect(student_trait).to be_valid
     end
 
-    it "is valid with 1000 characters description" do
-      student_trait.description = "a" * 1000
+    it "is valid with 500 characters description" do
+      student_trait.description = "a" * 500
       expect(student_trait).to be_valid
     end
 
-    it "is not valid with 1001 characters description" do
-      student_trait.description = "a" * 1001
+    it "is not valid with 501 characters description" do
+      student_trait.description = "a" * 501
       expect(student_trait).not_to be_valid
     end
 

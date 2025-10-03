@@ -104,6 +104,7 @@ ja:
               inclusion: は不正な値です
   application:
     errors:
+      bad_request: リクエストが不正です。
       forbidden: 権限がありません。
       not_found: リソースが見つかりませんでした。
       not_found_school: 学校が見つかりませんでした。
