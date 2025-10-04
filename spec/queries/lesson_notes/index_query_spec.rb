@@ -119,8 +119,8 @@ RSpec.describe LessonNotes::IndexQuery, type: :query do
         end
 
         it "returns lesson notes sorted by expire_date asc" do
-          lesson_note1.update!(expire_date: Date.current - 10.days)
-          lesson_note3.update!(expire_date: Date.current - 20.days)
+          lesson_note1.update!(expire_date: Date.current + 20.days)
+          lesson_note3.update!(expire_date: Date.current + 10.days)
           index_params[:sortBy] = "expire_date_asc"
           result = call
           expect(result.first).to eq(lesson_note3)

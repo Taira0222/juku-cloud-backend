@@ -53,7 +53,7 @@ class LessonNote < ApplicationRecord
   validates :expire_date, presence: true
   validates :note_type, presence: true
 
-  validate :expire_date_cannot_be_in_the_past!, on: :create
+  validate :expire_date_cannot_be_in_the_past!
 
   def expired?
     expire_date < Date.current
@@ -63,8 +63,10 @@ class LessonNote < ApplicationRecord
 
   def expire_date_cannot_be_in_the_past!
     if expire_date.present? && expire_date < Date.current
-      raise ArgumentError,
-            I18n.t("lesson_notes.errors.expire_date_must_not_be_in_the_past")
+      errors.add(
+        :expire_date,
+        I18n.t("lesson_notes.errors.expire_date_must_not_be_in_the_past")
+      )
     end
   end
 end

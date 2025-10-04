@@ -38,7 +38,7 @@ RSpec.describe LessonNotes::Updater do
           title: "Test Lesson Note",
           description: "This is a test lesson note.",
           note_type: "homework",
-          expire_date: Date.today + 7.days
+          expire_date: Date.current + 7.days
         }
       end
 
@@ -50,33 +50,7 @@ RSpec.describe LessonNotes::Updater do
         expect(result.title).to eq("Test Lesson Note")
         expect(result.description).to eq("This is a test lesson note.")
         expect(result.note_type).to eq("homework")
-        expect(result.expire_date).to eq(Date.today + 7.days)
-        expect(result.student_class_subject).to eq(student_class_subject)
-        expect(result.last_updated_by).to eq(current_user)
-        expect(result.last_updated_by_name).to eq(current_user.name)
-      end
-    end
-
-    context "with past expire_date but no changes" do
-      let(:update_params) do
-        {
-          id: lesson_note.id,
-          title: "Test Lesson Note",
-          description: "This is a test lesson note.",
-          note_type: "homework"
-        }
-      end
-      it "updates the lesson note" do
-        lesson_note.update!(expire_date: Date.today - 1.day)
-        update_params[:expire_date] = lesson_note.expire_date
-        result = call
-
-        expect(result).to be_persisted
-        expect(result.id).to eq(lesson_note.id)
-        expect(result.title).to eq("Test Lesson Note")
-        expect(result.description).to eq("This is a test lesson note.")
-        expect(result.note_type).to eq("homework")
-        expect(result.expire_date).to eq(lesson_note.expire_date)
+        expect(result.expire_date).to eq(Date.current + 7.days)
         expect(result.student_class_subject).to eq(student_class_subject)
         expect(result.last_updated_by).to eq(current_user)
         expect(result.last_updated_by_name).to eq(current_user.name)
@@ -91,7 +65,7 @@ RSpec.describe LessonNotes::Updater do
             title: "Test Lesson Note",
             description: "This is a test lesson note.",
             note_type: "homework",
-            expire_date: Date.today + 7.days
+            expire_date: Date.current + 7.days
           }
         end
 
@@ -107,15 +81,12 @@ RSpec.describe LessonNotes::Updater do
             title: "Test Lesson Note",
             description: "This is a test lesson note.",
             note_type: "homework",
-            expire_date: Date.today - 1.day
+            expire_date: Date.current - 1.day
           }
         end
 
         it "does not update the lesson note" do
-          expect { call }.to raise_error(
-            ArgumentError,
-            I18n.t("lesson_notes.errors.expire_date_must_not_be_in_the_past")
-          )
+          expect { call }.to raise_error(ActiveRecord::RecordInvalid)
         end
       end
 
@@ -125,7 +96,7 @@ RSpec.describe LessonNotes::Updater do
             id: lesson_note.id,
             description: "This is a test lesson note.",
             note_type: "homework",
-            expire_date: Date.today + 7.days
+            expire_date: Date.current + 7.days
           }
         end
 
@@ -141,7 +112,7 @@ RSpec.describe LessonNotes::Updater do
             title: "Test Lesson Note",
             description: "This is a test lesson note.",
             note_type: "invalid_type",
-            expire_date: Date.today + 7.days
+            expire_date: Date.current + 7.days
           }
         end
 

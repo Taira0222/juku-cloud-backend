@@ -28,7 +28,7 @@ RSpec.describe LessonNotes::CreateService do
           title: "Test Lesson Note",
           description: "This is a test lesson note.",
           note_type: "homework",
-          expire_date: Date.today + 7.days
+          expire_date: Date.current + 7.days
         }
       end
 
@@ -39,7 +39,7 @@ RSpec.describe LessonNotes::CreateService do
         expect(lesson_note.title).to eq("Test Lesson Note")
         expect(lesson_note.description).to eq("This is a test lesson note.")
         expect(lesson_note.note_type).to eq("homework")
-        expect(lesson_note.expire_date).to eq(Date.today + 7.days)
+        expect(lesson_note.expire_date).to eq(Date.current + 7.days)
         expect(lesson_note.student_class_subject).to eq(student_class_subject)
         expect(lesson_note.created_by).to eq(current_user)
         expect(lesson_note.created_by_name).to eq(current_user.name)
@@ -52,7 +52,7 @@ RSpec.describe LessonNotes::CreateService do
           {
             description: "This is a test lesson note.",
             note_type: "homework",
-            expire_date: Date.today + 7.days
+            expire_date: Date.current + 7.days
           }
         end
 
@@ -67,7 +67,7 @@ RSpec.describe LessonNotes::CreateService do
             title: "Test Lesson Note",
             description: "This is a test lesson note.",
             note_type: "invalid_type",
-            expire_date: Date.today + 7.days
+            expire_date: Date.current + 7.days
           }
         end
 
@@ -82,15 +82,12 @@ RSpec.describe LessonNotes::CreateService do
             title: "Test Lesson Note",
             description: "This is a test lesson note.",
             note_type: "homework",
-            expire_date: Date.today - 1.day
+            expire_date: Date.current - 1.day
           }
         end
 
         it "does not create a lesson note" do
-          expect { call }.to raise_error(
-            ArgumentError,
-            I18n.t("lesson_notes.errors.expire_date_must_not_be_in_the_past")
-          )
+          expect { call }.to raise_error(ActiveRecord::RecordInvalid)
         end
       end
     end
