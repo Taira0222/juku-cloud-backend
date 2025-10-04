@@ -61,7 +61,7 @@ class LessonNote < ApplicationRecord
 
   private
 
-  def expire_date_cannot_be_in_the_past!
+  def expire_date_cannot_be_in_the_past
     if expire_date.present? && expire_date < Date.current
       errors.add(
         :expire_date,

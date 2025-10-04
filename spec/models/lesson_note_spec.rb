@@ -83,7 +83,7 @@ RSpec.describe LessonNote, type: :model do
       expect { lesson_note.note_type = 99 }.to raise_error(ArgumentError)
     end
 
-    it "works expire_date_cannot_be_in_the_past! method" do
+    it "is invalid when expire_date is in the past'" do
       # 期限が過ぎている場合エラー
       lesson_note.expire_date = Date.current - 1.day
       expect(lesson_note).to be_invalid
