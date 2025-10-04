@@ -218,6 +218,7 @@ ja:
       params_must_not_be_nil: パラメータが必須です。
       student_class_subject_not_found: 指定された生徒の教科が見つかりません。
       argument_invalid: 無効な引数が指定されました。
+      expire_date_must_not_be_in_the_past: 有効期限は今日以降の日付を指定してください。
 
 
   devise:

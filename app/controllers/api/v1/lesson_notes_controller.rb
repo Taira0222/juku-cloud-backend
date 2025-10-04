@@ -3,6 +3,7 @@ class Api::V1::LessonNotesController < ApplicationController
   before_action :set_school!
   before_action :ensure_student_access!
   before_action :get_student_class_subject, only: %i[create update]
+  before_action :require_admin_role!, only: %i[destroy]
 
   # GET /api/v1/lesson_notes
   def index
@@ -45,6 +46,10 @@ class Api::V1::LessonNotesController < ApplicationController
            status: :ok
   end
 
+  # DELETE /api/v1/lesson_notes/:id
+  def destroy
+  end
+
   private
 
   def index_params
@@ -73,6 +78,6 @@ class Api::V1::LessonNotesController < ApplicationController
   def get_student_class_subject
     params = create_params || update_params
     @student_class_subject =
-      LessonNotes::Validator.call(school: @school, create_params: params)
+      LessonNotes::Validator.call(school: @school, params: params)
   end
 end

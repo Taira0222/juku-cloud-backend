@@ -12,7 +12,6 @@ module LessonNotes
 
     def call
       lesson_note = create_lesson_note!(@student_class_subject)
-      lesson_note.reload
     end
 
     private
