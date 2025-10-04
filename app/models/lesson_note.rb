@@ -53,9 +53,7 @@ class LessonNote < ApplicationRecord
   validates :expire_date, presence: true
   validates :note_type, presence: true
 
-  # created_by_name は not null制約があるためbefore_validationでセットする
-  before_validation :snapshot_creator_name, on: :create
-  before_save :snapshot_updater_name
+  validate :expire_date_cannot_be_in_the_past
 
   def expired?
     expire_date < Date.current
@@ -63,11 +61,12 @@ class LessonNote < ApplicationRecord
 
   private
 
-  def snapshot_creator_name
-    self.created_by_name = created_by&.name if created_by_name.blank?
-  end
-
-  def snapshot_updater_name
-    self.last_updated_by_name = last_updated_by&.name
+  def expire_date_cannot_be_in_the_past
+    if expire_date.present? && expire_date < Date.current
+      errors.add(
+        :expire_date,
+        I18n.t("lesson_notes.errors.expire_date_must_not_be_in_the_past")
+      )
+    end
   end
 end
