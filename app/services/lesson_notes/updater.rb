@@ -11,14 +11,20 @@ module LessonNotes
     end
 
     def call
-      lesson_note = update_lesson_note!(@student_class_subject)
-      lesson_note.reload
+      lesson_note = LessonNote.find(@params[:id])
+      # もし、expire_date が変更されていて、かつ過去日であればエラー
+      if @params[:expire_date] != lesson_note.expire_date &&
+           @params[:expire_date].to_date < Date.current
+        raise ArgumentError,
+              I18n.t("lesson_notes.errors.expire_date_must_not_be_in_the_past")
+      end
+
+      update_lesson_note!(@student_class_subject, lesson_note)
     end
 
     private
 
-    def update_lesson_note!(scs)
-      lesson_note = LessonNote.find(@params[:id])
+    def update_lesson_note!(scs, lesson_note)
       lesson_note.update!(
         title: @params[:title],
         description: @params[:description],
