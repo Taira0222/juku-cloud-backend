@@ -53,7 +53,7 @@ class LessonNote < ApplicationRecord
   validates :expire_date, presence: true
   validates :note_type, presence: true
 
-  validate :expire_date_cannot_be_in_the_past!
+  validate :expire_date_cannot_be_in_the_past
 
   def expired?
     expire_date < Date.current
