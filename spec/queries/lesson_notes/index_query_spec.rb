@@ -44,7 +44,14 @@ RSpec.describe LessonNotes::IndexQuery, type: :query do
     end
 
     context "valid params" do
-      let(:index_params) { { studentId: student.id, page: 1, perPage: 10 } }
+      let(:index_params) do
+        {
+          student_id: student.id,
+          subject_id: class_subject1.id,
+          page: 1,
+          perPage: 10
+        }
+      end
       context "with last_updated_by" do
         let!(:last_updated_by) { create(:admin_user) }
         let!(:lesson_note3) do
@@ -71,7 +78,7 @@ RSpec.describe LessonNotes::IndexQuery, type: :query do
 
         it "returns lesson notes with associations" do
           result = call
-          expect(result).to include(lesson_note1, lesson_note2, lesson_note3)
+          expect(result).to include(lesson_note1, lesson_note3)
           expect(result.size).to eq(10) # ページネーションの確認
           # lesson_note1の確認
           expect(result.first.created_by).to eq(created_by)
@@ -83,14 +90,14 @@ RSpec.describe LessonNotes::IndexQuery, type: :query do
           )
           expect(result.first.last_updated_by).to eq(nil)
           # lesson_note3の確認
-          expect(result.third.created_by).to eq(created_by)
-          expect(result.third.student_class_subject).to eq(
+          expect(result.second.created_by).to eq(created_by)
+          expect(result.second.student_class_subject).to eq(
             student_class_subject1
           )
-          expect(result.third.student_class_subject.class_subject).to eq(
+          expect(result.second.student_class_subject.class_subject).to eq(
             class_subject1
           )
-          expect(result.third.last_updated_by).to eq(last_updated_by)
+          expect(result.second.last_updated_by).to eq(last_updated_by)
         end
 
         it "returns lesson note3 with search keyword" do
@@ -102,7 +109,7 @@ RSpec.describe LessonNotes::IndexQuery, type: :query do
         it "returns lesson note1 and lesson note2 without last_updated_by" do
           index_params[:searchKeyword] = "lesson"
           result = call
-          expect(result).to match_array([ lesson_note1, lesson_note2 ])
+          expect(result).to match_array([ lesson_note1 ])
         end
 
         it "does not return lesson notes with a different search keyword" do
@@ -113,25 +120,23 @@ RSpec.describe LessonNotes::IndexQuery, type: :query do
 
         it "returns lesson notes sorted by expire_date asc" do
           lesson_note1.update!(expire_date: Date.current - 10.days)
-          lesson_note2.update!(expire_date: Date.current - 20.days)
-          lesson_note3.update!(expire_date: Date.current - 30.days)
+          lesson_note3.update!(expire_date: Date.current - 20.days)
           index_params[:sortBy] = "expire_date_asc"
           result = call
           expect(result.first).to eq(lesson_note3)
         end
 
         it "returns lesson notes sorted by expire_date desc" do
-          lesson_note1.update!(expire_date: Date.current + 10.days)
-          lesson_note2.update!(expire_date: Date.current + 20.days)
-          lesson_note3.update!(expire_date: Date.current + 30.days)
+          # デフォルトが+30日なので、より大きい日付に更新しておく
+          lesson_note1.update!(expire_date: Date.current + 40.days)
+          lesson_note3.update!(expire_date: Date.current + 50.days)
           index_params[:sortBy] = "expire_date_desc"
           result = call
           expect(result.first).to eq(lesson_note3)
         end
 
         it "returns lesson notes sorted by id" do
-          lesson_note1.update!(expire_date: Date.current + 30.days)
-          lesson_note2.update!(expire_date: Date.current + 20.days)
+          lesson_note1.update!(expire_date: Date.current + 20.days)
           lesson_note3.update!(expire_date: Date.current + 10.days)
           index_params[:sortBy] = "invalid_option"
           result = call
@@ -154,16 +159,38 @@ RSpec.describe LessonNotes::IndexQuery, type: :query do
       context "without last_updated_by" do
         it "returns lesson notes" do
           result = call
-          expect(result).to match_array([ lesson_note1, lesson_note2 ])
+          expect(result).to match_array([ lesson_note1 ])
         end
       end
     end
 
     context "invalid params" do
-      let(:index_params) { { studentId: 0, page: 1, perPage: 10 } }
+      context "invalid student_id" do
+        let(:index_params) do
+          { student_id: 0, subject_id: class_subject1.id, page: 1, perPage: 10 }
+        end
 
-      it "raises error" do
-        expect { call }.to raise_error(ActiveRecord::RecordNotFound)
+        it "raises RecordNotFound error" do
+          expect { call }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
+      context "missing student_id" do
+        let(:index_params) do
+          { subject_id: class_subject1.id, page: 1, perPage: 10 }
+        end
+
+        it "raises ArgumentError" do
+          expect { call }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
+      context "missing subject_id" do
+        let(:index_params) { { student_id: student.id, page: 1, perPage: 10 } }
+
+        it "raises ArgumentError" do
+          expect { call }.to raise_error(ArgumentError)
+        end
       end
     end
   end
