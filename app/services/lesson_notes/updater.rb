@@ -11,20 +11,18 @@ module LessonNotes
     end
 
     def call
-      lesson_note = update_lesson_note!(@student_class_subject)
-      lesson_note.reload
+      lesson_note = @student_class_subject.lesson_notes.find(@params[:id])
+      update_lesson_note!(lesson_note)
     end
 
     private
 
-    def update_lesson_note!(scs)
-      lesson_note = LessonNote.find(@params[:id])
+    def update_lesson_note!(lesson_note)
       lesson_note.update!(
         title: @params[:title],
         description: @params[:description],
         note_type: @params[:note_type],
         expire_date: @params[:expire_date],
-        student_class_subject: scs,
         last_updated_by: @current_user,
         last_updated_by_name: @current_user.name
       )

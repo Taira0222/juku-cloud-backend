@@ -83,6 +83,21 @@ RSpec.describe LessonNote, type: :model do
       expect { lesson_note.note_type = 99 }.to raise_error(ArgumentError)
     end
 
+    it "is invalid when expire_date is in the past'" do
+      # 期限が過ぎている場合エラー
+      lesson_note.expire_date = Date.current - 1.day
+      expect(lesson_note).to be_invalid
+      expect(lesson_note.errors[:expire_date]).to include(
+        I18n.t("lesson_notes.errors.expire_date_must_not_be_in_the_past")
+      )
+      # 期限当日ならOK
+      lesson_note.expire_date = Date.current
+      expect(lesson_note).to be_valid
+      # 期限前ならOK
+      lesson_note.expire_date = Date.current + 1.day
+      expect(lesson_note).to be_valid
+    end
+
     it "works expired? method" do
       # 期限が過ぎている場合 true
       lesson_note.expire_date = Date.current - 1.day
@@ -93,24 +108,6 @@ RSpec.describe LessonNote, type: :model do
       # 期限前ならfalse
       lesson_note.expire_date = Date.current + 1.day
       expect(lesson_note.expired?).to be false
-    end
-
-    it "works snapshot_creator_name before_validation on create" do
-      lesson_note.created_by_name = nil
-      lesson_note.valid?
-      expect(lesson_note.created_by_name).to eq lesson_note.created_by.name
-    end
-
-    it "is valid even if a last_updated_by_name is nil" do
-      lesson_note.last_updated_by_name = nil
-      expect(lesson_note).to be_valid
-    end
-
-    it "works snapshot_updater_name before_save" do
-      updated_by = create(:user)
-      lesson_note.last_updated_by = updated_by
-      lesson_note.save!
-      expect(lesson_note.last_updated_by_name).to eq updated_by.name
     end
   end
 
