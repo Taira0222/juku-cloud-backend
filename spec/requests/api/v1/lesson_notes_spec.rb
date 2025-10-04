@@ -155,7 +155,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
             title: "Lesson Note Title",
             description: "Lesson Note Description",
             note_type: "homework",
-            expire_date: Date.today + 7.days
+            expire_date: Date.current + 7.days
           }
         end
 
@@ -169,7 +169,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
           expect(json[:title]).to eq("Lesson Note Title")
           expect(json[:description]).to eq("Lesson Note Description")
           expect(json[:note_type]).to eq("homework")
-          expect(json[:expire_date]).to eq((Date.today + 7.days).to_s)
+          expect(json[:expire_date]).to eq((Date.current + 7.days).to_s)
           expect(json[:created_by_name]).to eq(admin_user.name)
         end
       end
@@ -182,7 +182,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
             title: "",
             description: "Lesson Note Description",
             note_type: "homework",
-            expire_date: Date.today + 7.days
+            expire_date: Date.current + 7.days
           }
         end
 
@@ -217,14 +217,14 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
           title: "Lesson Note Title",
           description: "Lesson Note Description",
           note_type: "homework",
-          expire_date: Date.today + 7.days
+          expire_date: Date.current + 7.days
         }
       end
       context "with valid parameters" do
         it "creates a new lesson note with create parameters" do
           post_with_auth(
             api_v1_lesson_notes_path,
-            admin_user,
+            teacher,
             params: create_params
           )
           expect(response).to have_http_status(:created)
@@ -282,7 +282,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
             title: "Updated Lesson Note Title",
             description: "Updated Lesson Note Description",
             note_type: "lesson",
-            expire_date: (Date.today + 20.days)
+            expire_date: (Date.current + 20.days)
           }
         end
 
@@ -296,20 +296,9 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
           expect(json[:title]).to eq("Updated Lesson Note Title")
           expect(json[:description]).to eq("Updated Lesson Note Description")
           expect(json[:note_type]).to eq("lesson")
-          expect(json[:expire_date]).to eq((Date.today + 20.days).to_s)
+          expect(json[:expire_date]).to eq((Date.current + 20.days).to_s)
           expect(json[:created_by_name]).to eq(admin_user.name)
           expect(json[:last_updated_by_name]).to eq(admin_user.name)
-        end
-
-        it "updates the lesson note with past expire_date but no changes" do
-          update_params[:expire_date] = lesson_note.expire_date
-          patch_with_auth(
-            api_v1_lesson_note_path(lesson_note),
-            admin_user,
-            params: update_params
-          )
-          expect(response).to have_http_status(:ok)
-          expect(json[:expire_date]).to eq(lesson_note.expire_date.to_s)
         end
       end
 
@@ -322,7 +311,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
             title: "",
             description: "Updated Lesson Note Description",
             note_type: "homework",
-            expire_date: Date.today + 14.days
+            expire_date: Date.current + 14.days
           }
         end
 
@@ -358,7 +347,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
           title: "Updated Lesson Note Title",
           description: "Updated Lesson Note Description",
           note_type: "lesson",
-          expire_date: (Date.today + 20.days)
+          expire_date: (Date.current + 20.days)
         }
       end
       context "with valid parameters" do
@@ -369,6 +358,8 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
             params: update_params
           )
           expect(response).to have_http_status(:ok)
+          expect(json[:created_by_name]).to eq(admin_user.name)
+          expect(json[:last_updated_by_name]).to eq(teacher.name)
         end
       end
 

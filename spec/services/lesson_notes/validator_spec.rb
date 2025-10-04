@@ -22,7 +22,7 @@ RSpec.describe LessonNotes::Validator do
           title: "Test Title",
           description: "Test Description",
           note_type: "homework",
-          expire_date: Date.today + 7.days
+          expire_date: Date.current + 7.days
         }
       end
 
@@ -50,7 +50,7 @@ RSpec.describe LessonNotes::Validator do
           title: "Test Title",
           description: "Test Description",
           note_type: "info",
-          expire_date: Date.today + 7.days
+          expire_date: Date.current + 7.days
         }
       end
 
