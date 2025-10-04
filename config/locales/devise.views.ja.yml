@@ -56,6 +56,19 @@ ja:
         role: 権限
         expired_at: 招待有効期限
         school: 塾
+      lesson_note:
+        title: タイトル
+        description: 詳細説明
+        note_type: 種類
+        expire_date: 有効期限
+        created_by: 作成者ID
+        created_by_name: 作成者名
+        last_updated_by: 最終更新者ID
+        last_updated_by_name: 最終更新者名
+      student_trait:
+        title: タイトル
+        description: 詳細説明
+        category: 分類
     # これがないと、会員登録時にエラーになるので消さない
     models:
       user:
@@ -102,6 +115,63 @@ ja:
             status:
               blank: を入力してください
               inclusion: は不正な値です
+        lesson_note:
+          attributes:
+            title:
+              blank: を入力してください
+              too_long: は1000文字以下で入力してください
+            description:
+              blank: を入力してください
+              too_long: は500文字以下で入力してください
+            note_type:
+              blank: を入力してください
+              enum: は不正な値です
+              inclusion: は不正な値です
+            expire_date:
+              blank: を入力してください
+              not_past: は今日以降の日付を入力してください
+            created_by:
+              blank: を入力してください
+            created_by_name:
+              blank: を入力してください
+            last_updated_by:
+              blank: を入力してください
+            last_updated_by_name:
+              blank: を入力してください
+        class_subject:
+          attributes:
+            name:
+              blank: を入力してください
+              too_long: は50文字以下で入力してください
+        available_day:
+          attributes:
+            name:
+              blank: を入力してください
+              too_long: は10文字以下で入力してください
+        school:
+          attributes:
+            name:
+              blank: を入力してください
+              too_long: は100文字以下で入力してください
+            school_code:
+              blank: を入力してください
+              too_long: は20文字以下で入力してください
+              taken: は既に使用されています
+        invite:
+          attributes:
+            token:
+              blank: を入力してください
+            max_uses:
+              blank: を入力してください
+              not_a_number: は数値で入力してください
+              greater_than: は0以上で入力してください
+            role:
+              blank: を入力してください
+              inclusion: は不正な値です
+            expired_at:
+              blank: を入力してください
+              not_future: は今日以降の日付を入力してください
+
   application:
     errors:
       bad_request: リクエストが不正です。
@@ -142,7 +212,13 @@ ja:
   dashboard:
     errors:
       unable_operate: この操作を行う権限がありません。
-      
+  lesson_notes:
+    errors:
+      not_found: 引継ぎ事項が見つかりませんでした。
+      params_must_not_be_nil: パラメータが必須です。
+      student_class_subject_not_found: 指定された生徒の教科が見つかりません。
+      argument_invalid: 無効な引数が指定されました。
+
 
   devise:
     confirmations:

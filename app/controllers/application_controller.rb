@@ -41,7 +41,7 @@ class ApplicationController < ActionController::API
 
   # 担当していない生徒の情報を見ようとした場合は403を返す
   def ensure_student_access!
-    raw_id = params[:id].presence || params[:studentId]
+    raw_id = params[:student_id].presence || params[:id].presence
     # 空 or 非数値は 400
     if raw_id.blank? || !raw_id.to_s.match?(/\A\d+\z/)
       raise ActionController::BadRequest

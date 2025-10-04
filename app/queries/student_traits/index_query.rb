@@ -16,7 +16,7 @@ module StudentTraits
     }.freeze
 
     def self.call(school:, index_params:)
-      student_id = index_params[:studentId]
+      student_id = index_params[:student_id]
       search_keyword = index_params[:searchKeyword]
       sort_by = index_params[:sortBy]
       page = index_params[:page]
