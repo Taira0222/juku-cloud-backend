@@ -5,6 +5,7 @@ RSpec.describe LessonNotes::Validator do
     let!(:school) { create(:school) }
     let!(:student) { create(:student, school: school) }
     let!(:class_subject) { create(:class_subject) }
+    let!(:another_class_subject) { create(:class_subject, name: "japanese") }
     let!(:student_class_subject) do
       create(
         :student_class_subject,
@@ -54,7 +55,33 @@ RSpec.describe LessonNotes::Validator do
         }
       end
 
-      it "raises an ArgumentError" do
+      it "raises an ArgumentError when student id is invalid" do
+        expect { call }.to raise_error(
+          ArgumentError,
+          I18n.t("lesson_notes.errors.student_class_subject_not_found")
+        )
+      end
+
+      it "raises an ArgumentError when subject id is invalid" do
+        params[:student_id] = student.id
+        params[:subject_id] = 0 # Invalid subject_id
+        expect { call }.to raise_error(
+          ArgumentError,
+          I18n.t("lesson_notes.errors.student_class_subject_not_found")
+        )
+      end
+
+      it "raises an ArgumentError when both ids are invalid" do
+        params[:student_id] = 0
+        params[:subject_id] = 0
+        expect { call }.to raise_error(
+          ArgumentError,
+          I18n.t("lesson_notes.errors.student_class_subject_not_found")
+        )
+      end
+
+      it "raises an ArgumentError when student does not take the subject" do
+        params[:subject_id] = another_class_subject.id
         expect { call }.to raise_error(
           ArgumentError,
           I18n.t("lesson_notes.errors.student_class_subject_not_found")
