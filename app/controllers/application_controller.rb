@@ -39,7 +39,6 @@ class ApplicationController < ActionController::API
     end
   end
 
-  # 担当していない生徒の情報を見ようとした場合は403を返す
   def ensure_student_access!
     raw_id = params[:student_id].presence || params[:id].presence
     # 空 or 非数値は 400
@@ -47,11 +46,18 @@ class ApplicationController < ActionController::API
       raise ActionController::BadRequest
     end
 
-    return if current_user.admin_role?
-
-    allowed = current_user.students.exists?(id: raw_id.to_i)
-    unless allowed
-      raise ForbiddenError, I18n.t("dashboard.errors.unable_operate")
+    # 管理者は学校に所属する生徒ならOK
+    if current_user.admin_role?
+      allowed = @school.students.exists?(id: raw_id.to_i)
+      unless allowed
+        raise ActiveRecord::RecordNotFound,
+              I18n.t("application.errors.not_found_student")
+      end
+    else # 教員は担当している生徒のみ
+      allowed = current_user.students.exists?(id: raw_id.to_i)
+      unless allowed
+        raise ForbiddenError, I18n.t("application.errors.unable_operate")
+      end
     end
   end
 end

@@ -181,6 +181,8 @@ ja:
       teacher_unable_operate: 講師はこの操作を行うことができません。
       internal_server_error: サーバー内部でエラーが発生しました。しばらくしてから再度お試しください。
       record_not_destroyed: "レコードの削除に失敗しました。"
+      not_found_student: 生徒が見つかりません。
+      unable_operate: この操作を行う権限がありません。
 
   invites:
     errors:
