@@ -396,4 +396,74 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
       end
     end
   end
+  describe "DELETE /destroy" do
+    let!(:lesson_note) do
+      create(
+        :lesson_note,
+        student_class_subject: student_class_subject,
+        created_by: admin_user,
+        created_by_name: admin_user.name
+      )
+    end
+
+    let!(:other_lesson_note) do
+      create(
+        :lesson_note,
+        student_class_subject: other_student_class_subject,
+        created_by: other_admin_user,
+        created_by_name: other_admin_user.name
+      )
+    end
+
+    context "an authenticated admin user" do
+      it "deletes the lesson note" do
+        delete_with_auth(
+          api_v1_lesson_note_path(lesson_note),
+          admin_user,
+          params: {
+            student_id: student.id
+          }
+        )
+        expect(response).to have_http_status(:no_content)
+        expect(LessonNote.exists?(lesson_note.id)).to be_falsey
+      end
+      it "returns bad request when student_id is invalid" do
+        delete_with_auth(
+          api_v1_lesson_note_path(lesson_note),
+          admin_user,
+          params: {
+            student_id: "invalid_student_id"
+          }
+        )
+        expect(response).to have_http_status(:bad_request)
+        expect(LessonNote.exists?(lesson_note.id)).to be_truthy
+      end
+      it "returns 404 when deleting a lesson note from another school" do
+        delete_with_auth(
+          api_v1_lesson_note_path(other_lesson_note),
+          admin_user,
+          params: {
+            student_id: other_student.id
+          }
+        )
+        expect(response).to have_http_status(:not_found)
+        expect(LessonNote.exists?(other_lesson_note.id)).to be_truthy
+      end
+    end
+
+    context "an authenticated teacher" do
+      it "does not delete the lesson note" do
+        delete_with_auth(api_v1_lesson_note_path(lesson_note), teacher)
+        expect(response).to have_http_status(:forbidden)
+        expect(LessonNote.exists?(lesson_note.id)).to be_truthy
+      end
+    end
+
+    context "an unauthenticated user" do
+      it "returns 401 Unauthorized" do
+        delete api_v1_lesson_note_path(lesson_note)
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
 end
