@@ -427,7 +427,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
         expect(response).to have_http_status(:no_content)
         expect(LessonNote.exists?(lesson_note.id)).to be_falsey
       end
-      it "returns bad request when student_id is missing" do
+      it "returns bad request when student_id is invalid" do
         delete_with_auth(
           api_v1_lesson_note_path(lesson_note),
           admin_user,
