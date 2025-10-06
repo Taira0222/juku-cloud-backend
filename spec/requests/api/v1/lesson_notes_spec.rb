@@ -203,7 +203,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
             admin_user,
             params: invalid_params
           )
-          expect(response).to have_http_status(:bad_request)
+          expect(response).to have_http_status(:not_found)
           expect(json[:errors]).not_to be_empty
         end
       end
@@ -332,7 +332,7 @@ RSpec.describe "Api::V1::LessonNotes", type: :request do
             admin_user,
             params: invalid_params
           )
-          expect(response).to have_http_status(:bad_request)
+          expect(response).to have_http_status(:not_found)
           expect(json[:errors]).not_to be_empty
         end
       end

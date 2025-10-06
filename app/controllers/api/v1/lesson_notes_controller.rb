@@ -48,6 +48,9 @@ class Api::V1::LessonNotesController < ApplicationController
 
   # DELETE /api/v1/lesson_notes/:id
   def destroy
+    lesson_note = LessonNote.find(params[:id])
+    lesson_note.destroy!
+    head :no_content
   end
 
   private
@@ -77,7 +80,6 @@ class Api::V1::LessonNotesController < ApplicationController
 
   def get_student_class_subject
     params = create_params || update_params
-    @student_class_subject =
-      LessonNotes::Validator.call(school: @school, params: params)
+    @student_class_subject = LessonNotes::Validator.call(params: params)
   end
 end
