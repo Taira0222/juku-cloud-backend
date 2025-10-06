@@ -1,11 +1,10 @@
 module LessonNotes
   class Validator
-    def self.call(school:, params:)
-      new(school, params).call
+    def self.call(params:)
+      new(params).call
     end
 
-    def initialize(school, params)
-      @school = school
+    def initialize(params)
       @params = params
     end
 

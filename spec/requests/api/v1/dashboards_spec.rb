@@ -2,9 +2,9 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Dashboards", type: :request do
   let!(:admin_user) { create(:admin_user) }
+  let!(:school) { create(:school, owner: admin_user) }
   let!(:teacher) { create(:user, school: school) }
   let!(:other_admin_user) { create(:admin_user) }
-  let!(:school) { create(:school, owner: admin_user) }
   let!(:other_school) { create(:school, owner: other_admin_user) }
   let!(:student) { create(:student, school: school) }
   let!(:student2) { create(:student, school: school) }

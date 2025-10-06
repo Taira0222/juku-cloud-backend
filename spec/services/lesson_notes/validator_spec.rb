@@ -13,7 +13,7 @@ RSpec.describe LessonNotes::Validator do
         class_subject: class_subject
       )
     end
-    subject(:call) { described_class.call(school: school, params: params) }
+    subject(:call) { described_class.call(params: params) }
 
     context "when params are valid" do
       let(:params) do
