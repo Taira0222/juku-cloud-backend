@@ -2,6 +2,7 @@ class Api::V1::StudentTraitsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_school!
   before_action :ensure_student_access!
+  before_action :require_admin_role!, only: %i[create update]
 
   # GET /api/v1/student_traits
   def index
@@ -25,9 +26,38 @@ class Api::V1::StudentTraitsController < ApplicationController
            status: :ok
   end
 
+  # POST /api/v1/student_traits
+  def create
+    student_trait = StudentTrait.create!(create_params)
+    render json:
+             StudentTraits::CreateResource.new(student_trait).serializable_hash,
+           status: :created
+  end
+
+  # PATCH/PUT /api/v1/student_traits/:id
+  def update
+    student_trait = StudentTrait.find(update_params[:id])
+    student_trait.update!(update_params.except(:id))
+    render json:
+             StudentTraits::UpdateResource.new(student_trait).serializable_hash,
+           status: :ok
+  end
+
   private
 
   def index_params
     params.permit(:student_id, :searchKeyword, :sortBy, :page, :perPage)
+  end
+
+  def base_params
+    %i[student_id title description category]
+  end
+
+  def create_params
+    params.permit(*base_params)
+  end
+
+  def update_params
+    params.permit(:id, *base_params)
   end
 end
