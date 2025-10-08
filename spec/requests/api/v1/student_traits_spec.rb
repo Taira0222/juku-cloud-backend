@@ -238,4 +238,37 @@ RSpec.describe "Api::V1::StudentTraits", type: :request do
       end
     end
   end
+  describe "DELETE /destroy" do
+    let!(:student_trait) { create(:student_trait, student: student) }
+    context "an authenticated admin user" do
+      it "deletes the StudentTrait and returns 204 No Content" do
+        expect {
+          delete_with_auth(
+            api_v1_student_trait_path(student_trait),
+            admin_user,
+            params: {
+              student_id: student.id
+            }
+          )
+        }.to change(StudentTrait, :count).by(-1)
+        expect(response).to have_http_status(:no_content)
+      end
+      it "returns 404 Not Found when the StudentTrait does not exist" do
+        delete_with_auth(api_v1_student_trait_path(id: 0), admin_user)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+    context "an authenticated teacher" do
+      it "returns 403 Forbidden" do
+        delete_with_auth(api_v1_student_trait_path(student_trait), teacher)
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+    context "an unauthenticated user" do
+      it "returns 401 Unauthorized" do
+        delete api_v1_student_trait_path(student_trait)
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
 end

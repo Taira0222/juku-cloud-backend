@@ -2,7 +2,7 @@ class Api::V1::StudentTraitsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_school!
   before_action :ensure_student_access!
-  before_action :require_admin_role!, only: %i[create update]
+  before_action :require_admin_role!, only: %i[create update destroy]
 
   # GET /api/v1/student_traits
   def index
@@ -41,6 +41,13 @@ class Api::V1::StudentTraitsController < ApplicationController
     render json:
              StudentTraits::UpdateResource.new(student_trait).serializable_hash,
            status: :ok
+  end
+
+  # DELETE /api/v1/student_traits/:id
+  def destroy
+    student_trait = StudentTrait.find(params[:id])
+    student_trait.destroy!
+    head :no_content
   end
 
   private
