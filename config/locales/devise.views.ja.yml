@@ -138,6 +138,16 @@ ja:
               blank: を入力してください
             last_updated_by_name:
               blank: を入力してください
+        student_trait:
+          attributes:
+            title:
+              blank: を入力してください
+              too_long: は50文字以下で入力してください
+            description:
+              too_long: は500文字以下で入力してください
+            category:
+              blank: を入力してください
+              invalid_enum: は不正な値です
         class_subject:
           attributes:
             name:
