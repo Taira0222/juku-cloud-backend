@@ -10,11 +10,10 @@ RSpec.describe "Api::V1::Teachers", type: :request do
     it "returns a list of teachers for the specified school" do
       get_with_auth(api_v1_teachers_path, user)
       expect(response).to have_http_status(:ok)
-      json_response = JSON.parse(response.body, symbolize_names: true)
 
-      expect(json_response).to include(:current_user, :teachers)
-      current_user = json_response[:current_user]
-      teachers = json_response[:teachers]
+      expect(json).to include(:current_user, :teachers)
+      current_user = json[:current_user]
+      teachers = json[:teachers]
       teacher1 = teachers[0]
       teacher2 = teachers[1]
 
@@ -76,8 +75,7 @@ RSpec.describe "Api::V1::Teachers", type: :request do
 
       delete_with_auth(api_v1_teacher_path(teacher), user)
       expect(response).to have_http_status(:unprocessable_content)
-      json_response = JSON.parse(response.body, symbolize_names: true)
-      errors = json_response[:errors]
+      errors = json[:errors]
       expect(errors).to be_an(Array)
       expect(errors.length).to eq(1)
       expect(errors.first[:code]).to eq("RECORD_NOT_DESTROYED")
@@ -103,9 +101,7 @@ RSpec.describe "Api::V1::Teachers", type: :request do
         }
       )
       expect(response).to have_http_status(:ok)
-      json_response = JSON.parse(response.body)
-
-      expect(json_response["teacher_id"]).to eq(teacher.id)
+      expect(json[:teacher_id]).to eq(teacher.id)
       expect(teacher.reload.name).to eq("New Name")
     end
 
