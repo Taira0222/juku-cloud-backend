@@ -63,22 +63,22 @@ RSpec.describe "User Sessions", type: :request do
   end
 
   describe "DELETE /api/v1/auth/sign_out" do
-    it "successfully logs out" do
+    it "successfully logs out when admin user is logged out" do
       admin_auth_token = sign_in(admin_user)
       sign_out(admin_auth_token)
-      expect(response).to have_http_status(:success)
-      expect(response.body).to include('"success":true')
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it "successfully logs out when user is logged out" do
       user_auth_token = sign_in(user)
       sign_out(user_auth_token)
-      expect(response).to have_http_status(:success)
-      expect(response.body).to include('"success":true')
+      expect(response).to have_http_status(:no_content)
     end
 
     it "fails to log out when not logged in" do
       sign_out({})
       expect(response).to have_http_status(:not_found)
-      json_response = JSON.parse(response.body, symbolize_names: true)
-      error = json_response[:errors].first
+      error = json[:errors].first
       expect(error[:code]).to eq("USER_NOT_FOUND")
       expect(error[:message]).to eq(
         I18n.t("devise_token_auth.sessions.user_not_found")
