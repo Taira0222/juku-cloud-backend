@@ -11,13 +11,12 @@ RSpec.describe "User Token Validation", type: :request do
       end
 
       it "returns the admin user information" do
-        json_response = JSON.parse(response.body)
-        expect(json_response["data"]).to include(
-          "id" => admin_user.id,
-          "name" => admin_user.name,
-          "email" => admin_user.email,
-          "role" => admin_user.role,
-          "school" => admin_school.as_json(only: %i[id name])
+        expect(json[:data]).to include(
+          id: admin_user.id,
+          name: admin_user.name,
+          email: admin_user.email,
+          role: admin_user.role,
+          school: admin_school.as_json(only: %i[id name]).symbolize_keys
         )
       end
       it "does not return without auth" do
@@ -36,12 +35,12 @@ RSpec.describe "User Token Validation", type: :request do
       end
 
       it "returns the teacher user information" do
-        expect(json[:data][:id]).to eq(teacher_user.id)
-        expect(json[:data][:name]).to eq(teacher_user.name)
-        expect(json[:data][:email]).to eq(teacher_user.email)
-        expect(json[:data][:role]).to eq(teacher_user.role)
-        expect(json[:data][:school]).to eq(
-          teacher_user.school.as_json(only: %i[id name]).symbolize_keys
+        expect(json[:data]).to include(
+          id: teacher_user.id,
+          name: teacher_user.name,
+          email: teacher_user.email,
+          role: teacher_user.role,
+          school: teacher_user.school.as_json(only: %i[id name]).symbolize_keys
         )
       end
     end
