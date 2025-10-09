@@ -22,6 +22,10 @@ class Api::V1::Auth::SessionsController < DeviseTokenAuth::SessionsController
     )
   end
 
+  def render_destroy_success
+    head :no_content
+  end
+
   def render_destroy_error
     render_error!(
       code: "USER_NOT_FOUND",
