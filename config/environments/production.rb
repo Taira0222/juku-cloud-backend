@@ -57,7 +57,7 @@ Rails.application.configure do
   config.action_mailer.default_options = { from: "no-reply@juku-cloud.com" }
 
   # Use Amazon SES for email delivery.
-  config.action_mailer.delivery_method = :aws_sdk
+  config.action_mailer.delivery_method = :ses_v2
   config.action_mailer.aws_sdk_settings = { region: "ap-northeast-1" }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
