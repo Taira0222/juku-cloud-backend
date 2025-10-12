@@ -16,6 +16,11 @@ test:
 
 production:
   <<: *default
-  database: juku_cloud_backend_production
-  username: juku_cloud_backend
-  password: <%= ENV["JUKU_CLOUD_BACKEND_DATABASE_PASSWORD"] %>
+  host:     <%= ENV.fetch("DB_HOST") %>
+  port:     <%= ENV.fetch("DB_PORT", 5432) %>
+  database: <%= ENV.fetch("DB_NAME") %>
+  username: <%= ENV.fetch("DB_USERNAME") %>
+  password: <%= ENV.fetch("DB_PASSWORD") %>    
+  sslmode:  <%= ENV.fetch("DB_SSLMODE", "require") %> 
+  prepared_statements: true
+  reaping_frequency: <%= ENV.fetch("DB_REAP_FREQ", 10) %>
