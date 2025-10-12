@@ -9,7 +9,6 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 # === Base ===
-# ここでRubyのバージョンを指定。自分が使っているバージョンに変更してください
 ARG RUBY_VERSION=3.4.4 
 FROM docker.io/library/ruby:${RUBY_VERSION}-slim AS base
 
@@ -80,5 +79,5 @@ USER 1000:1000
 # Railsを3000番で外部公開（ECS/ALBの設定と一致させる）
 EXPOSE 3000
 
-# Rails起動（puma経由でもOK）
-CMD ["bash", "-lc", "bundle exec rails server -b 0.0.0.0 -p 3000"]
+# Rails起動
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]

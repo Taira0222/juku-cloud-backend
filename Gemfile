@@ -72,7 +72,7 @@ group :development, :test do
   gem "dotenv-rails", "~> 2.1"
   # gemの脆弱性チェック
   # bundle exec bundler-audit check で脆弱性確認
-  # 脆弱性のあるgem があったらそれだけを書き換える
+  # bundle update <対象> --conservative
   gem "bundler-audit", require: false
 end
 

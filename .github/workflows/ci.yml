@@ -23,6 +23,7 @@ jobs:
         ports:
           - 5432:5432
         env:
+          DB_HOST: localhost
           POSTGRES_DB: juku_cloud_backend_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
