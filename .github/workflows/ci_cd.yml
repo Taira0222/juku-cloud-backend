@@ -134,7 +134,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ecs/taskdef.patched.json # Patchで新しくなったタスク定義を指定
-          task-family: ${{ vars.ECS_TASK_FAMILY }}
+          task-definition-family: ${{ vars.ECS_TASK_FAMILY }}
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.build.outputs.image }}  # Buildで新しくなったイメージURIを指定
           environment-variables: |
