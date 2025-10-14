@@ -202,7 +202,9 @@ def create_student_traits_and_lesson_notes(school, admin)
           note_type: note_attrs[:note_type],
           expire_date: Date.current + (rand(-5..30).days),
           created_by: admin,
-          last_updated_by: updated_by
+          created_by_name: admin.name,
+          last_updated_by: updated_by,
+          last_updated_by_name: updated_by&.name
         )
       end
     end
