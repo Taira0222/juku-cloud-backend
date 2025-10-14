@@ -1,0 +1,53 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "juku-cloud-backend-container",
+      "image": "PLACE_HOLDER_FOR_ECR_IMAGE_URL",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 3000,
+          "protocol": "tcp",
+          "name": "juku-cloud-backend-port",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "3000"
+        },
+        {
+          "name": "RAILS_MAX_THREADS",
+          "value": "3"
+        }
+      ],
+      "secrets": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/juku-cloud-task",
+          "awslogs-create-group": "true",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ],
+  "family": "juku-cloud-task",
+  "taskRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/TASK_ROLE_NAME",
+  "executionRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/EXEC_ROLE_NAME",
+  "networkMode": "awsvpc",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024",
+  "enableFaultInjection": false
+}

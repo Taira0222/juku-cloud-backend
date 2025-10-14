@@ -1,0 +1,173 @@
+name: 'CI/CD'
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+  # 手動で実行可能
+  workflow_dispatch:
+
+# pipefail を有効化
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # タイムアウトを10分に設定
+    timeout-minutes: 10
+    services:
+      db:
+        image: postgres:15-alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: juku_cloud_backend_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        # ヘルスチェックを追加
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      RAILS_ENV: test
+      # データベース接続情報を環境変数で設定
+      DATABASE_URL: postgres://postgres:password@localhost:5432/juku_cloud_backend_test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      # Add or replace dependency steps here
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+          bundler-cache: true
+      # Add or replace database setup steps here
+      - name: Set up database schema
+        run: bin/rails db:schema:load
+      # Add or replace test runners here
+      - name: Run tests
+        run: bin/rake
+
+  lint:
+    runs-on: ubuntu-latest
+    # タイムアウトを10分に設定
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+          bundler-cache: true
+      - name: Generate binstubs
+        run: bundle binstubs bundler-audit brakeman rubocop
+      # Add or replace any other lints here
+      - name: Security audit dependencies
+        run: bin/bundler-audit --update
+      - name: Security audit application code
+        run: bin/brakeman -q -w2
+      - name: Lint Ruby files
+        run: bin/rubocop --parallel
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [test, lint]
+    permissions:
+      contents: read
+      id-token: write  # ← OIDC AssumeRole に必須
+    env:
+      REGION: ap-northeast-1
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+      ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
+      ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
+      CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+      AWS_ROLE_ARN_BACK: ${{ secrets.AWS_ROLE_ARN_BACK }}
+      SUBNET_ID: ${{ secrets.SUBNET_ID }}
+      SG_ID: ${{ secrets.SG_ID }}
+      IMAGE_TAG: ${{ github.sha }}       # 不変タグ
+      TASK_ROLE_NAME: ${{ vars.ECS_TASK_ROLE_NAME }}
+      EXEC_ROLE_NAME: ${{ vars.ECS_EXEC_ROLE_NAME }}
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN_BACK }}
+          aws-region: ${{ env.REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build & Push image to ECR
+        id: build # idを指定してoutputsで参照できるようにする
+        run: |
+          set -u
+          ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
+          IMAGE_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+
+          docker build -t "${IMAGE_URI}" .
+          docker push "${IMAGE_URI}"
+
+          echo "image=${IMAGE_URI}" >> "$GITHUB_OUTPUT"
+
+      # タスク定義のロールARNを動的に差し替え
+      - name: Patch role ARNs in taskdef
+        run: |
+          TASK_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${TASK_ROLE_NAME}"
+          EXEC_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${EXEC_ROLE_NAME}"
+          jq --arg task "$TASK_ARN" --arg exec "$EXEC_ARN" \
+            '.taskRoleArn=$task | .executionRoleArn=$exec' \
+            ecs/taskdef.json > ecs/taskdef.patched.json
+      
+      # Buildで新しくなったイメージURIを使ってタスク定義をレンダリング
+      - name: Render task definition
+        id: render
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ecs/taskdef.patched.json # Patchで新しくなったタスク定義を指定
+          task-family: ${{ vars.ECS_TASK_FAMILY }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build.outputs.image }}  # Buildで新しくなったイメージURIを指定
+          environment-variables: |
+            RAILS_LOG_TO_STDOUT=${{vars.RAILS_LOG_TO_STDOUT}}
+            RAILS_ENV=${{vars.RAILS_ENV}}
+            RAILS_SERVE_STATIC_FILES=${{vars.RAILS_SERVE_STATIC_FILES}}
+            DB_NAME=${{vars.DB_NAME}}
+            DB_HOST=${{vars.DB_HOST}}
+          secrets: |
+            DB_PASSWORD=${{secrets.DB_PASSWORD}}
+            DB_USERNAME=${{secrets.DB_USERNAME}}
+            RAILS_MASTER_KEY=${{secrets.RAILS_MASTER_KEY}}
+            SECRET_KEY_BASE=${{secrets.SECRET_KEY_BASE}}
+
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render.outputs.task-definition }} # render taskで新しくなったタスク定義を指定
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+
+      # マイグレーションとシードを実行
+      - name: Run DB migrate & seed
+        run: |
+          aws ecs run-task \
+            --cluster $ECS_CLUSTER \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={subnets=[subnet-${SUBNET_ID}],securityGroups=[sg-${SG_ID}],assignPublicIp=DISABLED}" \
+            --task-definition "$(jq -r '.taskDefinitionArn' <<< "$(aws ecs describe-task-definition --task-definition ${{ steps.render.outputs.task-definition }})")" \
+            --overrides '{
+              "containerOverrides": [{
+                "name": "'"${CONTAINER_NAME}"'",
+                "command": ["bash","-lc","bundle exec rails db:migrate && bundle exec rails db:seed"]
+              }]
+            }'
