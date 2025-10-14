@@ -88,6 +88,8 @@ jobs:
       ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
       CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
       AWS_ROLE_ARN_BACK: ${{ secrets.AWS_ROLE_ARN_BACK }}
+      SUBNET_ID: ${{ secrets.SUBNET_ID }}
+      SG_ID: ${{ secrets.SG_ID }}
       IMAGE_TAG: ${{ github.sha }}       # 不変タグ
       TASK_ROLE_NAME: ${{ vars.ECS_TASK_ROLE_NAME }}
       EXEC_ROLE_NAME: ${{ vars.ECS_EXEC_ROLE_NAME }}
@@ -159,9 +161,9 @@ jobs:
       - name: Run DB migrate & seed
         run: |
           aws ecs run-task \
-            --cluster ${{ env.ECS_CLUSTER }} \
+            --cluster $ECS_CLUSTER \
             --launch-type FARGATE \
-            --network-configuration "awsvpcConfiguration={subnets=[subnet-xxxx],securityGroups=[sg-xxxx],assignPublicIp=DISABLED}" \
+            --network-configuration "awsvpcConfiguration={subnets=[subnet-${SUBNET_ID}],securityGroups=[sg-${SG_ID}],assignPublicIp=DISABLED}" \
             --task-definition "$(jq -r '.taskDefinitionArn' <<< "$(aws ecs describe-task-definition --task-definition ${{ steps.render.outputs.task-definition }})")" \
             --overrides '{
               "containerOverrides": [{
