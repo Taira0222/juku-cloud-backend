@@ -91,8 +91,8 @@ jobs:
       SUBNET_ID: ${{ secrets.SUBNET_ID }}
       SG_ID: ${{ secrets.SG_ID }}
       IMAGE_TAG: ${{ github.sha }}       # 不変タグ
-      TASK_ROLE_NAME: ${{ vars.ECS_TASK_ROLE_NAME }}
-      EXEC_ROLE_NAME: ${{ vars.ECS_EXEC_ROLE_NAME }}
+      TASK_ROLE_NAME: ${{ vars.TASK_ROLE_NAME }}
+      EXEC_ROLE_NAME: ${{ vars.EXEC_ROLE_NAME }}
       
     steps:
       - name: Checkout
