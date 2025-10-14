@@ -93,6 +93,7 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}       # 不変タグ
       TASK_ROLE_NAME: ${{ vars.TASK_ROLE_NAME }}
       EXEC_ROLE_NAME: ${{ vars.EXEC_ROLE_NAME }}
+      TASK_FAMILY: ${{ vars.TASK_FAMILY }}
       
     steps:
       - name: Checkout
@@ -134,7 +135,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ecs/taskdef.patched.json # Patchで新しくなったタスク定義を指定
-          task-definition-family: ${{ vars.ECS_TASK_FAMILY }}
+          task-definition-family: ${{ env.TASK_FAMILY }}
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.build.outputs.image }}  # Buildで新しくなったイメージURIを指定
           environment-variables: |
@@ -160,15 +161,20 @@ jobs:
       # マイグレーションとシードを実行
       - name: Run DB migrate & seed
         run: |
+          TD_ARN=$(aws ecs describe-task-definition \
+          --task-definition "$TASK_FAMILY" \
+          --query 'taskDefinition.taskDefinitionArn' --output text)
+
           aws ecs run-task \
             --cluster $ECS_CLUSTER \
             --launch-type FARGATE \
-            --network-configuration "awsvpcConfiguration={subnets=[subnet-${SUBNET_ID}],securityGroups=[sg-${SG_ID}],assignPublicIp=DISABLED}" \
-            --task-definition "$(jq -r '.taskDefinitionArn' <<< "$(aws ecs describe-task-definition --task-definition ${{ steps.render.outputs.task-definition }})")" \
+            --count 1 \
+            --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_ID],securityGroups=[$SG_ID],assignPublicIp=DISABLED}" \
+            --task-definition "$TD_ARN" \
             --overrides '{
               "containerOverrides": [{
                 "name": "'"${CONTAINER_NAME}"'",
                 "command": ["bash","-lc","bundle exec rails db:migrate && bundle exec rails db:seed"]
               }]
-            }'
-            
+            }' \
+            --started-by "ci-migrate"
