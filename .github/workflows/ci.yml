@@ -1,4 +1,4 @@
-name: 'Ruby on Rails CI'
+name: 'CI/CD'
 on:
   push:
     branches: ['main']
@@ -73,3 +73,64 @@ jobs:
         run: bin/brakeman -q -w2
       - name: Lint Ruby files
         run: bin/rubocop --parallel
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [test, lint]
+    permissions:
+      contents: read
+      id-token: write  # ← OIDC AssumeRole に必須
+    env:
+      REGION: ap-northeast-1
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+      ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
+      ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
+      CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+      AWS_ROLE_ARN_BACK: ${{ secrets.AWS_ROLE_ARN_BACK }}
+      IMAGE_TAG: ${{ github.sha }}       # 不変タグ
+      ECS_TASK_DEFINITION: ecs/taskdef.json # タスク定義ファイルのパス
+
+
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN_BACK }}
+          aws-region: ${{ env.REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build & Push image to ECR
+        id: build # idを指定してoutputsで参照できるようにする
+        run: |
+          set -u
+          ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
+          IMAGE_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+
+          docker build -t "${IMAGE_URI}" .
+          docker push "${IMAGE_URI}"
+
+          echo "image=${IMAGE_URI}" >> "$GITHUB_OUTPUT"
+
+
+      - name: Render task definition
+        id: render
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{env.ECS_TASK_DEFINITION}}        
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build.outputs.image }}  # Buildで新しくなったイメージURIを指定         
+
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render.outputs.task-definition }} # render taskで新しくなったタスク定義を指定
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
