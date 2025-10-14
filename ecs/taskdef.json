@@ -2,7 +2,7 @@
   "containerDefinitions": [
     {
       "name": "juku-cloud-backend-container",
-      "image": "054486717286.dkr.ecr.ap-northeast-1.amazonaws.com/jukucloud/backend@sha256:0e8ad5531d13f7c048ad478ea0e0cc9b7e540471c206a439b9c987a3a172fbdf",
+      "image": "PLACE_HOLDER_FOR_ECR_IMAGE_URL",
       "cpu": 0,
       "portMappings": [
         {
@@ -16,56 +16,15 @@
       "essential": true,
       "environment": [
         {
-          "name": "RAILS_LOG_TO_STDOUT",
-          "value": "true"
-        },
-        {
-          "name": "RAILS_ENV",
-          "value": "production"
-        },
-        {
           "name": "PORT",
           "value": "3000"
         },
         {
           "name": "RAILS_MAX_THREADS",
           "value": "3"
-        },
-        {
-          "name": "DB_NAME",
-          "value": "juku_cloud_production"
-        },
-        {
-          "name": "RAILS_SERVE_STATIC_FILES",
-          "value": "true"
-        },
-        {
-          "name": "DB_HOST",
-          "value": "juku-cloud-db.cn8yasmgk9g6.ap-northeast-1.rds.amazonaws.com"
         }
       ],
-      "environmentFiles": [],
-      "mountPoints": [],
-      "volumesFrom": [],
-      "secrets": [
-        {
-          "name": "DB_PASSWORD",
-          "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:054486717286:secret:rds!db-56b596a5-f99c-4663-9f19-f98c1ac52d29-aBuLJd:password::"
-        },
-        {
-          "name": "DB_USERNAME",
-          "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:054486717286:secret:rds!db-56b596a5-f99c-4663-9f19-f98c1ac52d29-aBuLJd:username::"
-        },
-        {
-          "name": "RAILS_MASTER_KEY",
-          "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:054486717286:secret:prod/juku-cloud/rails-master-key-bRhvvs:rails_master_key::"
-        },
-        {
-          "name": "SECRET_KEY_BASE",
-          "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:054486717286:secret:prod/juku-cloud/rails-master-key-bRhvvs:secret_key_base::"
-        }
-      ],
-      "ulimits": [],
+      "secrets": [],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -73,18 +32,14 @@
           "awslogs-create-group": "true",
           "awslogs-region": "ap-northeast-1",
           "awslogs-stream-prefix": "ecs"
-        },
-        "secretOptions": []
-      },
-      "systemControls": []
+        }
+      }
     }
   ],
   "family": "juku-cloud-task",
-  "taskRoleArn": "arn:aws:iam::054486717286:role/JukuCloudEcsTaskRole",
-  "executionRoleArn": "arn:aws:iam::054486717286:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/TASK_ROLE_NAME",
+  "executionRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/EXEC_ROLE_NAME",
   "networkMode": "awsvpc",
-  "volumes": [],
-  "placementConstraints": [],
   "runtimePlatform": {
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
