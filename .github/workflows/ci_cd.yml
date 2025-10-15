@@ -150,39 +150,31 @@ jobs:
             RAILS_MASTER_KEY=${{secrets.RAILS_MASTER_KEY}}
             SECRET_KEY_BASE=${{secrets.SECRET_KEY_BASE}}
 
-      - name: Debug task definition output
-        run: |
-          echo "Task definition path: ${{ steps.render.outputs.task-definition }}"
-          cat "${{ steps.render.outputs.task-definition }}"
-          echo "---"
-          echo "Image in task definition:"
-          jq '.containerDefinitions[0].image' "${{ steps.render.outputs.task-definition }}"
-
-      # - name: Deploy to Amazon ECS
-      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-      #   with:
-      #     task-definition: ${{ steps.render.outputs.task-definition }} # render taskで新しくなったタスク定義を指定
-      #     service: ${{ env.ECS_SERVICE }}
-      #     cluster: ${{ env.ECS_CLUSTER }}
-      #     wait-for-service-stability: true
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render.outputs.task-definition }} # render taskで新しくなったタスク定義を指定
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
         
-      # # マイグレーションを実行
-      # - name: Run DB migrate
-      #   run: |
-      #     TD_ARN=$(aws ecs describe-task-definition \
-      #     --task-definition "$TASK_FAMILY" \
-      #     --query 'taskDefinition.taskDefinitionArn' --output text)
+      # マイグレーションを実行
+      - name: Run DB migrate
+        run: |
+          TD_ARN=$(aws ecs describe-task-definition \
+          --task-definition "$TASK_FAMILY" \
+          --query 'taskDefinition.taskDefinitionArn' --output text)
 
-      #     aws ecs run-task \
-      #       --cluster $ECS_CLUSTER \
-      #       --launch-type FARGATE \
-      #       --count 1 \
-      #       --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_ID],securityGroups=[$SG_ID],assignPublicIp=DISABLED}" \
-      #       --task-definition "$TD_ARN" \
-      #       --overrides '{
-      #         "containerOverrides": [{
-      #           "name": "'"${CONTAINER_NAME}"'",
-      #           "command": ["bash","-lc","bundle exec rails db:migrate"]
-      #         }]
-      #       }' \
-      #       --started-by "ci-migrate"
+          aws ecs run-task \
+            --cluster $ECS_CLUSTER \
+            --launch-type FARGATE \
+            --count 1 \
+            --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_ID],securityGroups=[$SG_ID],assignPublicIp=DISABLED}" \
+            --task-definition "$TD_ARN" \
+            --overrides '{
+              "containerOverrides": [{
+                "name": "'"${CONTAINER_NAME}"'",
+                "command": ["bash","-lc","bundle exec rails db:migrate"]
+              }]
+            }' \
+            --started-by "ci-migrate"
