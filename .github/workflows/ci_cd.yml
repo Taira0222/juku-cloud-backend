@@ -119,62 +119,109 @@ jobs:
           docker push "${IMAGE_URI}"
 
           echo "image=${IMAGE_URI}" >> "$GITHUB_OUTPUT"
-
-      # タスク定義のロールARNを動的に差し替え
-      - name: Patch role ARNs in taskdef
+          
+      # Build & Push の直後に入れる
+      - name: Verify seeds.rb and seed_data integrity in image
         run: |
-          TASK_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${TASK_ROLE_NAME}"
-          EXEC_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${EXEC_ROLE_NAME}"
-          jq --arg task "$TASK_ARN" --arg exec "$EXEC_ARN" \
-            '.taskRoleArn=$task | .executionRoleArn=$exec' \
-            ecs/taskdef.json > ecs/taskdef.patched.json
+          set -euo pipefail
+          IMAGE_URI="${{ steps.build.outputs.image }}"
+
+          # 1) seeds.rb のハッシュ比較
+          HOST_SEEDS_SHA=$(sha256sum db/seeds.rb | awk '{print $1}')
+          CONTAINER_SEEDS_SHA=$(docker run --rm "$IMAGE_URI" bash -lc "sha256sum db/seeds.rb | awk '{print \$1}'")
+          echo "HOST    seeds.rb sha256: $HOST_SEEDS_SHA"
+          echo "IMAGE   seeds.rb sha256: $CONTAINER_SEEDS_SHA"
+          if [ "$HOST_SEEDS_SHA" != "$CONTAINER_SEEDS_SHA" ]; then
+            echo "::error::seeds.rb does not match the built image"
+            exit 1
+          fi
+
+          # 2) seed_data/（あれば）ツリーハッシュ比較
+          if [ -d db/seed_data ]; then
+            # ワークスペース側のツリーハッシュ
+            HOST_TREE_SHA=$(find db/seed_data -type f -print0 \
+              | sort -z \
+              | xargs -0 sha256sum \
+              | sha256sum | awk '{print $1}')
+
+            # イメージ側のツリーハッシュ
+            CONTAINER_TREE_SHA=$(docker run --rm "$IMAGE_URI" bash -lc \
+              "find db/seed_data -type f -print0 2>/dev/null \
+                | sort -z \
+                | xargs -0 sha256sum 2>/dev/null \
+                | sha256sum 2>/dev/null | awk '{print \$1}' || true")
+
+            echo "HOST    seed_data tree sha256: ${HOST_TREE_SHA:-<none>}"
+            echo "IMAGE   seed_data tree sha256: ${CONTAINER_TREE_SHA:-<none>}"
+
+            # 画像側に seed_data が無い or 差分ありなら落とす
+            if [ -z "${CONTAINER_TREE_SHA:-}" ] || [ "$HOST_TREE_SHA" != "$CONTAINER_TREE_SHA" ]; then
+              echo "::error::db/seed_data differs or missing in the built image"
+              exit 1
+            fi
+          else
+            echo "No db/seed_data directory in repo; skipping tree check."
+          fi
+
+          # 3) 参考情報（サイズと末尾数行だけ軽く出力）
+          docker run --rm "$IMAGE_URI" bash -lc 'wc -c db/seeds.rb; tail -n 5 db/seeds.rb'
+
+
+      # # タスク定義のロールARNを動的に差し替え
+      # - name: Patch role ARNs in taskdef
+      #   run: |
+      #     TASK_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${TASK_ROLE_NAME}"
+      #     EXEC_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${EXEC_ROLE_NAME}"
+      #     jq --arg task "$TASK_ARN" --arg exec "$EXEC_ARN" \
+      #       '.taskRoleArn=$task | .executionRoleArn=$exec' \
+      #       ecs/taskdef.json > ecs/taskdef.patched.json
       
-      # Buildで新しくなったイメージURIを使ってタスク定義をレンダリング
-      - name: Render task definition
-        id: render
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ecs/taskdef.patched.json # Patchで新しくなったタスク定義を指定
-          task-definition-family: ${{ env.TASK_FAMILY }}
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build.outputs.image }}  # Buildで新しくなったイメージURIを指定
-          environment-variables: |
-            RAILS_LOG_TO_STDOUT=${{vars.RAILS_LOG_TO_STDOUT}}
-            RAILS_ENV=${{vars.RAILS_ENV}}
-            RAILS_SERVE_STATIC_FILES=${{vars.RAILS_SERVE_STATIC_FILES}}
-            DB_NAME=${{vars.DB_NAME}}
-            DB_HOST=${{vars.DB_HOST}}
-          secrets: |
-            DB_PASSWORD=${{secrets.DB_PASSWORD}}
-            DB_USERNAME=${{secrets.DB_USERNAME}}
-            RAILS_MASTER_KEY=${{secrets.RAILS_MASTER_KEY}}
-            SECRET_KEY_BASE=${{secrets.SECRET_KEY_BASE}}
+      # # Buildで新しくなったイメージURIを使ってタスク定義をレンダリング
+      # - name: Render task definition
+      #   id: render
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #     task-definition: ecs/taskdef.patched.json # Patchで新しくなったタスク定義を指定
+      #     task-definition-family: ${{ env.TASK_FAMILY }}
+      #     container-name: ${{ env.CONTAINER_NAME }}
+      #     image: ${{ steps.build.outputs.image }}  # Buildで新しくなったイメージURIを指定
+      #     environment-variables: |
+      #       RAILS_LOG_TO_STDOUT=${{vars.RAILS_LOG_TO_STDOUT}}
+      #       RAILS_ENV=${{vars.RAILS_ENV}}
+      #       RAILS_SERVE_STATIC_FILES=${{vars.RAILS_SERVE_STATIC_FILES}}
+      #       DB_NAME=${{vars.DB_NAME}}
+      #       DB_HOST=${{vars.DB_HOST}}
+      #     secrets: |
+      #       DB_PASSWORD=${{secrets.DB_PASSWORD}}
+      #       DB_USERNAME=${{secrets.DB_USERNAME}}
+      #       RAILS_MASTER_KEY=${{secrets.RAILS_MASTER_KEY}}
+      #       SECRET_KEY_BASE=${{secrets.SECRET_KEY_BASE}}
 
-      - name: Deploy to Amazon ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.render.outputs.task-definition }} # render taskで新しくなったタスク定義を指定
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+      # - name: Deploy to Amazon ECS
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      #   with:
+      #     task-definition: ${{ steps.render.outputs.task-definition }} # render taskで新しくなったタスク定義を指定
+      #     service: ${{ env.ECS_SERVICE }}
+      #     cluster: ${{ env.ECS_CLUSTER }}
+      #     wait-for-service-stability: true
 
-      # マイグレーションとシードを実行
-      - name: Run DB migrate & seed
-        run: |
-          TD_ARN=$(aws ecs describe-task-definition \
-          --task-definition "$TASK_FAMILY" \
-          --query 'taskDefinition.taskDefinitionArn' --output text)
+      # # マイグレーションとシードを実行
+      # - name: Run DB migrate & seed
+      #   run: |
+      #     TD_ARN=$(aws ecs describe-task-definition \
+      #     --task-definition "$TASK_FAMILY" \
+      #     --query 'taskDefinition.taskDefinitionArn' --output text)
 
-          aws ecs run-task \
-            --cluster $ECS_CLUSTER \
-            --launch-type FARGATE \
-            --count 1 \
-            --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_ID],securityGroups=[$SG_ID],assignPublicIp=DISABLED}" \
-            --task-definition "$TD_ARN" \
-            --overrides '{
-              "containerOverrides": [{
-                "name": "'"${CONTAINER_NAME}"'",
-                "command": ["bash","-lc","bundle exec rails db:migrate && bundle exec rails db:seed"]
-              }]
-            }' \
-            --started-by "ci-migrate"
+      #     aws ecs run-task \
+      #       --cluster $ECS_CLUSTER \
+      #       --launch-type FARGATE \
+      #       --count 1 \
+      #       --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_ID],securityGroups=[$SG_ID],assignPublicIp=DISABLED}" \
+      #       --task-definition "$TD_ARN" \
+      #       --overrides '{
+      #         "containerOverrides": [{
+      #           "name": "'"${CONTAINER_NAME}"'",
+      #           "command": ["bash","-lc","bundle exec rails db:migrate"]
+      #         }]
+      #       }' \
+      #       --started-by "ci-migrate"
