@@ -130,7 +130,6 @@ jobs:
             '.taskRoleArn=$task | .executionRoleArn=$exec' \
             ecs/taskdef.json > ecs/taskdef.patched.json
       
-      # Buildで新しくなったイメージURIを使ってタスク定義をレンダリング
       - name: Render task definition
         id: render
         uses: aws-actions/amazon-ecs-render-task-definition@v1
