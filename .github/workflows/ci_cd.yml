@@ -157,18 +157,41 @@ jobs:
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
         
-      # マイグレーションを実行
-      - name: Run DB migrate
+      - name: Run DB migrate (one-off task, wait & show logs)
+        env:
+          FAMILY: ${{ env.TASK_FAMILY }}
+          CLUSTER: ${{ env.ECS_CLUSTER }}
+          SUBNET_ID: ${{ env.SUBNET_ID }}
+          SG_ID: ${{ env.SG_ID }}
+          CONTAINER_NAME: ${{ env.CONTAINER_NAME }}
+          REGION: ${{ env.REGION }}
         run: |
-          TD_ARN=$(aws ecs describe-task-definition \
-          --task-definition "$TASK_FAMILY" \
-          --query 'taskDefinition.taskDefinitionArn' --output text)
+          set -u
 
-          aws ecs run-task \
-            --cluster $ECS_CLUSTER \
+          # 最新のTD ARNとログ設定を取得
+          TD_ARN=$(aws ecs describe-task-definition --task-definition "$FAMILY" \
+                    --query 'taskDefinition.taskDefinitionArn' --output text)
+          TD_JSON=$(aws ecs describe-task-definition --task-definition "$FAMILY")
+
+          LOG_GROUP=$(echo "$TD_JSON" | jq -r '.taskDefinition.containerDefinitions[0].logConfiguration.options."awslogs-group" // empty')
+          LOG_PREFIX=$(echo "$TD_JSON" | jq -r '.taskDefinition.containerDefinitions[0].logConfiguration.options."awslogs-stream-prefix" // empty')
+          LOG_REGION=$(echo "$TD_JSON" | jq -r '.taskDefinition.containerDefinitions[0].logConfiguration.options."awslogs-region" // env.REGION')
+
+          echo "TaskDefinition: $TD_ARN"
+          echo "awslogs-group: $LOG_GROUP"
+          echo "awslogs-prefix: $LOG_PREFIX"
+          echo "awslogs-region: $LOG_REGION"
+
+          # ★ NATなし構成でVPCエンドポイント未整備なら、暫定で有効化して切り分け
+          PUBLIC_IP=DISABLED
+          # PUBLIC_IP=ENABLED
+
+          # タスク起動
+          RUN_JSON=$(aws ecs run-task \
+            --cluster "$CLUSTER" \
             --launch-type FARGATE \
             --count 1 \
-            --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_ID],securityGroups=[$SG_ID],assignPublicIp=DISABLED}" \
+            --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_ID],securityGroups=[$SG_ID],assignPublicIp=$PUBLIC_IP}" \
             --task-definition "$TD_ARN" \
             --overrides '{
               "containerOverrides": [{
@@ -176,4 +199,52 @@ jobs:
                 "command": ["bash","-lc","bundle exec rails db:migrate"]
               }]
             }' \
-            --started-by "ci-migrate"
+            --started-by "ci-migrate")
+
+          TASK_ARN=$(echo "$RUN_JSON" | jq -r '.tasks[0].taskArn')
+          if [ -z "$TASK_ARN" ] || [ "$TASK_ARN" = "null" ]; then
+            echo "Failed to start migrate task:"
+            echo "$RUN_JSON"
+            exit 1
+          fi
+          echo "Started task: $TASK_ARN"
+
+          # 停止まで待機
+          aws ecs wait tasks-stopped --cluster "$CLUSTER" --tasks "$TASK_ARN"
+
+          # 結果取得
+          DESC_JSON=$(aws ecs describe-tasks --cluster "$CLUSTER" --tasks "$TASK_ARN")
+          STATUS=$(echo "$DESC_JSON" | jq -r '.tasks[0].lastStatus')
+          STOPPED_REASON=$(echo "$DESC_JSON" | jq -r '.tasks[0].stoppedReason // empty')
+          EXIT_CODE=$(echo "$DESC_JSON" | jq -r '.tasks[0].containers[0].exitCode // empty')
+          REASON=$(echo "$DESC_JSON" | jq -r '.tasks[0].containers[0].reason // empty')
+          TASK_ID=$(echo "$TASK_ARN" | awk -F/ '{print $2}')
+
+          echo "Task status: $STATUS"
+          echo "Stopped reason: $STOPPED_REASON"
+          echo "Container exitCode: $EXIT_CODE"
+          echo "Container reason: $REASON"
+
+          # ログ吸い出し（awslogs 使用時）
+          if [ -n "$LOG_GROUP" ] && [ -n "$LOG_PREFIX" ]; then
+            STREAM_NAME="${LOG_PREFIX}/${CONTAINER_NAME}/${TASK_ID}"
+            echo "---- CloudWatch Logs (${LOG_GROUP} / ${STREAM_NAME}) ----"
+            aws logs get-log-events \
+              --region "$LOG_REGION" \
+              --log-group-name "$LOG_GROUP" \
+              --log-stream-name "$STREAM_NAME" \
+              --limit 10000 \
+              --query 'events[].message' \
+              --output text || true
+            echo "---- (end logs) ----"
+          else
+            echo "awslogs 未設定のためログ取得をスキップしました。"
+          fi
+
+          # 失敗ならジョブを落とす
+          if [ "${EXIT_CODE:-1}" != "0" ]; then
+            echo "Migration failed with exitCode=${EXIT_CODE} / reason=${REASON}"
+            exit 1
+          fi
+          echo "Migration succeeded."
+
