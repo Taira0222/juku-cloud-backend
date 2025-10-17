@@ -40,7 +40,6 @@ class Api::V1::Auth::RegistrationsController < DeviseTokenAuth::RegistrationsCon
     )
   end
 
-  # --- 以下はupdate やdestroy アクション実装時に使用する可能性があるメソッド ---
   def render_update_error_user_not_found
     render_error!(
       code: "USER_NOT_FOUND",
