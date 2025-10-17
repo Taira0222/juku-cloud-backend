@@ -4,7 +4,7 @@
 #
 #  id          :bigint           not null, primary key
 #  name        :string           not null
-#  school_code :string           not null
+#  school_code :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  owner_id    :bigint           not null
@@ -40,17 +40,6 @@ RSpec.describe School, type: :model do
 
     it "is not valid with a name longer than 255 characters" do
       school.name = "a" * 256
-      expect(school).not_to be_valid
-    end
-
-    it "is not valid without a school_code" do
-      school.school_code = nil
-      expect(school).not_to be_valid
-    end
-
-    it "is not valid with a duplicate school_code" do
-      create(:school, school_code: "SCHOOL001")
-      school.school_code = "SCHOOL001"
       expect(school).not_to be_valid
     end
 

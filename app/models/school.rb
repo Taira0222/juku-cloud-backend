@@ -4,7 +4,7 @@
 #
 #  id          :bigint           not null, primary key
 #  name        :string           not null
-#  school_code :string           not null
+#  school_code :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  owner_id    :bigint           not null
@@ -34,5 +34,4 @@ class School < ApplicationRecord
   # Validations
   validates :owner, presence: true
   validates :name, presence: true, length: { maximum: 255 }
-  validates :school_code, presence: true, uniqueness: true
 end
