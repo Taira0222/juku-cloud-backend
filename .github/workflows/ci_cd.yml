@@ -182,9 +182,8 @@ jobs:
           echo "awslogs-prefix: $LOG_PREFIX"
           echo "awslogs-region: $LOG_REGION"
 
-          # ★ NATなし構成でVPCエンドポイント未整備なら、暫定で有効化して切り分け
-          PUBLIC_IP=DISABLED
-          # PUBLIC_IP=ENABLED
+          
+          PUBLIC_IP=ENABLED
 
           # タスク起動
           RUN_JSON=$(aws ecs run-task \
