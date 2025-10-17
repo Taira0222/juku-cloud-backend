@@ -24,13 +24,10 @@
 class Student < ApplicationRecord
   belongs_to :school
 
-  # 直接の関連付け
   has_many :student_class_subjects,
            class_name: "Subjects::StudentLink",
            dependent: :destroy
   has_many :class_subjects, through: :student_class_subjects
-
-  # Teaching::Assignmentとの直接関連
   has_many :teaching_assignments, through: :student_class_subjects
   # token がjson 形式のため、必要なカラムのみ選択して重複を削除する
   has_many :teachers,
@@ -43,7 +40,6 @@ class Student < ApplicationRecord
            dependent: :destroy
   has_many :available_days, through: :student_available_days
   has_many :student_traits, dependent: :destroy
-  # 作成日順にソートして取得できるようにする
   has_many :lesson_notes, through: :student_class_subjects
 
   enum :status, { active: 0, inactive: 1, on_leave: 2, graduated: 3 }
