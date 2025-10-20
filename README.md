@@ -1,51 +1,82 @@
-# Juku Cloud – Frontend (React + Vite + TypeScript)
+# Juku Cloud – Backend (Ruby on Rails 8, API mode)
 
-本リポジトリは Juku Cloud のフロントエンド（SPA）です。  
-S3 + CloudFrontでホスティングし、Rails API と通信します。
+本リポジトリは Juku Cloud のバックエンドAPIです。  
+ECS Fargate 上で稼働し、RDS(PostgreSQL) と接続します。
 
-- 本番サービス: https://www.juku-cloud.com
-- バックエンド: https://github.com/Taira0222/juku-cloud-backend
+- フロントエンド: https://github.com/Taira0222/juku-cloud-frontend
 
 ## ✨ 技術スタック
-- React 19 / Vite 7 / TypeScript 5
-- Tailwind CSS / shadcn/ui
-- Zustand / TanStack Query
-- Axios / Zod
-- Vitest / Testing Library / MSW
-- ESLint / Prettier
+- Ruby 3.4.4 / Rails 8.0.3 (API mode)
+- PostgreSQL 15
+- devise_token_auth / Alba / Kaminari
+- RSpec / SimpleCov
+- RuboCop / Bullet / Bundler Audit
 
 ## 🧱 ディレクトリ構成（抜粋）
 ```
-src/
-├─ Router/ # 認可付きルート（AuthRoute/ProtectedRoute/RoleRoute）
-├─ pages/ # 画面コンポーネント
-├─ features/ # 機能単位（auth/students/studentTraits/lessonNotes/teachers...）
-│ └─ lessonNotes/ # 代表例: api/components/hooks/mutations/queries/types/test
-├─ components/ # 共通UI（shadcn/ui ラップ等）
-├─ stores/ # Zustand ストア
-├─ api/ # グローバルAPIクライアント
-├─ queries/ # 汎用クエリ
-├─ mutations/ # 汎用ミューテーション
-├─ lib/ # axiosクライアント/エラーハンドラ等
-└─ tests/ # MSW サーバ/fixtures
+app/
+├─ controllers/ # v1配下にAPIエンドポイント、concernsに共通処理（認証/エラー）
+├─ models/ # ドメインモデル（subjects/availability/teaching 等で責務分割）
+├─ queries/ # 一覧・検索のQueryオブジェクト
+├─ serializers/ # Albaシリアライザでレスポンス統一
+└─ services/ # ユースケース（作成/更新/検証/関連更新・upsert/delete最適化）
+config/
+├─ environments/
+└─ initializers/ # devise/cors/bullet など
+db/
+└─ migrate/
+ecs/
+└─ taskdef.json # CIでレンダリングするECSタスク定義
+spec/
+├─ requests/ # 統合テスト
+├─ models/
+└─ services/
+```
+
+## 🔐 認証
+
+- `devise_token_auth` を採用（access-token/client/uid でステートレス運用）
+- CSRF面でCookie前提より攻撃面を縮小。CORS/HTTPS必須
+
+## 📄 API 概要（例）
+```
+POST   /api/v1/auth          # 講師招待→登録
+POST   /api/v1/auth/sign_in  # ログイン
+DELETE /api/v1/auth/sign_out # ログアウト
+
+GET    /api/v1/students
+POST   /api/v1/students
+PATCH  /api/v1/students/:id
+DELETE /api/v1/students/:id
+
+GET    /api/v1/lesson_notes?student_id=...&subject_id=...
+POST   /api/v1/lesson_notes
+PATCH  /api/v1/lesson_notes/:id
+DELETE /api/v1/lesson_notes/:id
 ```
 
 ## 🧪 テスト & カバレッジ
-```bash
-npm run test       # ユニット/結合（MSWでAPIモック）
-npm run test:coverage
-
 ```
-- 実績: stmts 97% / branch 92% / funcs 92% / lines 97%（目標: 80%以上）
+bundle exec rspec
+```
 
-## 🧩 実装のこだわり（要点）
+- 実績: Line 98% / Branch 89%（目標 80%+）
+- BulletでN+1クエリ検出、Query/Service層で最適化（upsert_all / delete_all など）
 
-- Zod: 期限日などフロント側でも厳密にバリデーション（UX向上＋バックエンドと二重防御）
-- TanStack Query: サーバ状態のキャッシュ/同期/無効化を一元化（ZustandはUI状態中心）
-- エラー処理の共通化: getErrorMessage() でAxios/422/通信障害を統一メッセージ化
-- UI/UX: ステップが多いフォームは「選択に応じて表示を絞る」「バッジ切り替え」で直感操作
+## 📦 招待トークン（実装方針）
 
-## 🔐 セキュリティ
+- HMAC-SHA256 採用：改ざん防止＆検索可能で高速
+- bcrypt等は非決定的のため検索不可、MessageVerifierはトークンが長くUX低下 → 不採用
 
-- CSPはCloudFrontで付与（例：default-src 'self', script-src 'self' など）
-- LocalStorageはXSSに弱いためCSPで外部スクリプト実行を抑制
+## 🧰 運用（CI/CD）
+
+- GitHub Actions → ECRへビルド/プッシュ → ECSへデプロイ
+- 反映後に rails db:migrate を自動実行
+- 監視/ログは CloudWatch
+
+## ☁️ インフラ要点
+
+- ECS Fargate（Single-AZ運用・将来拡張可能）
+- RDS PostgreSQL（Single-AZ → 将来Multi-AZに変更可能）
+- S3 + CloudFront（フロント配信、CSPでXSS軽減）
+- OIDCでGitHub ActionsからAWSへ安全に権限委譲（長期キー不要）
