@@ -73,110 +73,111 @@ jobs:
         run: bin/brakeman -q -w2
       - name: Lint Ruby files
         run: bin/rubocop --parallel
-  deploy:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    needs: [test, lint]
-    permissions:
-      contents: read
-      id-token: write  # ← OIDC AssumeRole に必須
-    env:
-      REGION: ap-northeast-1
-      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-      ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-      ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
-      ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
-      AWS_ROLE_ARN_BACK: ${{ secrets.AWS_ROLE_ARN_BACK }}
-      SUBNET_ID: ${{ secrets.SUBNET_ID }}
-      SG_ID: ${{ secrets.SG_ID }}
-      IMAGE_TAG: ${{ github.sha }}       # 不変タグ
-      CONTAINER_NAME: ${{ vars.CONTAINER_NAME }}
-      TASK_ROLE_NAME: ${{ vars.TASK_ROLE_NAME }}
-      EXEC_ROLE_NAME: ${{ vars.EXEC_ROLE_NAME }}
-      TASK_FAMILY: ${{ vars.TASK_FAMILY }}
+  # CDはいったん無効化
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  #   needs: [test, lint]
+  #   permissions:
+  #     contents: read
+  #     id-token: write  # ← OIDC AssumeRole に必須
+  #   env:
+  #     REGION: ap-northeast-1
+  #     AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  #     ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+  #     ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
+  #     ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
+  #     AWS_ROLE_ARN_BACK: ${{ secrets.AWS_ROLE_ARN_BACK }}
+  #     SUBNET_ID: ${{ secrets.SUBNET_ID }}
+  #     SG_ID: ${{ secrets.SG_ID }}
+  #     IMAGE_TAG: ${{ github.sha }}       # 不変タグ
+  #     CONTAINER_NAME: ${{ vars.CONTAINER_NAME }}
+  #     TASK_ROLE_NAME: ${{ vars.TASK_ROLE_NAME }}
+  #     EXEC_ROLE_NAME: ${{ vars.EXEC_ROLE_NAME }}
+  #     TASK_FAMILY: ${{ vars.TASK_FAMILY }}
       
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ env.AWS_ROLE_ARN_BACK }}
-          aws-region: ${{ env.REGION }}
+  #     - name: Configure AWS credentials (OIDC)
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         role-to-assume: ${{ env.AWS_ROLE_ARN_BACK }}
+  #         aws-region: ${{ env.REGION }}
 
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
+  #     - name: Login to Amazon ECR
+  #       uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build & Push image to ECR
-        id: build # idを指定してoutputsで参照できるようにする
-        run: |
-          set -u
-          ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
-          IMAGE_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+  #     - name: Build & Push image to ECR
+  #       id: build # idを指定してoutputsで参照できるようにする
+  #       run: |
+  #         set -u
+  #         ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
+  #         IMAGE_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
 
-          docker build -t "${IMAGE_URI}" .
-          docker push "${IMAGE_URI}"
+  #         docker build -t "${IMAGE_URI}" .
+  #         docker push "${IMAGE_URI}"
 
-          echo "image=${IMAGE_URI}" >> "$GITHUB_OUTPUT"
+  #         echo "image=${IMAGE_URI}" >> "$GITHUB_OUTPUT"
           
 
-      # タスク定義のロールARNを動的に差し替え
-      - name: Patch role ARNs in taskdef
-        run: |
-          TASK_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${TASK_ROLE_NAME}"
-          EXEC_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${EXEC_ROLE_NAME}"
-          jq --arg task "$TASK_ARN" --arg exec "$EXEC_ARN" \
-            '.taskRoleArn=$task | .executionRoleArn=$exec' \
-            ecs/taskdef.json > ecs/taskdef.patched.json
+  #     # タスク定義のロールARNを動的に差し替え
+  #     - name: Patch role ARNs in taskdef
+  #       run: |
+  #         TASK_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${TASK_ROLE_NAME}"
+  #         EXEC_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${EXEC_ROLE_NAME}"
+  #         jq --arg task "$TASK_ARN" --arg exec "$EXEC_ARN" \
+  #           '.taskRoleArn=$task | .executionRoleArn=$exec' \
+  #           ecs/taskdef.json > ecs/taskdef.patched.json
       
-      - name: Render task definition
-        id: render
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ecs/taskdef.patched.json # Patchで新しくなったタスク定義を指定
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build.outputs.image }}  # Buildで新しくなったイメージURIを指定
-          environment-variables: |
-            RAILS_LOG_TO_STDOUT=${{vars.RAILS_LOG_TO_STDOUT}}
-            RAILS_ENV=${{vars.RAILS_ENV}}
-            RAILS_SERVE_STATIC_FILES=${{vars.RAILS_SERVE_STATIC_FILES}}
-            DB_NAME=${{vars.DB_NAME}}
-            DB_HOST=${{vars.DB_HOST}}
-          secrets: |
-            DB_PASSWORD=${{secrets.DB_PASSWORD}}
-            DB_USERNAME=${{secrets.DB_USERNAME}}
-            RAILS_MASTER_KEY=${{secrets.RAILS_MASTER_KEY}}
-            SECRET_KEY_BASE=${{secrets.SECRET_KEY_BASE}}
+  #     - name: Render task definition
+  #       id: render
+  #       uses: aws-actions/amazon-ecs-render-task-definition@v1
+  #       with:
+  #         task-definition: ecs/taskdef.patched.json # Patchで新しくなったタスク定義を指定
+  #         container-name: ${{ env.CONTAINER_NAME }}
+  #         image: ${{ steps.build.outputs.image }}  # Buildで新しくなったイメージURIを指定
+  #         environment-variables: |
+  #           RAILS_LOG_TO_STDOUT=${{vars.RAILS_LOG_TO_STDOUT}}
+  #           RAILS_ENV=${{vars.RAILS_ENV}}
+  #           RAILS_SERVE_STATIC_FILES=${{vars.RAILS_SERVE_STATIC_FILES}}
+  #           DB_NAME=${{vars.DB_NAME}}
+  #           DB_HOST=${{vars.DB_HOST}}
+  #         secrets: |
+  #           DB_PASSWORD=${{secrets.DB_PASSWORD}}
+  #           DB_USERNAME=${{secrets.DB_USERNAME}}
+  #           RAILS_MASTER_KEY=${{secrets.RAILS_MASTER_KEY}}
+  #           SECRET_KEY_BASE=${{secrets.SECRET_KEY_BASE}}
 
-      - name: Deploy to Amazon ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.render.outputs.task-definition }} 
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+  #     - name: Deploy to Amazon ECS
+  #       uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+  #       with:
+  #         task-definition: ${{ steps.render.outputs.task-definition }} 
+  #         service: ${{ env.ECS_SERVICE }}
+  #         cluster: ${{ env.ECS_CLUSTER }}
+  #         wait-for-service-stability: true
         
-      # マイグレーションを実行
-      - name: Run DB migrate
-        env:
-          PUBLIC_IP: ENABLED
-        run: |
-          TD_ARN=$(aws ecs describe-task-definition \
-          --task-definition "$TASK_FAMILY" \
-          --query 'taskDefinition.taskDefinitionArn' --output text)
+  #     # マイグレーションを実行
+  #     - name: Run DB migrate
+  #       env:
+  #         PUBLIC_IP: ENABLED
+  #       run: |
+  #         TD_ARN=$(aws ecs describe-task-definition \
+  #         --task-definition "$TASK_FAMILY" \
+  #         --query 'taskDefinition.taskDefinitionArn' --output text)
 
-          aws ecs run-task \
-            --cluster $ECS_CLUSTER \
-            --launch-type FARGATE \
-            --count 1 \
-            --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_ID],securityGroups=[$SG_ID],assignPublicIp=$PUBLIC_IP}" \
-            --task-definition "$TD_ARN" \
-            --overrides '{
-              "containerOverrides": [{
-                "name": "'"${CONTAINER_NAME}"'",
-                "command": ["bash","-lc","bundle exec rails db:migrate"]
-              }]
-            }' \
-            --started-by "ci-migrate"
+  #         aws ecs run-task \
+  #           --cluster $ECS_CLUSTER \
+  #           --launch-type FARGATE \
+  #           --count 1 \
+  #           --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_ID],securityGroups=[$SG_ID],assignPublicIp=$PUBLIC_IP}" \
+  #           --task-definition "$TD_ARN" \
+  #           --overrides '{
+  #             "containerOverrides": [{
+  #               "name": "'"${CONTAINER_NAME}"'",
+  #               "command": ["bash","-lc","bundle exec rails db:migrate"]
+  #             }]
+  #           }' \
+  #           --started-by "ci-migrate"
 
