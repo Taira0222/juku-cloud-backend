@@ -47,7 +47,7 @@ Juku Cloud Backendに、`.steering/` ベースのワークフローとSDD（仕�
 ├── .steering/                                 # 機能開発ごとの作業ディレクトリ（履歴として保存）
 │   ├── 20250115-teacher-invitation/           # 例：教師招待機能
 │   │   ├── requirements.md                    # 要件定義（背景・目的・ユーザーストーリー）
-│   │   ├── design.md                          # 設計書 = 仕様書（SDD の中核）★
+│   │   ├── design.md                          # 仕様書（SDD の中核）★
 │   │   └── tasklist.md                        # タスクリスト（実装タスク・進捗管理）
 │   ├── 20250120-lesson-notes-crud/
 │   │   ├── requirements.md
@@ -109,9 +109,9 @@ Juku Cloud Backendに、`.steering/` ベースのワークフローとSDD（仕�
 - スケジュール制約
 ```
 
-#### `design.md` - 設計書（= SDD の仕様書） ★
+#### `design.md` - 仕様書（SDD の中核）★
 ```markdown
-# [機能名] 設計書 / 仕様書
+# [機能名] 仕様書
 
 ## 概要
 機能の簡潔な説明
@@ -196,7 +196,7 @@ Juku Cloud BackendはRails APIプロジェクトで、SDD（仕様駆動開発�
 
 ### `.steering/[YYYYMMDD]-[feature]/` - 機能開発の作業ディレクトリ
 - `requirements.md`: 要件定義
-- **`design.md`: 設計書 = 仕様書（SDDの中核）**
+- **`design.md`: 仕様書（SDDの中核）**
 - `tasklist.md`: タスクリスト
 
 **重要**: 開発完了後も `.steering/` は削除せず、履歴として永続化します。

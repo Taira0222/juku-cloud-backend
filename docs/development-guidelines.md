@@ -346,7 +346,7 @@ Closes #123
 
 #### 説明テンプレート
 
-```.github/PULL_REQUEST_TEMPLATE.md`に定義済み）
+`.github/PULL_REQUEST_TEMPLATE.md`に定義済み）
 
 ```markdown
 ## 概要

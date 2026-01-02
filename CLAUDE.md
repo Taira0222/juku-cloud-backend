@@ -33,7 +33,7 @@ Juku Cloud Backendは、個人経営の学習塾向けクラウド型管理シ�
 - ビジネス要件
 - 制約条件
 
-#### `design.md` - 設計書 / 仕様書（SDDの中核）
+#### `design.md` - 仕様書（SDDの中核）
 - ユースケース（詳細なフロー定義）
 - データモデル（テーブル定義・リレーション）
 - API仕様（リクエスト/レスポンス）
@@ -107,7 +107,7 @@ cd .steering/20250131-student-report
 - PDFライブラリはPrawnを使用
 ```
 
-#### 3. 設計書（仕様書）作成 - SDDの中核
+#### 3. 仕様書作成 - SDDの中核
 
 `design.md`を作成し、以下を詳細に記述：
 
@@ -444,74 +444,30 @@ end
 
 ## プロジェクトの技術スタック（概要）
 
-### 現在使用中の技術
-
-- **Ruby:** 3.4.4
-- **Rails:** 8.0.3 (API mode)
-- **データベース:** PostgreSQL 15
-- **認証:** devise_token_auth
-- **シリアライザ:** Alba
-- **ページネーション:** Kaminari
-- **テスト:** RSpec, FactoryBot, SimpleCov
-- **静的解析:** RuboCop, Brakeman, Bullet
-- **インフラ:** AWS (ECS Fargate, RDS, ALB)
-- **CI/CD:** GitHub Actions
-
-### 将来導入予定の技術
-
-- **Redis:** キャッシュストア（科目一覧、School情報等の頻繁に変更されないデータ）
-- **バックグラウンドジョブ:** Sidekiq（Redisベース）
-
 詳細は[architecture.md](docs/architecture.md)を参照してください。
+
+### 主要技術
+- Ruby 3.4.4 / Rails 8.0.3 (API mode)
+- PostgreSQL 15
+- devise_token_auth（認証）
+- Alba（シリアライザ）
+- RSpec + FactoryBot（テスト）
 
 ---
 
 ## 開発ガイドライン（要約）
 
-### レイヤー構造
-
-```
-┌─────────────────────────────────────────┐
-│ Controller (app/controllers/)          │
-│ - リクエスト受付・レスポンス返却       │
-│ - 認証・認可チェック                   │
-└───────────┬─────────────────────────────┘
-            │
-            ├──→ Query (app/queries/)
-            │    - 複雑なデータ取得
-            │    - N+1問題回避
-            │
-            ├──→ Service (app/services/)
-            │    - ビジネスロジック
-            │    - トランザクション管理
-            │
-            ↓
-┌─────────────────────────────────────────┐
-│ Model (app/models/)                     │
-│ - データ永続化                          │
-│ - バリデーション                        │
-└───────────┬─────────────────────────────┘
-            │
-            ↓
-┌─────────────────────────────────────────┐
-│ PostgreSQL                              │
-└─────────────────────────────────────────┘
-            ↑
-            │
-┌─────────────────────────────────────────┐
-│ Serializer (app/serializers/)           │
-│ - JSONレスポンス整形 (Alba)             │
-└─────────────────────────────────────────┘
-```
-
-**レイヤーの役割:**
-- **Controller:** リクエスト処理のみ（薄いController）
-- **Query:** 複雑なデータ取得・検索ロジックの分離
-- **Service:** ビジネスロジック・複数モデルの操作
-- **Model:** データ構造定義・バリデーション（Thin Model）
-- **Serializer:** APIレスポンスの整形
-
 詳細なコーディング規約・テスト戦略・Git規約は[development-guidelines.md](docs/development-guidelines.md)を参照してください。
+
+### レイヤー構造の概要
+
+Controller → Service → Model → PostgreSQL の流れでデータを処理します。
+
+- **Controller:** リクエスト処理のみ（薄いController）
+- **Service:** ビジネスロジック集約
+- **Query:** 複雑なデータ取得の分離
+- **Model:** データ構造定義・バリデーション（Thin Model）
+- **Serializer:** APIレスポンスの整形（Alba）
 
 ---
 
