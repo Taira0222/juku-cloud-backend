@@ -1,0 +1,29 @@
+{
+  "name": "Backend Rails API + PostgreSQL",
+  "dockerComposeFile": ["docker-compose.yml"],
+  "service": "backend",
+  "runServices": ["backend", "db"],
+  "forwardPorts": [3000, 5432],
+  "workspaceFolder": "/app",
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Shopify.ruby-lsp",
+        "redhat.vscode-yaml",
+        "VisualStudioExptTeam.vscodeintellicode",
+        "esbenp.prettier-vscode",
+        "misogi.ruby-rubocop",
+        "kaiwood.endwise",
+        "bung87.rails"
+      ],
+      "settings": {
+        "rubyLsp.rubyVersionManager": "none",
+        "[ruby]": {
+          "editor.defaultFormatter": "Shopify.ruby-lsp"
+        }
+      }
+    }
+  },
+  "postCreateCommand": "echo 'export PATH=./bin:$PATH' >> ~/.bashrc"
+}
