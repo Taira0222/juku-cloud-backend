@@ -8,7 +8,7 @@ The API for [Juku Cloud](https://github.com/Taira0222/juku-cloud), a SaaS for tu
 
 ## Stack
 
-- Ruby 3.4.4, Rails 8.1 (API mode)
+- Ruby 3.4.13, Rails 8.1 (API mode)
 - PostgreSQL 15
 - devise_token_auth, Alba, Kaminari
 - RSpec, SimpleCov

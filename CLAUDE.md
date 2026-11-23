@@ -447,7 +447,7 @@ end
 詳細は[architecture.md](docs/architecture.md)を参照してください。
 
 ### 主要技術
-- Ruby 3.4.4 / Rails 8.0.3 (API mode)
+- Ruby 3.4.13 / Rails 8.1.4 (API mode)
 - PostgreSQL 15
 - devise_token_auth（認証）
 - Alba（シリアライザ）

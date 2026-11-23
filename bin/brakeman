@@ -2,6 +2,6 @@
 require "rubygems"
 require "bundler/setup"
 
-ARGV.unshift("--ensure-latest")
+# --ensure-latest は付けない（新しい版が出るたびに CI が落ち、出てから 3 日待って上げる決まりとも合わないため）
 
 load Gem.bin_path("brakeman", "brakeman")

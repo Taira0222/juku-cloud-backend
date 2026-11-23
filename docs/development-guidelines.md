@@ -8,7 +8,7 @@
 
 ### 必須ツール（Rails API）
 
-- **Ruby:** 3.4.4
+- **Ruby:** 3.4.13
 - **Bundler:** 最新版
 - **PostgreSQL:** 15.x以上
 - **Git:** 最新版
@@ -32,7 +32,7 @@ git clone <repository-url>
 cd juku-cloud-backend
 
 # Rubyバージョン確認
-ruby -v  # 3.4.4 であることを確認
+ruby -v  # 3.4.13 であることを確認
 
 # 依存関係インストール
 bundle install

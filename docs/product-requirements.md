@@ -264,7 +264,7 @@
 
 ### 互換性
 
-- **バックエンド:** Ruby 3.4.4 / Rails 8.0.3（API mode）
+- **バックエンド:** Ruby 3.4.13 / Rails 8.1.4（API mode）
 - **データベース:** PostgreSQL 15
 - **フロントエンド:** モバイルブラウザ（iOS Safari、Android Chrome）対応
 - **API:** RESTful API（JSON形式）

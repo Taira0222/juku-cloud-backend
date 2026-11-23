@@ -21,8 +21,8 @@ Juku Cloud Backendは、個人経営の学習塾向けクラウド型管理シ�
 
 **プロジェクト:**
 - リポジトリ: `juku-cloud-backend`
-- フレームワーク: Ruby on Rails 8.0.3 (API mode)
-- Ruby: 3.4.4
+- フレームワーク: Ruby on Rails 8.1.4 (API mode)
+- Ruby: 3.4.13
 - データベース: PostgreSQL 15
 - 認証: devise_token_auth（トークンベース認証）
 - デプロイ: AWS ECS Fargate + RDS
@@ -328,8 +328,8 @@ end
 
 | カテゴリ | 技術 | バージョン | 用途 |
 |---------|------|-----------|------|
-| 言語 | Ruby | 3.4.4 | アプリケーション実装 |
-| フレームワーク | Rails | 8.0.3 (API mode) | API開発 |
+| 言語 | Ruby | 3.4.13 | アプリケーション実装 |
+| フレームワーク | Rails | 8.1.4 (API mode) | API開発 |
 | Webサーバー | Puma | 6.x | HTTPリクエスト処理 |
 | データベース | PostgreSQL | 15 | データ永続化 |
 | ORM | ActiveRecord | - | データベースアクセス |
