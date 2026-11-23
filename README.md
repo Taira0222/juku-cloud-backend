@@ -1,48 +1,52 @@
-# Juku Cloud – Backend (Ruby on Rails 8, API mode)
+# Juku Cloud – Back end (Ruby on Rails 8, API mode)
 
-本リポジトリは Juku Cloud のバックエンドAPIです。  
-ECS Fargate 上で稼働し、RDS(PostgreSQL) と接続します。
+English | [日本語](README.ja.md)
 
-- フロントエンド: https://github.com/Taira0222/juku-cloud-frontend
+The API for [Juku Cloud](https://github.com/Taira0222/juku-cloud), a SaaS for tutoring schools. The [front end](https://github.com/Taira0222/juku-cloud-frontend) is a React SPA.
 
-## ✨ 技術スタック
-- Ruby 3.4.4 / Rails 8.0.3 (API mode)
+> **Status:** no longer online. It ran on ECS Fargate with RDS PostgreSQL. CI (tests and static analysis) still runs on every push.
+
+## Stack
+
+- Ruby 3.4.4, Rails 8.0.3 (API mode)
 - PostgreSQL 15
-- devise_token_auth / Alba / Kaminari
-- RSpec / SimpleCov
-- RuboCop / Bullet / Bundler Audit
+- devise_token_auth, Alba, Kaminari
+- RSpec, SimpleCov
+- RuboCop, Bullet, Brakeman, bundler-audit
 
-## 🧱 ディレクトリ構成（抜粋）
+## Structure (excerpt)
+
 ```
 app/
-├─ controllers/ # v1配下にAPIエンドポイント、concernsに共通処理（認証/エラー）
-├─ models/ # ドメインモデル（subjects/availability/teaching 等で責務分割）
-├─ queries/ # 一覧・検索のQueryオブジェクト
-├─ serializers/ # Albaシリアライザでレスポンス統一
-└─ services/ # ユースケース（作成/更新/検証/関連更新・upsert/delete最適化）
+├─ controllers/  # API endpoints under v1; shared auth and error handling in concerns
+├─ models/       # Domain models (split into subjects, availability, teaching, ...)
+├─ queries/      # Query objects for lists and search
+├─ serializers/  # Alba serializers for consistent responses
+└─ services/     # Use cases (create, update, validate, update relations with upsert / delete)
 config/
 ├─ environments/
-└─ initializers/ # devise/cors/bullet など
+└─ initializers/ # devise, CORS, Bullet, ...
 db/
 └─ migrate/
 ecs/
-└─ taskdef.json # CIでレンダリングするECSタスク定義
+└─ taskdef.json  # ECS task definition, rendered in CI
 spec/
-├─ requests/ # 統合テスト
+├─ requests/     # Integration tests
 ├─ models/
 └─ services/
 ```
 
-## 🔐 認証
+## Authentication
 
-- `devise_token_auth` を採用（access-token/client/uid でステートレス運用）
-- CSRF面でCookie前提より攻撃面を縮小。CORS/HTTPS必須
+- `devise_token_auth` with `access-token` / `client` / `uid` headers. The API keeps no sessions, and tokens rotate on each response.
+- No cookies, so there is less CSRF exposure. CORS and HTTPS are required.
 
-## 📄 API 概要（例）
+## API (examples)
+
 ```
-POST   /api/v1/auth          # 講師招待→登録
-POST   /api/v1/auth/sign_in  # ログイン
-DELETE /api/v1/auth/sign_out # ログアウト
+POST   /api/v1/auth          # Teacher sign-up from an invite
+POST   /api/v1/auth/sign_in  # Sign in
+DELETE /api/v1/auth/sign_out # Sign out
 
 GET    /api/v1/students
 POST   /api/v1/students
@@ -55,28 +59,38 @@ PATCH  /api/v1/lesson_notes/:id
 DELETE /api/v1/lesson_notes/:id
 ```
 
-## 🧪 テスト & カバレッジ
-```
+## Invite tokens
+
+- HMAC-SHA256: tamper-proof, and the token can be looked up directly.
+- bcrypt was ruled out because its hashes can't be looked up, and MessageVerifier because its tokens are long.
+
+## Tests
+
+```bash
 bundle exec rspec
 ```
 
-- 実績: Line 98% / Branch 89%（目標 80%+）
-- BulletでN+1クエリ検出、Query/Service層で最適化（upsert_all / delete_all など）
+- Coverage: lines 98% · branches 89% (target: 80%+)
+- Bullet catches N+1 queries; query and service objects use `upsert_all` and `delete_all`.
 
-## 📦 招待トークン（実装方針）
+## Deploy (switched off)
 
-- HMAC-SHA256 採用：改ざん防止＆検索可能で高速
-- bcrypt等は非決定的のため検索不可、MessageVerifierはトークンが長くUX低下 → 不採用
+- GitHub Actions → build and push to ECR → deploy to ECS → run `rails db:migrate`
+- AWS access through OIDC, with no long-lived keys. Logs in CloudWatch.
+- ECS Fargate and RDS PostgreSQL both ran in a single AZ; RDS can move to Multi-AZ.
 
-## 🧰 運用（CI/CD）
+## Run locally
 
-- GitHub Actions → ECRへビルド/プッシュ → ECSへデプロイ
-- 反映後に rails db:migrate を自動実行
-- 監視/ログは CloudWatch
+Open the repository in the Dev Container (`.devcontainer/`). It starts Rails and PostgreSQL 15. First create `.devcontainer/.env` (these match the defaults in `config/database.yml`):
 
-## ☁️ インフラ要点
+```bash
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+POSTGRES_DB=juku_cloud_backend_development
+```
 
-- ECS Fargate（Single-AZ運用・将来拡張可能）
-- RDS PostgreSQL（Single-AZ → 将来Multi-AZに変更可能）
-- S3 + CloudFront（フロント配信、CSPでXSS軽減）
-- OIDCでGitHub ActionsからAWSへ安全に権限委譲（長期キー不要）
+Then, inside the container:
+
+```bash
+bin/setup   # Installs gems, prepares the database, and starts the server on port 3000
+```
