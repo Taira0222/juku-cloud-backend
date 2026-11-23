@@ -10,7 +10,7 @@
 - フロントエンド: https://github.com/Taira0222/juku-cloud-frontend
 
 ## ✨ 技術スタック
-- Ruby 3.4.4 / Rails 8.0.3 (API mode)
+- Ruby 3.4.4 / Rails 8.1 (API mode)
 - PostgreSQL 15
 - devise_token_auth / Alba / Kaminari
 - RSpec / SimpleCov
@@ -64,7 +64,7 @@ DELETE /api/v1/lesson_notes/:id
 bundle exec rspec
 ```
 
-- 実績: Line 98% / Branch 89%（目標 80%+）
+- 実績: Line 97% / Branch 90%（目標 80%+）
 - BulletでN+1クエリ検出、Query/Service層で最適化（upsert_all / delete_all など）
 
 ## 📦 招待トークン（実装方針）

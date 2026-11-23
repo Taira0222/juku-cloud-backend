@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.0.2"
+gem "rails", "~> 8.1.4"
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"
 # Use the Puma web server [https://github.com/puma/puma]
@@ -28,7 +28,7 @@ gem "thruster", require: false
 gem "rack-cors"
 
 # use devise for authentication
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 
 # use devise token_authenticatable for token-based authentication
 gem "devise_token_auth", "~> 1.2"

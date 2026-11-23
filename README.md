@@ -8,7 +8,7 @@ The API for [Juku Cloud](https://github.com/Taira0222/juku-cloud), a SaaS for tu
 
 ## Stack
 
-- Ruby 3.4.4, Rails 8.0.3 (API mode)
+- Ruby 3.4.4, Rails 8.1 (API mode)
 - PostgreSQL 15
 - devise_token_auth, Alba, Kaminari
 - RSpec, SimpleCov
@@ -70,7 +70,7 @@ DELETE /api/v1/lesson_notes/:id
 bundle exec rspec
 ```
 
-- Coverage: lines 98% · branches 89% (target: 80%+)
+- Coverage: lines 97% · branches 90% (target: 80%+)
 - Bullet catches N+1 queries; query and service objects use `upsert_all` and `delete_all`.
 
 ## Deploy (switched off)
