@@ -90,12 +90,6 @@ description: 初回セットアップ - 6つの永続ドキュメントをステ
 今後の使い方:
 - ドキュメントの編集: 普通に会話で依頼してください
   例: 「PRDに新機能を追加して」「architecture.mdを見直して」
-
-- 機能の追加: /add-feature [機能名] を実行してください
-  例: /add-feature ユーザー認証
-
-- ドキュメントレビュー: /review-docs [パス] を実行してください
-  例: /review-docs docs/product-requirements.md
 ```
 
 ## 作成されるドキュメント構造
